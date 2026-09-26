@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="우스튜디오 WOO STUDIO - 대구·경북 인테리어 설계·시공. 상가, 주거, HACCP 시설, 에폭시·도장, 전기, 비계.">
+<meta property="og:title" content="우스튜디오 WOO STUDIO">
+<meta property="og:description" content="대구·경북 인테리어 설계·시공">
+<title>우스튜디오 WOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@200;300;400&family=Noto+Sans+KR:wght@300;400;500&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --ink:#343333; --sub:#8A8886; --line:#E6E4E1;
+  --t1:#D8D5D0; --t2:#CDBFAE; --t3:#BFC4BF; --t4:#E4E0DA; --t5:#B7B1A9;
+  --en:"Josefin Sans","Futura","Century Gothic",sans-serif;
+  --kr:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--kr);font-weight:300;font-size:15px;line-height:1.8;padding-inline:0}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+.gut{padding-inline:clamp(16px,4vw,48px)}
+.en{font-family:var(--en);font-weight:300;letter-spacing:.06em}
+.small{font-size:12px;color:var(--sub)}
+
+/* photo slot */
+.ph{position:relative;max-width:100%;overflow:hidden;background-color:var(--t1);background-image:var(--img,none),var(--tone,none);background-size:cover;background-position:center}
+.ph.has::after{display:none}
+.ph::after{content:attr(data-cap);position:absolute;left:14px;bottom:12px;font-family:var(--en);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(52,51,51,.45)}
+.ph.t2{--tone:linear-gradient(160deg,#D6CAB9,var(--t2))}
+.ph.t3{--tone:linear-gradient(160deg,#CBD0CB,var(--t3))}
+.ph.t4{--tone:linear-gradient(160deg,#ECE9E4,var(--t4))}
+.ph.t5{--tone:linear-gradient(160deg,#C4BEB6,var(--t5))}
+.ph.t1{--tone:linear-gradient(160deg,#E2DFDA,var(--t1))}
+
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding-top:calc(18px + env(safe-area-inset-top,0px));padding-bottom:18px;transition:background .3s}
+header.solid{background:rgba(255,255,255,.94);backdrop-filter:blur(6px)}
+.logo{font-family:var(--en);font-weight:200;font-size:22px;letter-spacing:.32em;color:#fff;transition:color .3s}
+header.solid .logo{color:var(--ink)}
+.hr{display:flex;align-items:center;gap:14px}
+.hr nav{display:flex;gap:28px;font-family:var(--en);font-size:13px;letter-spacing:.14em;color:#fff;transition:color .3s}
+header.solid .hr nav{color:var(--ink)}
+.pill{background:#111;color:#fff;font-size:13px;font-weight:500;padding:6px 12px;border-radius:4px}
+@media (max-width:720px){.hr nav{display:none}}
+
+/* hero */
+.hero{position:relative;height:min(92vh,860px);min-height:520px}
+.hero .ph{position:absolute;inset:0;--tone:linear-gradient(180deg,#9E968C 0%,#B8AFA3 45%,#8F877D 100%)}
+.hero .ph.has{box-shadow:inset 0 -260px 180px -120px rgba(0,0,0,.45)}
+.hero .ph::after{color:rgba(255,255,255,.55)}
+.hero-txt{position:absolute;left:0;right:0;bottom:clamp(40px,8vh,80px);color:#fff}
+.hero-txt p{margin:0 0 6px;font-size:13px;font-weight:400}
+.hero-txt h1{margin:0;font-family:var(--en);font-weight:200;font-size:clamp(34px,5.4vw,64px);line-height:1.05;letter-spacing:.04em;text-transform:uppercase}
+
+/* intro gallery */
+.pair{display:grid;grid-template-columns:2fr 2fr 1fr;gap:10px;margin-top:clamp(56px,9vw,110px)}
+.pair .ph{aspect-ratio:3/4}
+.pair .ph:nth-child(2){margin-top:clamp(40px,8vw,120px)}
+.statement{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-block:clamp(72px,10vw,140px)}
+.statement h2{margin:0;font-family:var(--en);font-weight:200;font-size:clamp(26px,3.4vw,40px);line-height:1.2;letter-spacing:.04em;text-transform:uppercase}
+.statement p{margin:0;max-width:30em;color:#5B5958}
+@media (max-width:720px){.pair{grid-template-columns:1fr 1fr}.pair .ph:nth-child(3){display:none}.statement{grid-template-columns:1fr;gap:20px}}
+
+/* section head */
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:28px}
+.sh h2{margin:0;font-family:var(--en);font-weight:300;font-size:14px;letter-spacing:.24em;text-transform:uppercase}
+.sh a{font-size:12px;color:var(--sub);font-family:var(--en);letter-spacing:.14em}
+
+/* services */
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 40px;padding-bottom:clamp(80px,10vw,140px)}
+.svc div h3{margin:0 0 6px;font-weight:400;font-size:16px}
+.svc div span{display:block;font-family:var(--en);font-size:11px;letter-spacing:.2em;color:var(--sub);text-transform:uppercase;margin-bottom:12px}
+.svc div p{margin:0;color:#6A6867;font-size:14px}
+@media (max-width:860px){.svc{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.svc{grid-template-columns:1fr;gap:32px}}
+
+/* portfolio */
+.pf{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 10px;padding-bottom:clamp(80px,10vw,140px)}
+.pf a .ph{aspect-ratio:4/5;transition:opacity .3s}
+.pf a:hover .ph{opacity:.85}
+.pf .cap{margin-top:14px;display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.pf .cap span:last-child{color:var(--sub);font-family:var(--en);font-size:12px;letter-spacing:.1em;white-space:nowrap}
+@media (max-width:860px){.pf{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.pf{grid-template-columns:1fr}}
+
+/* process */
+.proc{display:grid;grid-template-columns:repeat(5,1fr);gap:0;padding-bottom:clamp(80px,10vw,140px)}
+.proc div{padding-right:20px}
+.proc b{display:block;font-family:var(--en);font-weight:300;font-size:30px;color:#C9C6C2;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.proc h3{margin:0 0 4px;font-weight:400;font-size:15px}
+.proc p{margin:0;font-size:13px;color:#6A6867}
+@media (max-width:860px){.proc{grid-template-columns:1fr 1fr;gap:32px 0}}
+
+/* contact band */
+.band{position:relative;margin-bottom:0}
+.band .ph{height:clamp(320px,46vw,520px);--tone:linear-gradient(180deg,#A69D92,#8C8479)}
+.band .ph.has{box-shadow:inset 0 0 0 2000px rgba(0,0,0,.35)}
+.band .ph::after{color:rgba(255,255,255,.5)}
+.band .in{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;color:#fff}
+.band h2{margin:0 0 8px;font-family:var(--en);font-weight:200;font-size:clamp(28px,4vw,48px);letter-spacing:.06em;text-transform:uppercase}
+.band p{margin:0 0 26px;font-size:14px;font-weight:400}
+.band a.btn{border:1px solid #fff;padding:12px 28px;font-size:13px;letter-spacing:.08em;font-weight:400}
+.band a.btn:hover{background:#fff;color:var(--ink)}
+
+/* footer */
+footer{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;padding-block:56px 64px;font-size:13px;color:#6A6867;border-top:1px solid var(--line)}
+footer h4{margin:0 0 14px;font-family:var(--en);font-weight:400;font-size:12px;letter-spacing:.24em;color:var(--ink)}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+footer a:hover{color:var(--ink)}
+footer .logo{color:var(--ink);font-size:18px;display:block;margin-bottom:18px}
+@media (max-width:720px){footer{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="gut" id="hdr">
+  <a class="logo" href="#top">WOO STUDIO</a>
+  <div class="hr">
+    <nav aria-label="메뉴"><a href="#services">SERVICES</a><a href="#portfolio">PORTFOLIO</a><a href="#contact">CONTACT</a></nav>
+    <a class="pill" href="#contact">상담 신청</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div data-img="photos/hero.jpg" class="ph" data-cap="Main photo · 대표 시공 사진"></div>
+    <div class="hero-txt gut">
+      <p>대구 · 경북 인테리어 설계 · 시공</p>
+      <h1>Built on site,<br>finished by hand</h1>
+    </div>
+  </section>
+
+  <div class="gut">
+    <div class="pair">
+      <div data-img="photos/mood-01.jpg" class="ph t4" data-cap="Photo"></div>
+      <div data-img="photos/mood-02.jpg" class="ph t1" data-cap="Photo"></div>
+      <div data-img="photos/mood-03.jpg" class="ph t3" data-cap="Photo"></div>
+    </div>
+
+    <div class="statement">
+      <h2>Design,<br>and build it<br>ourselves.</h2>
+      <p>우스튜디오는 설계한 공간을 직접 짓습니다. 목공과 마감은 물론 바닥 에폭시, 도장, 전기, 비계까지 현장 공정을 한 팀이 맡아 도면과 결과가 달라지지 않게 합니다.</p>
+    </div>
+
+    <section id="services">
+      <div class="sh"><h2>Services</h2></div>
+      <div class="svc">
+        <div><span>Commercial</span><h3>상가 인테리어</h3><p>카페, 매장, 사무실의 설계와 시공</p></div>
+        <div><span>Residential</span><h3>주거 리모델링</h3><p>아파트·주택 부분 공사부터 전체 리모델링까지</p></div>
+        <div><span>Facility</span><h3>HACCP 시설</h3><p>식품 작업장 바닥·벽체 위생 마감</p></div>
+        <div><span>Floor &amp; Coating</span><h3>에폭시 · 도장</h3><p>기존 타일 위 에폭시, 에어리스 도장</p></div>
+        <div><span>Electrical</span><h3>전기 공사</h3><p>조명, 배선, 분전반, 저온창고 전기</p></div>
+        <div><span>Structure</span><h3>비계 · 제작</h3><p>시스템 비계 설치, 현장 맞춤 랙 제작</p></div>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="sh"><h2>Portfolio</h2><a href="https://www.instagram.com/woo_studio26/" target="_blank" rel="noopener">VIEW ON INSTAGRAM</a></div>
+      <div class="pf">
+        <a href="#portfolio"><div data-img="photos/work-01.jpg" class="ph t2" data-cap="Photo"></div><div class="cap"><span>식품 작업장 에폭시 바닥</span><span>DAEGU</span></div></a>
+        <a href="#portfolio"><div data-img="photos/work-02.jpg" class="ph t1" data-cap="Photo"></div><div class="cap"><span>상가 인테리어</span><span>DAEGU</span></div></a>
+        <a href="#portfolio"><div data-img="photos/work-03.jpg" class="ph t5" data-cap="Photo"></div><div class="cap"><span>아파트 리모델링</span><span>DAEGU</span></div></a>
+        <a href="#portfolio"><div data-img="photos/work-04.jpg" class="ph t3" data-cap="Photo"></div><div class="cap"><span>저온창고 전기 공사</span><span>GYEONGBUK</span></div></a>
+        <a href="#portfolio"><div data-img="photos/work-05.jpg" class="ph t4" data-cap="Photo"></div><div class="cap"><span>대면적 에어리스 도장</span><span>DAEGU</span></div></a>
+        <a href="#portfolio"><div data-img="photos/work-06.jpg" class="ph t2" data-cap="Photo"></div><div class="cap"><span>시스템 비계 설치</span><span>DAEGU</span></div></a>
+      </div>
+    </section>
+
+    <section>
+      <div class="sh"><h2>Process</h2></div>
+      <div class="proc">
+        <div><b>01</b><h3>상담</h3><p>공간, 예산, 일정 확인</p></div>
+        <div><b>02</b><h3>현장 실측</h3><p>치수와 바탕 상태 점검</p></div>
+        <div><b>03</b><h3>설계 · 견적</h3><p>도면과 공정별 견적</p></div>
+        <div><b>04</b><h3>시공</h3><p>공정별 진행 사진 공유</p></div>
+        <div><b>05</b><h3>사후관리</h3><p>준공 점검과 하자 보수</p></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="band" id="contact">
+    <div data-img="photos/contact.jpg" class="ph" data-cap="Photo"></div>
+    <div class="in gut">
+      <h2>Contact</h2>
+      <p>현장 상담은 인스타그램 DM으로 편하게 문의해주세요.</p>
+      <a class="btn" href="https://www.instagram.com/woo_studio26/" target="_blank" rel="noopener">상담 문의하기</a>
+    </div>
+  </section>
+</main>
+
+<footer class="gut">
+  <div>
+    <span class="logo">WOO STUDIO</span>
+    <ul><li>우스튜디오</li><li>대구 · 경북 인테리어 설계 · 시공</li><li>© 2026 WOO STUDIO</li></ul>
+  </div>
+  <div>
+    <h4>SNS</h4>
+    <ul>
+      <li><a href="https://www.instagram.com/woo_studio26/" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://blog.naver.com/woo_studio26" target="_blank" rel="noopener">Blog</a></li>
+      <li><a href="https://linktr.ee/woo_studio26" target="_blank" rel="noopener">Linktree</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>CONTACT</h4>
+    <ul><li>woo_studio26@naver.com</li><li>Instagram DM @woo_studio26</li></ul>
+  </div>
+</footer>
+
+<script>
+const h=document.getElementById('hdr'),hero=document.querySelector('.hero');
+const f=()=>h.classList.toggle('solid',window.scrollY>hero.offsetHeight-80);
+addEventListener('scroll',f,{passive:true});f();
+document.querySelectorAll('.ph[data-img]').forEach(el=>{const im=new Image();im.onload=()=>{el.style.setProperty('--img',`url("${el.dataset.img}")`);el.classList.add('has')};im.src=el.dataset.img;});
+</script>
+
+</body>
+</html>
