@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우스튜디오 | 바닥 시공 사전 확인</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="버튼만 눌러주시면 1분이면 끝나요.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="우스튜디오 WOO STUDIO">
+<meta property="og:title" content="우스튜디오 | 바닥 시공 전 현장 확인">
+<meta property="og:description" content="버튼만 눌러주시면 1분이면 끝나요.">
+<meta property="og:image" content="https://woostudio.co.kr/check/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<style>
+  :root{--bg:#f4f4f2;--card:#fff;--ink:#1d1d1f;--sub:#6e6e73;--line:#e3e3e0;--accent:#1d1d1f;--sel:#1d1d1f;--selink:#fff;--err:#c0392b}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+  .wrap{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+  header{padding:8px 4px 18px}
+  .brand{font-size:13px;letter-spacing:.08em;color:var(--sub);font-weight:600}
+  h1{font-size:22px;line-height:1.35;margin:6px 0 8px;letter-spacing:-.02em}
+  .lead{color:var(--sub);font-size:14px;margin:0}
+  .who{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px}
+  .who b{font-weight:600}
+  .q{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+  .q h2{font-size:16px;margin:0 0 4px;letter-spacing:-.01em}
+  .q .hint{font-size:13px;color:var(--sub);margin:0 0 12px}
+  .num{display:inline-block;min-width:22px;color:var(--sub);font-weight:600}
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .opt span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:48px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px;background:#fafaf9;transition:.12s}
+  .opt input:checked + span{background:var(--sel);color:var(--selink);border-color:var(--sel);font-weight:600}
+  .opt input:focus-visible + span{outline:2px solid #999;outline-offset:2px}
+  .sub{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .sub.on{display:block}
+  .sub p{font-size:13px;color:var(--sub);margin:0 0 8px}
+  input[type=text],input[type=tel],input[type=date]{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fafaf9;color:var(--ink)}
+  .row{display:grid;gap:8px;margin-top:8px}
+  .err{color:var(--err);font-size:13px;margin-top:8px;display:none}
+  .q.bad{border-color:var(--err)}
+  .q.bad .err{display:block}
+  button.submit{width:100%;margin-top:18px;min-height:56px;border:0;border-radius:14px;background:var(--accent);color:#fff;font:inherit;font-size:17px;font-weight:600}
+  button.submit:disabled{opacity:.5}
+  button.reset{width:100%;margin-top:10px;min-height:48px;border:1px solid var(--line);border-radius:14px;background:transparent;color:var(--sub);font:inherit;font-size:15px}
+  button.reset:active{background:#ebebe8}
+  .note{font-size:12px;color:var(--sub);margin-top:12px;text-align:center}
+  .done{display:none;text-align:center;padding:60px 10px}
+  .done h2{font-size:22px;margin:0 0 8px}
+  .done p{color:var(--sub);margin:0}
+  footer{margin-top:28px;text-align:center;font-size:12px;color:var(--sub)}
+  .up{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;border:1.5px dashed #bdbdb8;border-radius:12px;background:#fafaf9;font-size:15px;font-weight:600;cursor:pointer}
+  .up input{display:none}
+  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+  .thumbs:empty{display:none}
+  .th{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#eee}
+  .th img{width:100%;height:100%;object-fit:cover;display:block}
+  .th button{position:absolute;top:4px;right:4px;width:24px;height:24px;border:0;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:14px;line-height:24px;padding:0}
+  .cnt{font-size:13px;color:var(--sub);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <form id="f" novalidate>
+    <header>
+      <div class="brand">WOO'S TUDIO · 우스튜디오</div>
+      <h1>바닥 시공 전<br>현장 상황을 알려주세요</h1>
+      <p class="lead">버튼만 눌러주시면 됩니다. 1분이면 끝나요.</p>
+      <div class="who" id="who"></div>
+    </header>
+
+    <div id="idFields" class="q" style="display:none">
+      <h2><span class="num">·</span>고객 정보</h2>
+      <div class="row">
+        <input type="text" name="name" placeholder="성함">
+        <input type="tel" name="phone" placeholder="연락처">
+        <input type="text" name="address" placeholder="주소 (아파트명 동·호수)">
+      </div>
+    </div>
+
+    <div class="q" data-req="live">
+      <h2><span class="num">1</span>지금 거주 중이신가요?</h2>
+      <p class="hint">빈집이면 철거부터 시공까지 바로 이어서 진행할 수 있어요.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="live" value="거주 중"><span>거주 중</span></label>
+        <label class="opt"><input type="radio" name="live" value="빈집(이사 전)"><span>빈집 (이사 전)</span></label>
+        <label class="opt"><input type="radio" name="live" value="곧 이사 예정"><span>곧 이사 예정</span></label>
+      </div>
+      <div class="sub" data-show="live=곧 이사 예정">
+        <p>이사 예정일</p>
+        <input type="date" name="moveDate">
+      </div>
+      <div class="err">하나를 선택해 주세요.</div>
+    </div>
+
+    <div class="q" data-req="stuff">
+      <h2><span class="num">2</span>집에 짐(가구·가전)이 있나요?</h2>
+      <p class="hint">짐이 있으면 옮기는 순서와 공사 구역을 나눠서 계획해요.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="stuff" value="있음"><span>있어요</span></label>
+        <label class="opt"><input type="radio" name="stuff" value="일부만 있음"><span>일부만 있어요</span></label>
+        <label class="opt"><input type="radio" name="stuff" value="없음"><span>없어요 (빈집)</span></label>
+      </div>
+      <div class="sub" data-show="stuff=있음|일부만 있음">
+        <p>남아 있는 큰 짐을 모두 골라주세요</p>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="items" value="침대"><span>침대</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="장롱·옷장"><span>장롱·옷장</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="소파"><span>소파</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="냉장고"><span>냉장고</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="김치냉장고"><span>김치냉장고</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="식탁"><span>식탁</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="TV장·거실장"><span>TV장·거실장</span></label>
+          <label class="opt"><input type="checkbox" name="items" value="피아노·안마의자 등 중량물"><span>피아노·안마의자</span></label>
+        </div>
+      </div>
+      <div class="err">하나를 선택해 주세요.</div>
+    </div>
+
+    <div class="q" data-req="scope">
+      <h2><span class="num">3</span>시공 범위는 어디까지인가요?</h2>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="scope" value="집 전체"><span>집 전체</span></label>
+        <label class="opt"><input type="radio" name="scope" value="일부 공간"><span>일부 공간만</span></label>
+        <label class="opt"><input type="radio" name="scope" value="상담 후 결정"><span>상담 후 결정</span></label>
+      </div>
+      <div class="sub" data-show="scope=일부 공간">
+        <p>시공할 공간을 모두 골라주세요</p>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="rooms" value="거실"><span>거실</span></label>
+          <label class="opt"><input type="checkbox" name="rooms" value="주방"><span>주방</span></label>
+          <label class="opt"><input type="checkbox" name="rooms" value="복도"><span>복도</span></label>
+          <label class="opt"><input type="checkbox" name="rooms" value="안방"><span>안방</span></label>
+          <label class="opt"><input type="checkbox" name="rooms" value="작은방1"><span>작은방 1</span></label>
+          <label class="opt"><input type="checkbox" name="rooms" value="작은방2"><span>작은방 2</span></label>
+          <label class="opt"><input type="checkbox" name="rooms" value="드레스룸"><span>드레스룸</span></label>
+        </div>
+      </div>
+      <div class="err">하나를 선택해 주세요.</div>
+    </div>
+
+    <div class="q">
+      <h2><span class="num">4</span>새로 하실 바닥재가 있나요?</h2>
+      <p class="hint">아직 안 정하셨으면 실측 때 샘플을 가져가서 보여드려요.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="floor" value="강마루"><span>강마루</span></label>
+        <label class="opt"><input type="radio" name="floor" value="원목마루"><span>원목마루</span></label>
+        <label class="opt"><input type="radio" name="floor" value="강화마루"><span>강화마루</span></label>
+        <label class="opt"><input type="radio" name="floor" value="장판"><span>장판</span></label>
+        <label class="opt"><input type="radio" name="floor" value="미정(샘플 보고 결정)"><span>미정 (샘플 보고 결정)</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <h2><span class="num">5</span>걸레받이도 같이 교체할까요?</h2>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="baseboard" value="예"><span>예</span></label>
+        <label class="opt"><input type="radio" name="baseboard" value="아니요"><span>아니요</span></label>
+        <label class="opt"><input type="radio" name="baseboard" value="상담 후 결정"><span>상담 후 결정</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <h2><span class="num">6</span>발코니 확장이 되어 있나요?</h2>
+      <p class="hint">확장된 곳까지 바닥 면적에 들어가서 여쭤봐요.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="balcony" value="확장됨"><span>확장되어 있어요</span></label>
+        <label class="opt"><input type="radio" name="balcony" value="비확장"><span>확장 안 됐어요</span></label>
+        <label class="opt"><input type="radio" name="balcony" value="모름"><span>잘 모르겠어요</span></label>
+      </div>
+    </div>
+
+    <div class="q" data-req="visit">
+      <h2><span class="num">7</span>실측 방문 가능한 시간을 골라주세요</h2>
+      <p class="hint">여러 개 고르셔도 돼요. 20~30분 정도 걸립니다.</p>
+      <div class="opts" id="visitOpts"></div>
+      <div class="sub" data-show="visit=기타">
+        <p>편하신 날짜·시간을 적어주세요</p>
+        <input type="text" name="visitEtc" placeholder="예) 10/17(토) 오전">
+      </div>
+      <div class="err">하나 이상 선택해 주세요.</div>
+    </div>
+
+    <div class="q">
+      <h2><span class="num">8</span>시공 희망 시작일</h2>
+      <p class="hint">10월 중순 희망으로 전달받았어요. 정확한 날짜가 있으면 골라주세요.</p>
+      <input type="date" name="startDate">
+    </div>
+
+    <div class="q">
+      <h2><span class="num">9</span>현장 사진 첨부 (선택)</h2>
+      <p class="hint">거실·방 바닥 전체가 보이게 찍어주세요. 들뜸·찍힘 있는 곳은 가까이서 한 장 더 있으면 좋아요. (최대 12장)</p>
+      <label class="up"><input type="file" id="photo" accept="image/*" multiple>＋ 사진 선택하기</label>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="cnt" id="cnt"></div>
+    </div>
+
+    <button class="submit" id="btn" type="submit">보내기</button>
+    <button class="reset" id="resetBtn" type="button">처음부터 다시 선택하기</button>
+    <p class="note">사진은 휴대폰에서 자동으로 줄여서 올라가요. 데이터 걱정 안 하셔도 됩니다.</p>
+    <footer>우스튜디오 · 대구·경북 인테리어 시공</footer>
+  </form>
+
+  <div class="done" id="done">
+    <h2>감사합니다</h2>
+    <p>확인 후 실측 일정 바로 연락드리겠습니다.<br>— 우스튜디오 우지훈</p>
+  </div>
+</div>
+
+<script>
+  // ▼ 응답 받을 주소 (Google Apps Script 웹앱 URL). 비어 있으면 미리보기 모드.
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbxo2jh6sfZGxO4azHeCXlQWCIjBF9AVz2YloXqM073m-k3U0cBAB1GivgJihfKlNKRL/exec";
+
+  // 구글 Apps Script 안에서 열리면 google.script 로 파라미터/전송, 아니면 일반 웹페이지 방식
+  const GAS = typeof google !== "undefined" && google.script && google.script.run;
+  let pre = { name: "", phone: "", address: "" };
+  function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+  function init(prm){
+    pre = { code: prm.id || prm.c || "", name: prm.n || "", phone: prm.p || "", address: prm.a || "" };
+    const who = document.getElementById("who");
+    if (pre.name || pre.address) {
+      who.innerHTML = `<b>${esc(pre.name)} 고객님</b><br>${esc(pre.address)}`;
+    } else if (pre.code) {
+      who.innerHTML = `<b>고객님 전용 확인서</b><br>문자로 안내드린 현장 건입니다.`;
+    } else {
+      who.style.display = "none";
+      document.getElementById("idFields").style.display = "block";
+    }
+    // 실측 후보: 다음 날부터 일요일 빼고 3일 오전/오후 (?v=10/14 오전,10/14 오후 로 직접 지정 가능)
+    const visitBox = document.getElementById("visitOpts");
+    let slots = (prm.v || "").split(",").map(s => s.trim()).filter(Boolean);
+    if (!slots.length) {
+      const wd = "일월화수목금토", d = new Date();
+      for (let i = 1; slots.length < 6; i++) {
+        const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i);
+        if (x.getDay() === 0) continue;
+        const lab = `${x.getMonth() + 1}/${x.getDate()}(${wd[x.getDay()]})`;
+        slots.push(`${lab} 오전`, `${lab} 오후`);
+      }
+    }
+    slots.push("기타");
+    visitBox.innerHTML = "";
+    for (const s of slots) {
+      const l = document.createElement("label"); l.className = "opt";
+      l.innerHTML = `<input type="checkbox" name="visit" value="${esc(s)}"><span>${esc(s === "기타" ? "다른 날짜" : s)}</span>`;
+      visitBox.appendChild(l);
+    }
+  }
+  if (GAS && google.script.url) {
+    google.script.url.getLocation(loc => init(loc.parameter || {}));
+  } else {
+    init(Object.fromEntries(new URLSearchParams(location.search)));
+  }
+
+  // ---- 현장 사진: 선택 즉시 1600px JPEG로 압축해 보관 ----
+  const MAX_PHOTOS = 12, MAX_EDGE = 1600, QUALITY = 0.8;
+  const photos = [];
+  const thumbs = document.getElementById("thumbs"), cnt = document.getElementById("cnt");
+  function loadImg(file){
+    return new Promise((res, rej) => {
+      const url = URL.createObjectURL(file); const im = new Image();
+      im.onload = () => { URL.revokeObjectURL(url); res(im); };
+      im.onerror = () => { URL.revokeObjectURL(url); rej(new Error("이미지를 읽을 수 없어요")); };
+      im.src = url;
+    });
+  }
+  async function compress(file){
+    const im = await loadImg(file);
+    const k = Math.min(1, MAX_EDGE / Math.max(im.naturalWidth, im.naturalHeight));
+    const c = document.createElement("canvas");
+    c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+    c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+    return c.toDataURL("image/jpeg", QUALITY);
+  }
+  function drawThumbs(){
+    thumbs.innerHTML = "";
+    photos.forEach((p, i) => {
+      const d = document.createElement("div"); d.className = "th";
+      d.innerHTML = `<img src="${p.data}" alt=""><button type="button" aria-label="삭제">×</button>`;
+      d.querySelector("button").onclick = () => { photos.splice(i, 1); drawThumbs(); };
+      thumbs.appendChild(d);
+    });
+    const mb = photos.reduce((s, p) => s + p.data.length * 0.75, 0) / 1048576;
+    cnt.textContent = photos.length ? `${photos.length}장 선택됨 (약 ${mb.toFixed(1)}MB)` : "";
+  }
+  document.getElementById("photo").addEventListener("change", async e => {
+    const files = [...e.target.files]; e.target.value = "";
+    for (const file of files) {
+      if (photos.length >= MAX_PHOTOS) { alert(`사진은 최대 ${MAX_PHOTOS}장까지 보낼 수 있어요.`); break; }
+      cnt.textContent = "사진 준비 중…";
+      try { photos.push({ name: file.name.replace(/\.[^.]+$/, "") + ".jpg", data: await compress(file) }); }
+      catch (err) { alert(`${file.name}: ${err.message}`); }
+    }
+    drawThumbs();
+  });
+
+  const f = document.getElementById("f");
+  function vals(n){return [...f.querySelectorAll(`[name="${n}"]:checked`)].map(i=>i.value);}
+  function refresh(){
+    f.querySelectorAll(".sub[data-show]").forEach(el=>{
+      const [n, v] = el.dataset.show.split("=");
+      const want = v.split("|");
+      el.classList.toggle("on", vals(n).some(x => want.includes(x)));
+    });
+  }
+  f.addEventListener("change", e => {
+    refresh();
+    const q = e.target.closest(".q"); if (q) q.classList.remove("bad");
+  });
+
+  // 초기화: 선택·입력·사진 전부 비우고 맨 위로
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    const filled = f.querySelectorAll("input:checked").length || photos.length ||
+      [...f.querySelectorAll('input[type=text],input[type=tel],input[type=date]')].some(i => i.value);
+    if (!filled) { scrollTo({ top: 0, behavior: "smooth" }); return; }
+    if (!confirm("선택하신 내용과 첨부한 사진을 모두 지울까요?")) return;
+    f.reset();
+    photos.length = 0; drawThumbs();
+    f.querySelectorAll(".q.bad").forEach(q => q.classList.remove("bad"));
+    refresh();
+    scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  f.addEventListener("submit", async e => {
+    e.preventDefault();
+    let first = null;
+    f.querySelectorAll(".q[data-req]").forEach(q => {
+      const ok = vals(q.dataset.req).length > 0;
+      q.classList.toggle("bad", !ok);
+      if (!ok && !first) first = q;
+    });
+    if (first) { first.scrollIntoView({behavior:"smooth", block:"center"}); return; }
+    const one = n => (f.querySelector(`[name="${n}"]`) || {}).value || "";
+    const data = {
+      submittedAt: new Date().toISOString(), code: pre.code,
+      name: pre.name || one("name"), phone: pre.phone || one("phone"), address: pre.address || one("address"),
+      live: vals("live").join(), moveDate: one("moveDate"),
+      stuff: vals("stuff").join(), items: vals("items").join(", "),
+      scope: vals("scope").join(), rooms: vals("rooms").join(", "),
+      floor: vals("floor").join(), baseboard: vals("baseboard").join(), balcony: vals("balcony").join(),
+      visit: vals("visit").join(", "), visitEtc: one("visitEtc"),
+      startDate: one("startDate"),
+      photos: photos.map(p => ({ name: p.name, data: p.data.split(",")[1] }))
+    };
+    const btn = document.getElementById("btn"); btn.disabled = true;
+    btn.textContent = photos.length ? `사진 ${photos.length}장과 함께 보내는 중…` : "보내는 중…";
+    try {
+      if (GAS) {
+        await new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej).submitForm(JSON.stringify(data)));
+      } else if (ENDPOINT) {
+        await fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(data) });
+      } else {
+        console.log("미리보기 모드 - 전송 데이터:", { ...data, photos: data.photos.map(p => `${p.name} ${(p.data.length * 0.75 / 1024).toFixed(0)}KB`) });
+      }
+      f.style.display = "none"; document.getElementById("done").style.display = "block"; scrollTo(0, 0);
+    } catch (err) {
+      btn.disabled = false; btn.textContent = "보내기";
+      alert("전송이 안 됐어요. 잠시 후 다시 눌러주세요.");
+    }
+  });
+</script>
+</body>
+</html>
