@@ -21,18 +21,19 @@ table.q{width:100%;border-collapse:collapse;font-size:13px}
 table.q th{background:#eef0f4;font-weight:600;padding:8px 6px;border:1px solid #cfd3da;white-space:nowrap}
 table.q td{border:1px solid #d9dce2;padding:8px 6px;vertical-align:middle}
 td.no,td.cat,td.qt{text-align:center;white-space:nowrap}td.up,td.amt{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}td.amt{font-weight:700}
-td.desc small{display:block;color:var(--sub);font-size:12px}td.desc small.n2{color:var(--gold)}
+td.desc small{display:block;color:var(--sub);font-size:12px}
 .sum{margin-top:12px;border-top:2px solid var(--acc)}
 .sum div{display:flex;justify-content:space-between;padding:8px 2px;font-size:14px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .sum div.g{font-size:18px;font-weight:800;border-bottom:0}
 .sub2{font-size:15px;margin:22px 0 8px}
 .wp{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:14px}.wp .on{font-weight:700}.wp .on:before{content:"■ ";color:var(--red)}.wp .off{color:var(--mute)}.wp .off:before{content:"□ "}
 .ex{font-size:14px;color:var(--ink)}
+.dl{display:block;margin-top:22px;text-align:center;text-decoration:none;background:var(--acc);color:#fff;border-radius:12px;padding:14px;font-weight:700;font-size:15px}
 @media(max-width:600px){
  table.q thead{display:none}table.q,table.q tbody{display:block}
  table.q tr{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 2px;border-bottom:1px solid var(--line)}
  table.q td{border:0;padding:0}td.no,td.up{display:none}
- td.cat{grid-column:1/3;text-align:left}td.cat:before{content:"";}td.cat{font-size:12px;color:var(--gold);font-weight:700}
+ td.cat{grid-column:1/3;text-align:left}td.cat:before{content:"";}td.cat{font-size:12px;color:var(--sub);font-weight:700}
  td.desc{grid-column:1/3}td.qt{text-align:left;color:var(--sub)}
 }
 /* floor */
@@ -42,7 +43,7 @@ figcaption{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.55);color:#
 .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}@media(max-width:600px){.opts{grid-template-columns:1fr 1fr}}
 .opt{border:2px solid var(--line);background:#fff;border-radius:14px;padding:8px;cursor:pointer;text-align:left;position:relative}
 .opt .sw{height:58px;border-radius:9px;background-size:cover;background-position:center;margin-bottom:7px}
-.opt em{font-style:normal;font-size:11px;font-weight:800;color:var(--gold);display:block}.opt b{font-size:13px;display:block;line-height:1.3}.opt small{font-size:11.5px;color:var(--sub)}
+.opt em{font-style:normal;font-size:11px;font-weight:800;color:var(--sub);display:block}.opt b{font-size:13px;display:block;line-height:1.3}.opt small{font-size:11.5px;color:var(--sub)}
 .opt.on{border-color:var(--acc)}
 .vw{display:flex;gap:6px;margin-bottom:8px}.vw button{border:1px solid var(--line);background:#fff;border-radius:18px;padding:6px 14px;font-size:13px;cursor:pointer}.vw button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 .ba{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1716/1170;background:#ddd;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -75,7 +76,7 @@ figcaption{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.55);color:#
 </dl>
 <table class="q">
 <thead><tr><th>No</th><th>공종</th><th>작업 내용</th><th>수량</th><th>단가</th><th>금액</th></tr></thead>
-<tbody><tr><td class="no">1</td><td class="cat">철거</td><td class="desc"><b>기존 바닥재(강마루) 철거</b><small>마루 뜯기 · 본드면 정리</small></td><td class="qt">30 평</td><td class="up">35,000</td><td class="amt">1,050,000</td></tr><tr><td class="no">2</td><td class="cat">바닥</td><td class="desc"><b>강마루 시공 — 구정마루 그란데165</b><small>자재 · 시공 · 본드</small><small class=n2>색상 · 패턴은 샘플 확인 후 확정</small></td><td class="qt">30 평</td><td class="up">165,000</td><td class="amt">4,950,000</td></tr><tr><td class="no">3</td><td class="cat">바닥</td><td class="desc"><b>걸레받이 전체 철거 및 시공</b><small>기존 철거 · 신규 자재 · 시공</small><small class=n2>주방장 · 아트월 · 문 · 붙박이장 구간 제외</small></td><td class="qt">75 m</td><td class="up">8,000</td><td class="amt">600,000</td></tr><tr><td class="no">4</td><td class="cat">가구</td><td class="desc"><b>기존 가구 철거 및 재시공 (안방 펜트리장 · 현관방 붙박이장 · 거실 펜트리장)</b><small>3개소 탈거 · 재설치</small></td><td class="qt">1 식</td><td class="up">600,000</td><td class="amt">600,000</td></tr><tr><td class="no">5</td><td class="cat">가구</td><td class="desc"><b>화장대 제작 · 설치 (H2300 × W1200)</b><small>상부 미러도어장 · 하부 서랍장 · 상판 · 조명</small><small class=n2>상판 560×1060, 거울장 1230×1060</small></td><td class="qt">1 식</td><td class="up">2,900,000</td><td class="amt">2,900,000</td></tr><tr><td class="no">6</td><td class="cat">주방</td><td class="desc"><b>깜뽀르테 960</b><small>싱크볼 · 올스텐배수구 · 바스켓 세트</small></td><td class="qt">1 EA</td><td class="up">725,000</td><td class="amt">725,000</td></tr><tr><td class="no">7</td><td class="cat">주방</td><td class="desc"><b>싱크볼 교체 시공</b><small>기존 볼 탈거 · 신규 볼 설치</small></td><td class="qt">1 식</td><td class="up">150,000</td><td class="amt">150,000</td></tr><tr><td class="no">8</td><td class="cat">도배</td><td class="desc"><b>도배 인건비 — 시공 위치는 아래 도배 시공 위치 참조</b></td><td class="qt">2 품</td><td class="up">270,000</td><td class="amt">540,000</td></tr><tr><td class="no">9</td><td class="cat">도배</td><td class="desc"><b>도배지 (실크)</b><small class=n2>약 80㎡</small></td><td class="qt">6 롤</td><td class="up">60,000</td><td class="amt">360,000</td></tr><tr><td class="no">10</td><td class="cat">도배</td><td class="desc"><b>도배 부자재</b><small>풀 · 초배지 · 네바리 · 수성실리콘 등</small></td><td class="qt">1 식</td><td class="up">150,000</td><td class="amt">150,000</td></tr><tr><td class="no">11</td><td class="cat">현장경비</td><td class="desc"><b>공용부 보양 · 승강기 사용료 · 폐기물 반출</b><small>엘리베이터 · 복도 보양, 승강기 사용료, 폐기물 마대 · 운반 · 처리, 입주민 공사 동의 안내</small><small class=n2>관리사무소 공사 신고 기준</small></td><td class="qt">1 식</td><td class="up">300,000</td><td class="amt">300,000</td></tr></tbody>
+<tbody><tr><td class="no">1</td><td class="cat">철거</td><td class="desc"><b>기존 바닥재(강마루) 철거</b><small>마루 뜯기 · 본드면 정리</small></td><td class="qt">30 평</td><td class="up">35,000</td><td class="amt">1,050,000</td></tr><tr><td class="no">2</td><td class="cat">바닥</td><td class="desc"><b>강마루 시공 — 구정마루 그란데165</b><small>자재 · 시공 · 본드</small></td><td class="qt">30 평</td><td class="up">165,000</td><td class="amt">4,950,000</td></tr><tr><td class="no">3</td><td class="cat">바닥</td><td class="desc"><b>걸레받이 전체 철거 및 시공</b><small>기존 철거 · 신규 자재 · 시공</small></td><td class="qt">75 m</td><td class="up">8,000</td><td class="amt">600,000</td></tr><tr><td class="no">4</td><td class="cat">가구</td><td class="desc"><b>기존 가구 철거 및 재시공 (안방 펜트리장 · 현관방 붙박이장 · 거실 펜트리장)</b><small>3개소 탈거 · 재설치</small></td><td class="qt">1 식</td><td class="up">600,000</td><td class="amt">600,000</td></tr><tr><td class="no">5</td><td class="cat">가구</td><td class="desc"><b>화장대 제작 · 설치 (H2300 × W1200)</b><small>상부 미러도어장 · 하부 서랍장 · 상판 · 조명</small></td><td class="qt">1 식</td><td class="up">2,900,000</td><td class="amt">2,900,000</td></tr><tr><td class="no">6</td><td class="cat">주방</td><td class="desc"><b>깜뽀르테 960</b><small>싱크볼 · 올스텐배수구 · 바스켓 세트</small></td><td class="qt">1 EA</td><td class="up">725,000</td><td class="amt">725,000</td></tr><tr><td class="no">7</td><td class="cat">주방</td><td class="desc"><b>싱크볼 교체 시공</b><small>기존 볼 탈거 · 신규 볼 설치</small></td><td class="qt">1 식</td><td class="up">150,000</td><td class="amt">150,000</td></tr><tr><td class="no">8</td><td class="cat">도배</td><td class="desc"><b>도배 인건비 — 시공 위치는 아래 도배 시공 위치 참조</b></td><td class="qt">2 품</td><td class="up">270,000</td><td class="amt">540,000</td></tr><tr><td class="no">9</td><td class="cat">도배</td><td class="desc"><b>도배지 (실크)</b></td><td class="qt">6 롤</td><td class="up">60,000</td><td class="amt">360,000</td></tr><tr><td class="no">10</td><td class="cat">도배</td><td class="desc"><b>도배 부자재</b><small>풀 · 초배지 · 네바리 · 수성실리콘 등</small></td><td class="qt">1 식</td><td class="up">150,000</td><td class="amt">150,000</td></tr><tr><td class="no">11</td><td class="cat">현장경비</td><td class="desc"><b>공용부 보양 · 승강기 사용료 · 폐기물 반출</b><small>엘리베이터 · 복도 보양, 승강기 사용료, 폐기물 마대 · 운반 · 처리, 입주민 공사 동의 안내</small></td><td class="qt">1 식</td><td class="up">300,000</td><td class="amt">300,000</td></tr></tbody>
 </table>
 <div class="sum">
 <div><span>공급가액</span><span>12,325,000원</span></div>
@@ -87,6 +88,7 @@ figcaption{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.55);color:#
 <span class="off">거실 · 주방</span><span class="off">시공 안 함</span><span class="off">거실 팬트리</span><span class="off">시공 안 함</span><span class="off">거실 통로</span><span class="off">시공 안 함</span><span class="off">방1</span><span class="off">시공 안 함</span><span class="off">방2</span><span class="off">시공 안 함</span></div>
 <div class="sub2"><b>제외 사항</b></div>
 <div class="ex">수전 교체, 싱크 상판 재가공, ■ 표시 외 공간 도배, 내역에 없는 추가 공사.</div>
+<a class="dl" href="estimate_TR1405.pdf" download="견적서_경주두산위브트레지움84A.pdf">견적서 다운받기 (PDF)</a>
 </div>
 
 <div class="card">
