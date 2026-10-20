@@ -151,7 +151,7 @@ const S={W:1550,D:2280,CH:2300,
     map.forEach(r=>{const show=r.ns.length===1||r.ns.some(v=>Math.abs(r.ns[0].dot(v))<th);
       if(show){out.push(pos.getX(r.i),pos.getY(r.i),pos.getZ(r.i),pos.getX(r.j),pos.getY(r.j),pos.getZ(r.j))}});
     const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(out,3));return g}
-  new THREE.ColladaLoader().load("model/bath.xml",c=>{
+  new THREE.ColladaLoader().load("model/bath.xml?v=2",c=>{
     const root=c.scene;scene.add(root);root.updateMatrixWorld(true);
     const edgeMat=new THREE.LineBasicMaterial({color:0x111111});
     root.traverse(o=>{
