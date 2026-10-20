@@ -6186,13 +6186,13 @@
     </library_effects>
     <library_images>
         <image id="ID13">
-            <init_from>bath/____3371L_300x600___.jpg</init_from>
+            <init_from>bath/tex_wall_3371L.jpg</init_from>
         </image>
         <image id="ID154">
-            <init_from>bath/_____30411_300x300___.jpg</init_from>
+            <init_from>bath/tex_floor_30411.jpg</init_from>
         </image>
         <image id="ID251">
-            <init_from>bath/____TLG203_______.jpg</init_from>
+            <init_from>bath/tex_stone_TLG203.jpg</init_from>
         </image>
     </library_images>
     <scene>
