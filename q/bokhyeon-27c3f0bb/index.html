@@ -151,17 +151,59 @@ const S={W:1550,D:2280,CH:2300,
     map.forEach(r=>{const show=r.ns.length===1||r.ns.some(v=>Math.abs(r.ns[0].dot(v))<th);
       if(show){out.push(pos.getX(r.i),pos.getY(r.i),pos.getZ(r.i),pos.getX(r.j),pos.getY(r.j),pos.getZ(r.j))}});
     const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(out,3));return g}
-  new THREE.ColladaLoader().load("model/bath.xml?v=2",c=>{
+
+  // SketchUp처럼 곡면의 윤곽선(프로파일) — 시점에 따라 매 프레임 계산
+  const sils=[];
+  function silPrep(geo){
+    const pos=geo.attributes.position,idx=geo.index,n=idx?idx.count:pos.count,th=Math.cos(25*Math.PI/180);
+    const key=i=>Math.round(pos.getX(i)*1e4)+"_"+Math.round(pos.getY(i)*1e4)+"_"+Math.round(pos.getZ(i)*1e4);
+    const a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3(),F=[],dir=new Map();
+    for(let f=0;f<n;f+=3){const ii=[0,1,2].map(k=>idx?idx.getX(f+k):f+k);
+      a.fromBufferAttribute(pos,ii[0]);b.fromBufferAttribute(pos,ii[1]);c.fromBufferAttribute(pos,ii[2]);
+      const nn=new THREE.Vector3().subVectors(c,b).cross(new THREE.Vector3().subVectors(a,b));if(nn.lengthSq()<1e-14)continue;nn.normalize();
+      const fi=F.length;F.push({n:nn,p:a.clone()});const ks=ii.map(key);
+      for(let e=0;e<3;e++){const k1=ks[e],k2=ks[(e+1)%3];if(k1===k2)continue;const kk=k1+">"+k2;let l=dir.get(kk);if(!l){l=[];dir.set(kk,l)}l.push({f:fi,i:ii[e],j:ii[(e+1)%3]})}}
+    const E=[],N=[],P=[];
+    dir.forEach((l,kk)=>{const [k1,k2]=kk.split(">");if(k1>k2)return;const r=dir.get(k2+">"+k1);if(!r)return;
+      l.forEach(x=>{const A=F[x.f];const y=r.find(z=>A.n.dot(F[z.f].n)>-0.9999);if(!y)return;const B=F[y.f];const d=A.n.dot(B.n);
+        if(d<th||d>0.99999)return;E.push(pos.getX(x.i),pos.getY(x.i),pos.getZ(x.i),pos.getX(x.j),pos.getY(x.j),pos.getZ(x.j));
+        N.push(A.n.x,A.n.y,A.n.z,B.n.x,B.n.y,B.n.z);P.push(A.p.x,A.p.y,A.p.z,B.p.x,B.p.y,B.p.z)})});
+    if(!E.length)return null;
+    const g=new THREE.BufferGeometry(),buf=new Float32Array(E.length);g.setAttribute("position",new THREE.BufferAttribute(buf,3));g.setDrawRange(0,0);
+    return {E:new Float32Array(E),N:new Float32Array(N),P:new Float32Array(P),g,buf}}
+  const _c=new THREE.Vector3(),_m=new THREE.Matrix4(),_last=new THREE.Matrix4();
+  function silUpd(){if(_last.equals(cam.matrixWorld))return;_last.copy(cam.matrixWorld);
+    sils.forEach(s=>{if(!s.o.visible)return;_m.copy(s.o.matrixWorld).invert();_c.copy(cam.position).applyMatrix4(_m);
+      const E=s.E,N=s.N,P=s.P,buf=s.buf;let k=0;
+      for(let i=0;i<E.length;i+=6){const dA=N[i]*(_c.x-P[i])+N[i+1]*(_c.y-P[i+1])+N[i+2]*(_c.z-P[i+2]);
+        const dB=N[i+3]*(_c.x-P[i+3])+N[i+4]*(_c.y-P[i+4])+N[i+5]*(_c.z-P[i+5]);
+        if(dA*dB<0){for(let q=0;q<6;q++)buf[k++]=E[i+q]}}
+      s.g.attributes.position.needsUpdate=true;s.g.setDrawRange(0,k/3)})}
+
+  // 곡면 음영 고르게: 30° 이내로 이어진 면끼리만 법선을 평균(앞뒤 중복 면은 제외)
+  function creaseNormals(geo,deg){
+    if(geo.index)return;const pos=geo.attributes.position,n=pos.count,th=Math.cos(deg*Math.PI/180);
+    const key=i=>Math.round(pos.getX(i)*1e4)+"_"+Math.round(pos.getY(i)*1e4)+"_"+Math.round(pos.getZ(i)*1e4);
+    const fn=[],a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3(),map=new Map();
+    for(let f=0;f<n;f+=3){a.fromBufferAttribute(pos,f);b.fromBufferAttribute(pos,f+1);c.fromBufferAttribute(pos,f+2);
+      const nn=new THREE.Vector3().subVectors(c,b).cross(new THREE.Vector3().subVectors(a,b));const ar=nn.length();if(ar>1e-12)nn.divideScalar(ar);fn.push(nn);
+      for(let k=0;k<3;k++){const kk=key(f+k);let l=map.get(kk);if(!l){l=[];map.set(kk,l)}l.push(f/3)}}
+    const out=new Float32Array(n*3),acc=new THREE.Vector3();
+    for(let i=0;i<n;i++){const f0=Math.floor(i/3),n0=fn[f0];acc.set(0,0,0);
+      map.get(key(i)).forEach(f=>{const v=fn[f];if(v.dot(n0)>=th)acc.add(v)});if(acc.lengthSq()<1e-12)acc.copy(n0);acc.normalize();
+      out[i*3]=acc.x;out[i*3+1]=acc.y;out[i*3+2]=acc.z}
+    geo.setAttribute("normal",new THREE.BufferAttribute(out,3))}
+  new THREE.ColladaLoader().load("model/bath.xml?v=3",c=>{
     const root=c.scene;scene.add(root);root.updateMatrixWorld(true);
     const edgeMat=new THREE.LineBasicMaterial({color:0x111111});
     root.traverse(o=>{
       if(["좌측벽","우측벽","창측벽","출입문벽"].includes(o.name))walls[o.name]=o;
       if(/^문틀|^문짝/.test(o.name))doorParts.push(o);
       if(!o.isMesh)return;
-      const conv=m=>{const n=new THREE.MeshLambertMaterial({color:m.color?m.color.clone():0xffffff,map:m.map||null,transparent:m.transparent||m.opacity<1,opacity:m.opacity,side:THREE.DoubleSide,
+      const conv=m=>{const n=new THREE.MeshPhongMaterial({specular:0x000000,shininess:0,color:m.color?m.color.clone():0xffffff,map:m.map||null,transparent:m.transparent||m.opacity<1,opacity:m.opacity,side:THREE.DoubleSide,
         polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});if(n.map){n.map.encoding=THREE.sRGBEncoding;n.color.set(0xffffff)}if(n.opacity<1)n.depthWrite=false;return n};
-      o.material=Array.isArray(o.material)?o.material.map(conv):conv(o.material);
-      const eg=edges(o.geometry,25);const ln=new THREE.LineSegments(eg,edgeMat);o.add(ln);
+      o.material=Array.isArray(o.material)?o.material.map(conv):conv(o.material);creaseNormals(o.geometry,30);
+      const eg=edges(o.geometry,25);const ln=new THREE.LineSegments(eg,edgeMat);o.add(ln);const sp=silPrep(o.geometry);if(sp){const sl=new THREE.LineSegments(sp.g,edgeMat);sl.frustumCulled=false;o.add(sl);sp.o=o;sils.push(sp)}
       const bb=new THREE.Box3().setFromObject(o);if(bb.min.y>M(S.CH)-0.03)ceil.push(o);
     });
     ready=true;stEl.hidden=true;setView("v_door");
@@ -182,7 +224,7 @@ const S={W:1550,D:2280,CH:2300,
     ceil.forEach(o=>o.visible=z<S.CH);doorParts.forEach(o=>o.visible=y>0&&cur!=="v_ceil")}
   function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
   new ResizeObserver(resize).observe(host);resize();
-  (function loop(){ctl.update();sun.position.copy(cam.position).add(new THREE.Vector3(1,2,1));if(ready)cut();renderer.render(scene,cam);requestAnimationFrame(loop)})();
+  (function loop(){ctl.update();sun.position.copy(cam.position).add(new THREE.Vector3(1,2,1));if(ready){cut();cam.updateMatrixWorld();silUpd()}renderer.render(scene,cam);requestAnimationFrame(loop)})();
   window.__v=setView;
 })();
 </script>
