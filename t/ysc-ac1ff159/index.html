@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>유성컨벤션 투어 체크리스트</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--fg:#1d1d1f;--mu:#86868b;--bd:#e6e4df;--ac:#2f6fed;--ok:#1f9d55;--bad:#d64545;--warn:#b7791f}
+@media (prefers-color-scheme:dark){:root{--bg:#131314;--card:#1d1d1f;--fg:#f2f2f2;--mu:#9a9aa0;--bd:#2c2c2e;--ac:#5b8cff;--ok:#3ecf8e;--bad:#ff6b6b;--warn:#f6c453}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:560px;margin:0 auto;padding:18px 14px 60px}
+h1{font-size:22px;margin:0;letter-spacing:-.02em}
+.sub{color:var(--mu);font-size:13px;margin-top:2px}
+.prog{height:6px;background:var(--bd);border-radius:3px;margin:14px 0 4px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+.progt{font-size:12px;color:var(--mu);text-align:right}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-top:14px}
+.card h2{font-size:15px;margin:0 0 8px;display:flex;justify-content:space-between;align-items:center}
+.card h2 .n{font-size:12px;color:var(--mu);font-weight:500}
+.facts div{font-size:13.5px;padding:5px 0;border-bottom:1px dashed var(--bd)}
+.facts div:last-child{border:0}
+.facts b{color:var(--warn)}
+label.item{display:grid;grid-template-columns:24px 1fr;gap:8px;padding:9px 0;border-top:1px solid var(--bd);cursor:pointer}
+label.item:first-of-type{border-top:0}
+label.item input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--ok)}
+.q{font-size:14.5px}
+.w{font-size:12.5px;color:var(--mu);margin-top:1px}
+.hot .q{font-weight:600}
+.hot .q::before{content:"중요";font-size:10px;font-weight:600;color:#fff;background:var(--bad);border-radius:4px;padding:1px 5px;margin-right:6px;vertical-align:1px}
+label.item:has(input:checked) .q{color:var(--mu);text-decoration:line-through}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.calc label{font-size:12px;color:var(--mu)}
+.calc input{width:100%;font:inherit;font-size:16px;padding:8px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg);margin-top:2px}
+.total{margin-top:12px;font-size:13px;color:var(--mu)}
+.total b{display:block;font-size:26px;color:var(--fg);letter-spacing:-.02em}
+.cmp{margin-top:10px}
+.cmp .r{display:grid;grid-template-columns:96px 1fr 70px;gap:8px;align-items:center;font-size:13px;padding:4px 0}
+.bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--mu)}
+.r.me .bar i{background:var(--ac)}.r.me{font-weight:600}
+.v{text-align:right;font-variant-numeric:tabular-nums}
+textarea{width:100%;min-height:90px;font:inherit;font-size:15px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg)}
+.foot{font-size:11.5px;color:var(--mu);margin-top:16px}
+button{font:inherit;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--mu);border-radius:8px;padding:6px 10px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>유성컨벤션 투어 체크리스트</h1>
+  <div class="sub">대전 유성구 온천북로 77 · 042-825-7070 · 갑천역 3번 출구 약 480m</div>
+  <div class="prog"><i id="pg"></i></div><div class="progt" id="pgt">0 / 0</div>
+
+  <div class="card facts">
+    <h2>미리 알고 갈 것</h2>
+    <div>참가격 가격 <b>미공개</b> → 오늘 견적이 첫 실제 숫자</div>
+    <div>2층 <b>팰리스홀</b>(밝음) · 3층 <b>그랜드홀</b>(어둡고 층고 높음)</div>
+    <div>예전 등록정보: 최소 보증 <b>300명</b>, 착석 <b>180석</b>, 간격 60분, 주차 700대 → 오늘 재확인</div>
+    <div>주차 "협소, 피크 만차"(웨딩노트) vs 700대(아이웨딩) → 서로 다름</div>
+    <div>2026.9 후기: 빈 시간대 <b>잔여타임 할인</b> 있음 / 시식 후 계약 시 식대 할인 이벤트</div>
+  </div>
+
+  <div class="card" data-sec>
+    <h2>1. 돈 <span class="n"></span></h2>
+    <label class="item hot"><input type="checkbox"><div><div class="q">원하는 날짜·시간 1인 식대</div><div class="w">비교: 라비에벨 5.4만 · 라도무스·ICC 6.2만</div></div></label>
+    <label class="item hot"><input type="checkbox"><div><div class="q">최소 보증인원 (홀별·시간별)</div><div class="w">300명이면 하객 200명이어도 300명분 결제</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">보증이 신랑·신부 합산인지 각각인지</div><div class="w">각보증이면 한쪽 모자란 인원만큼 추가</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">대관료에 생화장식 포함?</div><div class="w">라비에벨·라도무스·ICC는 포함</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">필수 옵션 (패키지·생화·원판)</div><div class="w">다른 홀 후기에 "추가금 파티"</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">음료·주류 포함 여부</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">잔여타임 할인 / 시식 계약 할인 금액</div></div></label>
+    <label class="item hot"><input type="checkbox"><div><div class="q">200명 기준 총액 종이 견적서 받기</div><div class="w">아래 계산기에 넣어서 바로 비교</div></div></label>
+  </div>
+
+  <div class="card">
+    <h2>견적 계산기</h2>
+    <div class="calc">
+      <div><label>식대 (원)</label><input id="meal" inputmode="numeric" placeholder="예: 55000"></div>
+      <div><label>대관+장식 (만원)</label><input id="rent" inputmode="numeric" placeholder="예: 300"></div>
+      <div><label>보증인원 (명)</label><input id="guar" inputmode="numeric" placeholder="예: 200"></div>
+      <div><label>예상 하객 (명)</label><input id="guest" inputmode="numeric" value="200"></div>
+    </div>
+    <div class="total">유성컨벤션 예상 총액<b id="tot">-</b><span id="diff"></span></div>
+    <div class="cmp" id="cmp"></div>
+  </div>
+
+  <div class="card" data-sec>
+    <h2>2. 계약 조건 <span class="n"></span></h2>
+    <label class="item"><input type="checkbox"><div><div class="q">계약금 금액, 언제까지 취소 시 환불?</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">최종 보증인원 확정 시점, 초과 인원 정산</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">날짜 변경 가능 횟수·기한</div></div></label>
+    <label class="item hot"><input type="checkbox"><div><div class="q">"오늘만" 조건은 서면으로, 당일 계약 X</div></div></label>
+  </div>
+
+  <div class="card" data-sec>
+    <h2>3. 주차 (약점) <span class="n"></span></h2>
+    <label class="item hot"><input type="checkbox"><div><div class="q">실제 주차 대수</div><div class="w">자료마다 다름 (협소 vs 700대)</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">하객 무료 시간, 등록 방법</div><div class="w">등록 안 하면 전액 부과 후기</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">만차 시 대체 주차장, 주차요원 수</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">혼주·신랑신부 전용 주차</div></div></label>
+    <label class="item hot"><input type="checkbox"><div><div class="q">오늘 예식 있으면 입구 정체 직접 보기</div></div></label>
+  </div>
+
+  <div class="card" data-sec>
+    <h2>4. 홀·동선 <span class="n"></span></h2>
+    <label class="item hot"><input type="checkbox"><div><div class="q">팰리스·그랜드 각각 좌석 수</div><div class="w">180석이면 200명 때 서는 하객 생김</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">앞뒤 예식 겹침 (로비·엘리베이터·대기실 앞)</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">신부대기실 크기·조명, 전용 화장실</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">연회장 홀별 분리? 몇 층?</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">어르신 동선 (엘리베이터 수, 계단)</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">사진: 팰리스 밝기 / 그랜드 너무 어둡지 않은지</div></div></label>
+  </div>
+
+  <div class="card" data-sec>
+    <h2>5. 식사 <span class="n"></span></h2>
+    <label class="item"><input type="checkbox"><div><div class="q">뷔페 메뉴 수, 즉석 코너</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">계약 전 시식 가능? 언제?</div></div></label>
+    <label class="item"><input type="checkbox"><div><div class="q">예식 후 식사 가능 시간</div></div></label>
+  </div>
+
+  <div class="card">
+    <h2>메모</h2>
+    <textarea id="memo" placeholder="상담사 이름, 받은 조건, 느낌…"></textarea>
+    <button id="rst">체크 초기화</button>
+  </div>
+
+  <div class="foot">비교 금액: 한국소비자원 참가격 공개가(VAT 포함), 보증 200명 기준. 라비에벨 1,410만 · 라도무스 1,770만 · ICC 1,840만 · 에스가든 1,675만(보증 150). 체크·입력값은 이 폰에 자동 저장.</div>
+</div>
+<script>
+(()=>{
+const K='ysc_tour_v1';let LS=null;try{LS=window.localStorage;LS.getItem(K)}catch(e){LS=null}
+const S=JSON.parse((LS&&LS.getItem(K))||'{}');
+const boxes=[...document.querySelectorAll('label.item input')];
+boxes.forEach((b,i)=>{b.checked=!!(S.c||{})[i];b.onchange=save});
+['meal','rent','guar','guest','memo'].forEach(id=>{const e=document.getElementById(id);if(S[id]!=null)e.value=S[id];e.oninput=save});
+document.getElementById('rst').onclick=()=>{boxes.forEach(b=>b.checked=false);save()};
+function save(){S.c={};boxes.forEach((b,i)=>{if(b.checked)S.c[i]=1});['meal','rent','guar','guest','memo'].forEach(id=>S[id]=document.getElementById(id).value);if(LS)try{LS.setItem(K,JSON.stringify(S))}catch(e){}render()}
+const REF=[['라비에벨',1410],['에스가든',1675],['라도무스',1770],['호텔ICC',1840]];
+const num=id=>parseFloat((document.getElementById(id).value||'').replace(/[^\d.]/g,''))||0;
+function render(){
+  const done=boxes.filter(b=>b.checked).length;document.getElementById('pg').style.width=(done/boxes.length*100)+'%';
+  document.getElementById('pgt').textContent=done+' / '+boxes.length+' 확인';
+  document.querySelectorAll('[data-sec]').forEach(s=>{const bs=s.querySelectorAll('input');s.querySelector('.n').textContent=[...bs].filter(b=>b.checked).length+'/'+bs.length});
+  const meal=num('meal'),rent=num('rent'),g=Math.max(num('guar'),num('guest'));
+  const t=meal&&g?Math.round(meal*g/10000+rent):0;
+  document.getElementById('tot').textContent=t?t.toLocaleString()+'만원':'-';
+  const rows=[...REF,...(t?[['유성컨벤션',t,1]]:[])].sort((a,b)=>a[1]-b[1]);
+  const mx=Math.max(...rows.map(r=>r[1]));
+  document.getElementById('cmp').innerHTML=rows.map(r=>`<div class="r ${r[2]?'me':''}"><span>${r[0]}</span><div class="bar"><i style="width:${r[1]/mx*100}%"></i></div><span class="v">${r[1].toLocaleString()}만</span></div>`).join('');
+  const d=document.getElementById('diff');
+  if(t){const c=t-1410;d.innerHTML=`라비에벨보다 <b style="display:inline;font-size:13px;color:${c>0?'var(--bad)':'var(--ok)'}">${c>0?'+':''}${c.toLocaleString()}만</b> (식대 × ${g}명 + 대관)`}else d.textContent='식대·대관·보증 넣으면 자동 계산';
+}
+render();
+})();
+</script>
+</body>
+</html>
