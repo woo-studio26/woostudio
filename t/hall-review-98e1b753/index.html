@@ -1,0 +1,215 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>메종드보네르 vs 라도무스 블로그 후기 자료집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"><style>img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: 공통 조건 → 두 홀 나란히(시간·방식 선택 + 내역 + 총액) → 추가 옵션 체크 → 차액 요약. 모바일에선 1열 */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#1d2230; --muted:#5f6675; --line:#dfe3ea; --soft:#eef0f5;
+  --accent:#6b3f6e; --accent-soft:#f1e9f2;
+  --me:#3f7d5c; --la:#b0563a; --warn:#b07a12; --bad:#b23b3b;
+  --display:"Gowun Batang","Nanum Myeongjo",serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14161c; --surface:#1c1f27; --ink:#e9ebf1; --muted:#a2a8b6; --line:#2e3340; --soft:#232733;
+  --accent:#d6a6d9; --accent-soft:#2f2433; --me:#7cc39b; --la:#e58d6f; --warn:#e0b14a; --bad:#e47a7a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14161c; --surface:#1c1f27; --ink:#e9ebf1; --muted:#a2a8b6; --line:#2e3340; --soft:#232733;
+  --accent:#d6a6d9; --accent-soft:#2f2433; --me:#7cc39b; --la:#e58d6f; --warn:#e0b14a; --bad:#e47a7a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 56px}
+.wrap{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,5.5vw,36px);line-height:1.2}
+h2{font-size:20px}
+h3{font-size:19px}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:600}
+.sub{color:var(--muted);margin:6px 0 0;max-width:64ch}
+.num{font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+label{cursor:pointer}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.field b{color:var(--ink);font-size:14px}
+input[type=number]{width:96px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:17px;height:17px;vertical-align:-3px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toggle{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.toggle small{display:block;color:var(--muted);font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.venue{border-top:5px solid var(--v)}
+.c-me{--v:var(--me)} .c-la{--v:var(--la)}
+.vhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.vhead span{font-size:12.5px;color:var(--muted)}
+.choices{display:flex;flex-direction:column;gap:6px}
+.choice{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.choice:has(input:checked){border-color:var(--v);background:color-mix(in srgb,var(--v) 8%,transparent)}
+.choice small{display:block;color:var(--muted);font-size:12px}
+.lines{width:100%;border-collapse:collapse;font-size:13.5px}
+.lines td{padding:7px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+.lines td:last-child{text-align:right;white-space:nowrap;padding-left:10px;font-variant-numeric:tabular-nums}
+.lines .grp td{font-weight:600;color:var(--muted);font-size:12px;padding-top:12px;border-bottom:1px solid var(--line)}
+.lines small{color:var(--muted);display:block;font-size:11.5px}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--v);padding-top:10px}
+.total b{font-size:15px}
+.total .amt{font-size:32px;font-weight:700;color:var(--v);line-height:1}
+.total .amt small{font-size:15px;color:var(--muted);font-weight:500}
+.meta{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.warn{color:var(--warn)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;align-items:start}
+.opt:has(input[type=checkbox]:checked){background:var(--accent-soft)}
+.opt .p{grid-column:2;font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.opt .p .m{color:var(--me)} .opt .p .l{color:var(--la)}
+.opt .extra{grid-column:2;display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.opt .extra input{width:64px;padding:4px 6px}
+.diff{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.diff strong{font-family:var(--display);font-size:19px}
+.cmp{display:flex;flex-direction:column;gap:8px}
+.cbar{display:grid;grid-template-columns:96px 1fr 84px;gap:10px;align-items:center;font-size:13.5px}
+.cbar .track{height:14px;background:var(--surface);border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.cbar .fill{height:100%;background:var(--v)}
+.cbar .val{text-align:right;font-weight:600}
+.cmpt{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+.cmpt th,.cmpt td{padding:9px 10px;border:1px solid var(--line);vertical-align:top;text-align:left}
+.cmpt thead th{background:var(--soft)}
+.cmpt tbody th{font-weight:600;white-space:nowrap}
+.cmpt tfoot th,.cmpt tfoot td{background:var(--accent-soft)}
+.cmpt small{display:block;color:var(--muted);font-size:11.5px}
+.cmpt b{font-size:16px}
+.flagc{color:var(--bad);font-weight:600}
+.warnc{color:var(--warn);display:block;margin-top:6px}
+.verdict2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.verdict2>div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;min-width:0}
+.verdict2 ul{margin:6px 0 0;padding-left:18px}
+@media (max-width:640px){.verdict2{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--muted)}
+.foot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{font:inherit;font-size:13.5px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.tab.on{background:var(--accent-soft);color:var(--ink);border-color:var(--accent);font-weight:600}
+.ev{display:flex;flex-direction:column;gap:8px}
+.evi{font-size:13.5px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg)}
+.evi a{color:var(--accent);text-decoration:none;font-size:12px;margin-left:6px}
+.evi .d{color:var(--muted);font-size:11.5px;margin-left:4px}
+.evi.bad{border-left:3px solid var(--bad)} .evi.good{border-left:3px solid var(--me)}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat div{background:var(--soft);border-radius:10px;padding:9px 10px}
+.stat b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--muted)}
+.pn{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center;font-size:12.5px}
+.pn .tr{height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--soft)}
+.pn .g{background:var(--me)} .pn .r{background:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}
+.chip.hi{border-color:var(--warn);color:var(--warn)}
+ul.l{margin:0;padding-left:18px;font-size:14px} ul.l li{margin:3px 0}
+.chk label{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.chk small{display:block;color:var(--muted);font-size:12px}
+.tag{font-size:11px;padding:1px 7px;border-radius:6px;color:#fff;margin-right:6px;vertical-align:1px}
+.t-me{background:var(--me)} .t-la{background:var(--la)}
+.tw{overflow-x:auto}
+.cmpt td.best{background:color-mix(in srgb,var(--me) 14%,transparent)}
+</style></head><body><div class="wrap">
+<header>
+ <div class="eyebrow">2026.10.25 · 네이버 블로그 427개 정독 · 2027년 6월 토요일 · 하객 약 250명</div>
+ <h1>메종드보네르 vs 라도무스 블로그 후기 자료집</h1>
+ <p class="sub">두 홀 이름으로 네이버 블로그를 검색해 최근 2년 글을 읽고, 견적·드레스·식사·주차·홀·진행·계약 조건을 근거 링크와 함께 모았어요. 숫자는 원문 그대로이고, 좋음/아쉬움 건수는 직접 센 대략치예요.</p>
+</header>
+
+<div class="two">
+ <section class="panel venue c-me"><div class="vhead"><h3>메종드보네르</h3><span>둔산동 · 단독 보네르홀</span></div>
+  <div class="stat"><div><b id="me-read"></b><span>읽은 글 / 독립 후기</span></div><div><b>0건</b><span>주차 대기 사례</span></div><div><b>5개 글</b><span>진행 실수 후기 (7가지)</span></div></div>
+  <div id="me-pn"></div>
+  <div><b>한 줄 결론</b><div class="sub" style="margin-top:2px">가격·주차는 압도적으로 유리. 진행 실수가 제일 큰 위험이라 요청사항을 서면으로 넘겨야 해요.</div></div>
+  <ul class="l"><li>내 견적: 대관+생화 <b>150</b>, 식대 <b>4.3만</b>(음주류 포함), 보증 <b>150</b> → 다른 사람 견적의 절반 수준</li><li>주차 약 700대 무료·시간제한 없음, 정부청사역 도보 8~12분</li><li class="warn">패키지 드레스 0원 라인 평 나쁨, 실제 70~100 선택 → 패키지 실부담 350~380</li><li class="warn">할인가 VAT 포함 여부·2027년 7월 연회장 리모델링은 블로그로 확인 안 됨</li></ul>
+ </section>
+ <section class="panel venue c-la"><div class="vhead"><h3>라도무스</h3><span>원신흥동 · 3층 라도무스홀</span></div>
+  <div class="stat"><div><b id="la-read"></b><span>읽은 글 / 독립 후기</span></div><div><b>6건</b><span>주차 대기 사례 (20~40분)</span></div><div><b>5개 글</b><span>진행·응대 아쉬움 후기</span></div></div>
+  <div id="la-pn"></div>
+  <div><b>한 줄 결론</b><div class="sub" style="margin-top:2px">음식·홀 평은 좋지만 비싸고, 토요일 피크 주차가 병목. 6/26 16:30이면 주차 피크를 피할 수 있어요.</div></div>
+  <ul class="l"><li>내 견적: 식대 <b>4.6만</b>(16:30)·<b>5만</b>(점심 현금), 생화 <b>130</b>, 패키지 <b>340~400</b> → 2024 정가(520·150·5.9만)보다 확실히 낮음</li><li>주차 2,300~2,400대지만 입구 1개·진입 1차로</li><li class="warn">음주류 1인 5,000 별도(250명이면 +125) → 패키지 시 서비스 사례 있음</li><li class="warn">드레스(라메종블랑쉬) 실제 추가금 30~170, 평균 100 안팎</li></ul>
+ </section>
+</div>
+
+<section class="panel"><h2>내 견적 vs 블로그에 공개된 견적</h2>
+ <p class="sub">블로그 견적은 대부분 비밀댓글·이미지라 숫자가 본문에 있는 글만 넣었어요. 연두색이 더 유리한 쪽이에요.</p>
+ <div class="tw"><table class="cmpt"><thead><tr><th>항목</th><th>메종 · 내 견적</th><th>메종 · 블로그</th><th>라도무스 · 내 견적</th><th>라도무스 · 블로그</th></tr></thead><tbody>
+ <tr><th>식대</th><td class="best"><b>43,000</b><small>음주류 포함</small></td><td>50,000<small>26 하반기·음주류 포함 (murisday) / 웨딩북 정가 5만</small></td><td><b>46,000</b><small>16:30 · 점심은 현금 5만/카드 5.6만</small></td><td>59,000 + 음주류 5,000<small>2024 공시 (ramrecord) / 2026 업체 글 6.2~6.4만</small></td></tr>
+ <tr><th>대관 + 생화</th><td class="best"><b>100 + 50</b></td><td>대관+생화 300<small>26 하반기 / 웨딩북 정가 대관 400</small></td><td><b>170 + 130</b><small>16:30 대관</small></td><td>대관 300 + 생화 150<small>2024 공시</small></td></tr>
+ <tr><th>패키지</th><td><b>280</b> + 헬퍼 15<small>VAT별도 표기</small></td><td>27년 9월 일 12시: 패키지+옵션+대관+식대×250 = 1,400 이내 (miniming22_)</td><td><b>340</b>(16:30) / <b>400</b>(점심) + 스타일리스트 15</td><td>520<small>2024 공시</small></td></tr>
+ <tr><th>보증인원</th><td class="best"><b>150</b></td><td>토 300 / 일 200 (26 하반기), 27년 9월 패키지 250·대관 300</td><td><b>200</b>(16:30) / <b>250</b>(점심)</td><td>시간대별 200/250/300, 성수기 토 점심은 패키지 필수</td></tr>
+ </tbody></table></div>
+</section>
+
+<section class="panel"><h2>항목별 근거</h2>
+ <div class="tabs" id="tabs"></div>
+ <div class="two" id="ev"></div>
+</section>
+
+<section class="panel"><h2>계약 전 확인·협상 체크리스트</h2>
+ <div class="two chk" id="chk">
+  <div><b style="color:var(--me)">메종드보네르</b>
+   <label><input type="checkbox"><span>할인가(대관·생화·패키지)에 VAT 포함인지 서면으로<small>블로그 언급 0건. 별도면 대관 +15, 패키지 +28</small></span></label>
+   <label><input type="checkbox"><span>패키지에 생화가 포함인지<small>견적서에 '생화 100 별도(필수)' 인쇄 + 50% 메모</small></span></label>
+   <label><input type="checkbox"><span>2027년 7월 연회장 리모델링 일정과 6월 예식 영향<small>블로그로 확인 안 됨</small></span></label>
+   <label><input type="checkbox"><span>요청사항(입장곡·서약서·포토테이블 정리·플라워샤워) 서면 전달 + 당일 담당자 이름<small>요청 누락·서약서 누락·포토테이블 미정리 사례</small></span></label>
+   <label><input type="checkbox"><span>축포·꽃가루 등 당일 추가 판매 안 한다고 미리 고지<small>당일 신랑에게 개당 20, 세트 25 판매 사례</small></span></label>
+   <label><input type="checkbox"><span>앞 타임 지연 시 대처(1시간 간격)<small>예식 10분 밀린 사례</small></span></label>
+   <label><input type="checkbox"><span>패키지면 추가금 0원 드레스 몇 벌인지 먼저 보여달라고<small>0원 라인 추천도 안 함 (4건)</small></span></label>
+  </div>
+  <div><b style="color:var(--la)">라도무스</b>
+   <label><input type="checkbox"><span>음주류 1인 5,000 빼달라고 협상<small>250명이면 125. 패키지 진행 시 서비스 사례</small></span></label>
+   <label><input type="checkbox"><span>대관(170) 선택 시 혼주대기실·락커 포함 여부<small>대관만 하면 편의시설 어렵다는 안내 사례</small></span></label>
+   <label><input type="checkbox"><span>점심 식대 카드 5.6만 vs 현금 5만 → 동일가 요청<small>루미니스홀은 카드·현금 동일 사례</small></span></label>
+   <label><input type="checkbox"><span>드레스 추가금 상한을 먼저 정하고 이미지투어<small>상담 땐 20~30만대, 실제 0~130·170</small></span></label>
+   <label><input type="checkbox"><span>원판 원본 비용(전체 24, 한 장 구매 불가)·테스트메이크업 20 확인</span></label>
+   <label><input type="checkbox"><span>하객 주차 안내: 제2·3주차장, 우회로 미리 공지<small>입구 1개, 20~40분 대기 사례</small></span></label>
+   <label><input type="checkbox"><span>같은 층 아트리움홀 동시 예식 여부·신부대기실 동선</span></label>
+  </div>
+ </div>
+</section>
+
+<section class="panel"><h2>꼭 읽어볼 블로그 글</h2>
+ <div class="tabs" id="ftabs"><button class="tab on" data-f="all">전체</button><button class="tab" data-f="me">메종드보네르</button><button class="tab" data-f="la">라도무스</button></div>
+ <div class="ev" id="top"></div>
+</section>
+
+<div class="foot">출처: 네이버 블로그(메종 221개·라도무스 206개 본문, 2024년 이후), 업체·협찬·스냅/플라워 업체 글은 따로 표시해 판단에서 뺐어요. '내 견적'은 2026.10.25 상담 견적서 기준이며 계약 전 서면 확인이 필요해요. 좋음/아쉬움 건수는 글을 읽고 센 대략치예요.</div>
+</div>
+<script>(()=>{
+const D={"me": {"name": "메종드보네르", "food": {"pos": 13, "neg": 5, "notes": [{"text": "밥 진짜 맛있다, 직장동료가 밥 먹다 식 못 봄(본식 신부)", "url": "https://m.blog.naver.com/yeonnii___/224444847174", "date": "2026-10-17"}, {"text": "비추천 후기에서도 식사는 맛있었다고 함", "url": "https://m.blog.naver.com/sesenest/224403834223", "date": "2026"}, {"text": "하객 '다들 밥 맛있게 먹었다', 해산물 호불호, 연회장 영상 송출 없음", "url": "https://m.blog.naver.com/danielgoo28/224423984002", "date": "2026"}, {"text": "인생에서 손꼽히게 아쉬운 뷔페, 스테이크 15분 줄에 탄 고기, 연회장 인산인해", "url": "https://m.blog.naver.com/suhuii9/224160829053", "date": "2026-01-27"}, {"text": "무난, 라도무스·루이비스·ICC급 기대하면 아쉬움", "url": "https://m.blog.naver.com/dkffprtksemfk123/224429507571", "date": "2026-10-02"}, {"text": "배식 받기 힘들고 연회장 번잡, 에스컬레이터 고장으로 계단", "url": "https://m.blog.naver.com/bboom_kee/224328264619", "date": "2026-06-26"}, {"text": "회 일부 냉동, 라도무스가 가짓수 더 많음", "url": "https://m.blog.naver.com/zor_girl/224430309577", "date": "2026-10-03"}, {"text": "오피스 강당 출장뷔페 느낌, 한식 위주로 괜찮음", "url": "https://m.blog.naver.com/jaeboong_e/224410368503", "date": "2026-09-16"}, {"text": "육회 너무 닮, 튀김 맛있음", "url": "https://m.blog.naver.com/murisday/224159925681", "date": "2026-01-26"}, {"text": "음식 짜다는 평 있음(투어 신부가 들은 말)", "url": "https://m.blog.naver.com/kelly211101/224452464420", "date": "2026-10-24"}, {"text": "혼주·신랑신부 룸 있음(VIP룸 2개), 식사는 예식 30분 전부터 2시간, 7세까지 무료, 초등학생부터 식권", "url": "https://m.blog.naver.com/miniming22_/224315076855", "date": "2026-06-13"}, {"text": "보증 최소 200으로 했다가 280~300명 와서 식권 부족, 보증인원의 20%까지 보충 가능", "url": "https://m.blog.naver.com/yyi2252/224057638627", "date": "2025"}, {"text": "연회장 2025 가을 리뉴얼 중 → 리뉴얼 후 맛있어졌다는 상담 멘트(검증 안 됨)", "url": "https://m.blog.naver.com/hyeonwoo6000/224346822830", "date": "2026"}]}, "park": {"facts": "캠코캐피탈타워 지상 주차타워+지하 1~3(4)층, 약 700대(블로거별 700~750, 1200 표기 1건), 하객 무료·시간제한 없음, 주말엔 주차권 불필요, 주차요원 있음, 대절버스 하차 공간·공간 확보 가능. 지하철 1호선 정부청사역 4번출구 도보 8~12분. 엘리베이터 4~7대(블로거별 상이)+에스컬레이터", "jam_cases": [{"text": "지하1층은 다소 혼잡, 지하2층 이하는 여유", "url": "https://m.blog.naver.com/mina_melody/224368587561", "date": "2026"}, {"text": "주차장 진입로 좁아 초보운전 애먹을 수 있음", "url": "https://m.blog.naver.com/kjsun1737/224382079009", "date": "2026"}, {"text": "주변 웨딩홀 2개(맞은편 메리비아포레) 있어 입구 쪽 혼잡 가능", "url": "https://m.blog.naver.com/bein07/224084393371", "date": "2025"}, {"text": "실제 본식 하객 주차·교통 불만 전혀 없었음", "url": "https://m.blog.naver.com/yeonnii___/224444847174", "date": "2026-10-17"}]}, "dress": {"vendor": "홀 내부 드레스실·뷰티샵(업체명 본문 미기재). 스튜디오 제휴 바닐라M·올제·그레이스케일 언급", "basic_ok": "나쁨. 추가금 0원 라인은 '후줄근', '맘에 드는 게 없음', 상담자가 추천도 안 함(4건). 대부분 100만원 라인 선택", "upgrade_paid": ["추가금 단계 0/70/100만원(syeon981002 2025-11, alehf104 2025-03, chl1272 2024-11)", "0/50/70/100만원(jooplife 2024, yyi2252, dkask1397 2025-04)", "실제 선택 100만원(bany0311, alehf104, jooplife, yyi2252, syeon981002), 70만원(chl1272)", "최대 100만원(miniming22_ 2026-06, resinny 2025-09)", "부케 기본 0원, 추가 5·7·10만원(alehf104, yyi2252)"], "extras": "헬퍼비 15만원 별도(miniming22_ 2026-06; 예전 12만원 alehf104 2025-03). 피팅 4벌, 추가 1벌 1~1.5만원(bany0311). 드레스 계약금 20만원 환불 어려움(chl1272). 드레스 식 1~2달 전 셀렉. 혼주한복 1인 30만원, 혼주메이크업 여 15만/남 5만(alehf104). 11시 예식 6시 헤메는 얼리 요금(anna95_03, 외부샵). 턱시도 바지 핏 나빠 외부 구입(jooplife). 벨라인 위주, 머메이드 없음(yyi2252).", "cases": [{"text": "추가금 0·70만원짜리는 추천도 잘 안 하고 별로, 4벌 다 100만원짜리 입음", "url": "https://m.blog.naver.com/syeon981002/224081277014", "date": "2025-11-19"}, {"text": "추가금 없는 디자인은 설명도 안 해줌, 후줄근", "url": "https://m.blog.naver.com/chl1272/223661350047", "date": "2024-11-15"}, {"text": "드메에 욕심 있으면 패키지 버리라, 본식 드레스 아쉬움 컸다", "url": "https://m.blog.naver.com/jooplife/223437829634", "date": "2024"}, {"text": "홀 패키지 드메 업체가 3개월 전까지 연락 없어 먼저 연락, 일정 이미 차서 2달 전 셀렉", "url": "https://m.blog.naver.com/yeonnii___/224444847174", "date": "2026-10-17"}, {"text": "웨딩홀 메이크업 앞타임 지연으로 가족 메이크업 늦게 끝남", "url": "https://m.blog.naver.com/itslake/224100639737", "date": "2025-12-06"}]}, "serv": {"good": [{"text": "헬퍼 이모님 차분·친절, 정산실·지폐계수기 있어 식후 정산 편함", "url": "https://m.blog.naver.com/yeonnii___/224444847174", "date": "2026-10-17"}, {"text": "상담 친절, 당일계약 강요 없음, 당일혜택 일주일까지 유지", "url": "https://m.blog.naver.com/kongdaenge/224136577675", "date": "2026"}, {"text": "본식 1주 전 식권 수령·리허설·음향 체크 가능", "url": "https://m.blog.naver.com/newj153/224344270636", "date": "2026"}], "bad": [{"text": "사전 요청(혼주 의자 빼기, 단상 치우기) 미이행, 혼인서약서 2장 중 1장 누락", "url": "https://m.blog.naver.com/yeonnii___/224444847174", "date": "2026-10-17"}, {"text": "앞팀 포토테이블 안 치움, 플라워샤워 안 터짐→보상은 답례품 쿠키 2개, 식순 영상 반복 재생, 입장 직전 직원이 드레스 셋팅 망침", "url": "https://m.blog.naver.com/sesenest/224403834223", "date": "2026"}, {"text": "플라워샤워 안 터짐, 식 다가올수록 응대 쌀쌀", "url": "https://m.blog.naver.com/anna95_03/224267002239", "date": "2026"}, {"text": "당일 신부 없는 자리에서 신랑에게 축포·꽃가루 판매(개당 20만, 세트 25만)", "url": "https://m.blog.naver.com/jooplife/223452127827", "date": "2024-05-20"}, {"text": "앞타임 지연 관리 안 됨(예식 10분 지연)", "url": "https://m.blog.naver.com/lily4rchive/223765198169", "date": "2025"}]}, "contract": [{"text": "계약금 50만원, 계약일 15일 이내 전액 환불, 이후 환불 불가", "url": "https://m.blog.naver.com/small_silveer/224361043204", "date": "2026-07-28"}, {"text": "필수옵션 생화장식. 보증인원 식 2주 전 확정. 남은 식권 답례품(와인·홍삼·제과·디퓨저) 교환, 개인 답례품 불가. 당일계약 시 대관·생화 할인", "url": "https://m.blog.naver.com/miniming22_/224315076855", "date": "2026-06-13"}, {"text": "성수기 메인타임도 패키지 없이 대관만 가능(대신 보증 300)", "url": "https://m.blog.naver.com/junexun/224229359103", "date": "2026"}, {"text": "식대 음주류 포함(murisday 26하반기 5만원, kelly211101 2027, baksa_han)", "url": "https://m.blog.naver.com/murisday/224159925681", "date": "2026-01-26"}, {"text": "VAT 별도 여부 언급한 블로그 없음(미확인)", "url": "", "date": ""}, {"text": "웨딩북 경유 계약 시 예식 후 10만원 캐시백", "url": "https://m.blog.naver.com/bonita828/224278344043", "date": "2026-05-08"}], "hall": [{"text": "단독 보네르홀(캠코캐피탈타워 1~2층), 동시 예식 없음, 하객석 약 200석", "url": "", "date": ""}, {"text": "기둥·낮은 층고·노란 조명이 아쉽다는 의견이 반복", "url": "https://m.blog.naver.com/suhuii9/224160829053", "date": "2026-01-27"}, {"text": "에스컬레이터 고장으로 계단 이동, 연회장 번잡", "url": "https://m.blog.naver.com/bboom_kee/224328264619", "date": "2026-06-26"}, {"text": "연회장은 다른 타임 하객과 같이 씀, 연회장 영상 송출 없음", "url": "https://m.blog.naver.com/danielgoo28/224423984002", "date": "2026"}], "top": [{"title": "메종드보네르 정보 & 상담 후기(계약 X)", "url": "https://m.blog.naver.com/miniming22_/224315076855", "date": "2026-06-13", "why": "27년 성수기 보증·총액 1,400만·패키지 구성·헬퍼비·라도무스 루미니스 대비 600만 차이까지 숫자 제일 많음"}, {"title": "[Wedding Day] 대전 메종드보네르 웨딩홀 본식 솔직 후기", "url": "https://m.blog.naver.com/yeonnii___/224444847174", "date": "2026-10-17", "why": "최신 본식. 밥·주차 호평과 요청 누락·서약서 누락·드메 업체 연락 지연 구체 사례"}, {"title": "대전 예식장 메종드보네르 비추천 후기", "url": "https://m.blog.naver.com/sesenest/224403834223", "date": "2026", "why": "진행 실수 4건과 보상 대응(쿠키 2개) 실제 사례"}, {"title": "W_대전 메종드보네르 하객 후기 뷔페 주차 견적 공유", "url": "https://m.blog.naver.com/murisday/224159925681", "date": "2026-01-26", "why": "본문에 26하반기 대관+생화 300만·식대 5만(음주류 포함)·보증 토300/일200 숫자"}, {"title": "대전 메종드보네르 웨딩홀 솔직 후기 | 대관료, 식대, 보증인원", "url": "https://m.blog.naver.com/jiniq0522/224177877016", "date": "2026-02-09", "why": "웨딩북 정가 대관 400만·식대 5만·보증 200 → 할인폭 가늠"}, {"title": "대전 웨딩홀 투어(2) 메종드보네르 27년 하반기 견적 공유", "url": "https://m.blog.naver.com/tthun_/224388507061", "date": "2026-08-24", "why": "27하반기 토 11시 200명/12시 250명 보증, 패키지 필수 아님"}, {"title": "메종드보네르 본식 드레스 셀렉 후기", "url": "https://m.blog.naver.com/jooplife/223437829634", "date": "2024", "why": "드레스 추가금 단계와 턱시도 핏 불만, 패키지 드메 솔직평"}, {"title": "대전 메종드보네르 본식 후기(+당일 추가금 발생)", "url": "https://m.blog.naver.com/jooplife/223452127827", "date": "2024-05-20", "why": "당일 축포·꽃가루 추가판매 금액(20/25만)"}, {"title": "메종드보네르 웨딩홀 대전, 본식 드레스 피팅 내돈내산 솔직 후기", "url": "https://m.blog.naver.com/syeon981002/224081277014", "date": "2025-11-19", "why": "0/70/100 라인 실제 분위기, 0원 라인 비추"}, {"title": "메종드보네르패키지 본식후기 (드헤메,혼주한복 메이크업후기)", "url": "https://m.blog.naver.com/alehf104/223787749269", "date": "2025-03", "why": "헬퍼비·혼주한복 30만·혼주메이크업 15/5만 실제 금액"}, {"title": "메종드보네르 대전 웨딩홀 뷔페 주차 하객후기", "url": "https://m.blog.naver.com/suhuii9/224160829053", "date": "2026-01-27", "why": "뷔페 혹평·기둥 시야 문제(반대 의견 확인용)"}, {"title": "25년 대전 메종드보네르 본식 후기 2. 본식 당일", "url": "https://m.blog.naver.com/lily4rchive/223765198169", "date": "2025", "why": "앞타임 지연으로 예식 밀린 사례(1시간 간격 리스크)"}, {"title": "메종드 보네르 본식 메이크업,드레스, 뷔페 꼼꼼한 후기", "url": "https://m.blog.naver.com/yyi2252/224057638627", "date": "2025", "why": "식권 20% 보충 규정, 보증 최소로 잡았다 부족했던 사례"}, {"title": "메종드보네르 2027 견적 공유", "url": "https://m.blog.naver.com/kelly211101/224452464420", "date": "2026-10-24", "why": "최신 2027 조건 요약: 200석, 700대 무료 무제한, 음주류 포함, 단점 목록"}, {"title": "[ep.부록] 대전 메종드보네르 방문후기 및 선택이유", "url": "https://m.blog.naver.com/haeni_o3o/224301970595", "date": "2026", "why": "2025년 9월 리모델링(버진로드 25m) 시점 확인"}], "read": 221, "ind": 163}, "la": {"name": "라도무스", "food": {"pos": 15, "neg": 6, "notes": [{"text": "하객 다수 '음식 최고·스테이크·잔치국수 맛있음', 홀별 단독 연회장", "url": "https://m.blog.naver.com/bic1015_/224452084244", "date": "2026-10-24"}, {"text": "회·초밥 아쉬움(롯데마트 초밥 느낌), 스테이크·국은 좋음 (협찬 표기 글)", "url": "https://m.blog.naver.com/cheeky-cat/224439824889", "date": "2026-10-13"}, {"text": "회 냄새·해동 문제 기억, 스테이크는 미리 삶아 그릴만, 리필 느림", "url": "https://m.blog.naver.com/soyeong19/224383532255", "date": "2026-08-19"}, {"text": "음식이 짜거나 달고 메뉴 수 보통", "url": "https://m.blog.naver.com/leh5965/224438036400", "date": "2026-10-11"}, {"text": "뷔페 soso, 주차 헬, 공장형", "url": "https://m.blog.naver.com/aa1004289/224453155104", "date": "2026-10-25"}, {"text": "음주류는 입구 냉장고 셀프(소주·맥주·제로콜라)", "url": "https://m.blog.naver.com/peachsong_/224288434033", "date": "2026-05-17"}, {"text": "연회장 600석, 혼주석 시간대별 따로 마련(아시시)", "url": "https://m.blog.naver.com/jjenn327/224418096912", "date": "2026-09-21"}]}, "park": {"facts": "신관 1~6층 주차타워 + 제2·3주차장(공터, 원신흥동 578-3). 대수 표기는 글마다 1,300 / 2,000 / 2,300 / 2,400 / 2,700까지 제각각(2,300이 가장 많음, 2,400은 2026-08 글). 입구 1개·진입도로 1차로라 피크 병목. 혼주·신랑신부는 7층 별도 주차(신관). 대절버스는 타워 불가, 길 건너 공터. 지하철 없음, 택시 필요", "jam_cases": [{"text": "주차 40분 걸린 날, 도착 후 식장 입장까지 지연", "url": "https://m.blog.naver.com/leh5965/224438036400", "date": "2026-10-11"}, {"text": "하객이 20분 갇힘, 주차 알바 안내 대충", "url": "https://m.blog.naver.com/manduoh-/224428074429", "date": "2026-10-01"}, {"text": "본식 날 주차장 입구부터 막혀 식 1시간 전 도착한 하객도 간신히 입장", "url": "https://m.blog.naver.com/100youngrong/224378699228", "date": "2026-08-14"}, {"text": "일요일 10:50 도착 시 이미 타워 5층까지 만차, 입구 1개", "url": "https://m.blog.naver.com/vb__dv_/224407516701", "date": "2026-09-10"}, {"text": "주차타워 매우 혼잡 → 제2·3주차장 쓰라는 조언", "url": "https://m.blog.naver.com/coki95/224445811364", "date": "2026-10-18"}, {"text": "오전 10시 식도 있어 주차 대기줄 김, 지방법원 등기국 쪽으로 우회 팁", "url": "https://m.blog.naver.com/fsenergy1/224440398367", "date": "2026-10-13"}, {"text": "토 13시 방문, 타워 널널(2,000대 증축 후)", "url": "https://m.blog.naver.com/hxxyewon/224056614277", "date": "2025-10-28"}]}, "dress": {"vendor": "라메종블랑쉬(본관 2층 자체 드레스실), 헤메는 라도무스 뷰티(홀 자체)", "basic_ok": "0원 라인은 '구릿빛·누런 실크'라는 평과 '추가금 없이 셀렉 성공'(2024.7, 2025.11 1~4번 0원) 평이 갈림. 다수는 30~170 추가", "upgrade_paid": ["30만(2025-11 haechelin, 2026-08 susuya1216)", "80만(2026-01 wow6608)", "100만(2026-05 08-19, 2026년 기준 구 신상)", "130만(2026-08 susuya1216 신상 실크 최고가)", "150만 수준(2026-10 c2p2a, 그래서 대관 전환)", "170만(2026-10 juhee2079, 입어본 것 80/130/170)"], "extras": "테스트메이크업 20만(현장 이체), 조부모 메이크업 여 19만·남 6만(패키지 미포함), 원판 원본 전체 구매 24만(한 장 구매 불가), 추가금 당일 현장결제, 셀렉은 예식 6~2주 전, 피팅 5벌", "cases": [{"text": "상담실장은 '20~30만원대'라 했는데 이미지투어 해보니 0~130, 신상 실크 130", "url": "https://m.blog.naver.com/susuya1216/224370414834", "date": "2026-08-06"}, {"text": "입어본 5벌 80/130/170, 170 선택", "url": "https://m.blog.naver.com/juhee2079/224445936319", "date": "2026-10-18"}, {"text": "추가금 상한 80으로 정하고 80짜리 선택", "url": "https://m.blog.naver.com/wow6608/224133318578", "date": "2026-01-04"}, {"text": "패키지인데 드레스 추가금 150까지 붙어서 일요일이라 대관으로 바꾸고 외부(이나이스)로", "url": "https://m.blog.naver.com/c2p2a/224428787370", "date": "2026-10-01"}, {"text": "1~4번 추가금 없음, 5번만 30", "url": "https://m.blog.naver.com/haechelin/224071265346", "date": "2025-11-10"}, {"text": "원판 원본 한 장 구매 불가, 전체 24만 결제(패키지 원판)", "url": "https://m.blog.naver.com/100youngrong/224378699228", "date": "2026-08-14"}]}, "serv": {"good": [{"text": "상담실장 친절·꼼꼼, 질문 안 해도 설명", "url": "https://m.blog.naver.com/doyun23_/224409626766", "date": "2026-09-12"}, {"text": "계약일 제휴업체 팜플릿·식순 제공, 베뉴 안 토탈패키지", "url": "https://m.blog.naver.com/yoonhiii/224369020284", "date": "2026-08-05"}, {"text": "아모리움 본식 음향 잘 들리고 실수 없음", "url": "https://m.blog.naver.com/kangloopy/224400908194", "date": "2026-09-05"}], "bad": [{"text": "본식 중 마이크 소리 안 나오는 사고 2번, 축가 처음부터 다시", "url": "https://m.blog.naver.com/eoulic/224362239077", "date": "2026-07-29"}, {"text": "원판 해프닝(목사님 사진 한 장 때문에 원본 24만 전체 구매), 직원 사과 없음, 식전 식사 소통 문제", "url": "https://m.blog.naver.com/100youngrong/224378699228", "date": "2026-08-14"}, {"text": "주차 요원 안내 대충, 하객 20분 갇힘", "url": "https://m.blog.naver.com/manduoh-/224428074429", "date": "2026-10-01"}, {"text": "상담 예약 15분 지연 시작", "url": "https://m.blog.naver.com/chxeyeon/224425787812", "date": "2026-09-29"}, {"text": "아모리움 음향 작아 뒤까지 안 들린다는 후기들 있었다고 언급", "url": "https://m.blog.naver.com/kangloopy/224400908194", "date": "2026-09-05"}]}, "contract": [{"text": "계약금 100만(카드 가능), 예식 150일 전까지 전액 환불·변경 가능 — 2025~2026 다수 글 공통", "url": "https://m.blog.naver.com/qhthf0819/224359495659", "date": "2026-07-27"}, {"text": "취소 사유서 작성 후 환불까지 약 2주", "url": "https://m.blog.naver.com/gtf1030/224273750862", "date": "2026-05-03"}, {"text": "식대 세금 포함, 8세 이하 식대 무료", "url": "https://m.blog.naver.com/sujan1746/224358705649", "date": "2026-07-26"}, {"text": "8세 이하 무료, 답례품 자유(ICC는 10% 필수)", "url": "https://m.blog.naver.com/bhope372/223971050995", "date": "2025-08-15"}, {"text": "루미니스 식대 카드·현금 동일, 8세부터 대인", "url": "https://m.blog.naver.com/kelly211101/224407410819", "date": "2026-09-10"}, {"text": "음주류 5,000 별도는 2024 공시가에도 있음 / 패키지 진행 시 음주류 서비스 받은 사례", "url": "https://m.blog.naver.com/gtf1030/224247831868", "date": "2026-04-10"}, {"text": "보증인원은 식 2주 전 최종 확정, 보증의 20% 여유분 준비, 당일계약 시 식대 소폭 할인", "url": "https://m.blog.naver.com/100youngrong/224360482583", "date": "2026-07-28"}, {"text": "피크(성수기 토 점심)는 패키지 필수, 비수기·일요일·첫타임·오후는 대관 가능", "url": "https://m.blog.naver.com/jjenn327/224418096912", "date": "2026-09-21"}, {"text": "대관만 하면 혼주대기실·개인락커 등 편의시설 제공 어렵다는 안내", "url": "https://m.blog.naver.com/sujan1746/224358705649", "date": "2026-07-26"}, {"text": "본식 후 식대·잔금 결제 가능", "url": "https://m.blog.naver.com/happy_nroo/224170184202", "date": "2026-02-03"}], "hall": [{"text": "라도무스홀(본관 3층) 160석, 구관 중 250명 수용 가장 여유, 원탁, 버진로드 김, 예식 시간 30분대(11:30 등) 가능", "url": "https://m.blog.naver.com/jjenn327/224419219065", "date": "2026-09-23"}, {"text": "3층에 라도무스홀·아트리움홀 같이 있어 식 겹치면 복잡, 신부대기실 2개가 같은 복도, 60분 예식(공장형), 같은 층 다른 홀 신부 입장 동선이 하객과 겹침", "url": "https://m.blog.naver.com/tjr9965/224331540766", "date": "2026-06-30"}, {"text": "3층 두 홀 신부대기실이 붙어 하객이 헷갈림, 연회장은 홀별 단독", "url": "https://m.blog.naver.com/skql7080/224450398884", "date": "2026-10-22"}, {"text": "본관 지하 혼주 메이크업실·한복실·혼주휴게실, 신랑신부·혼주 전용 엘리베이터", "url": "https://m.blog.naver.com/hihi-y/224442671531", "date": "2026-10-15"}, {"text": "신관은 혼주 전용 엘리베이터 없어 본관 지하에서 준비 후 하객과 섞여 8층 이동", "url": "https://m.blog.naver.com/chxeyeon/224425787812", "date": "2026-09-29"}, {"text": "신부대기실에서 홀로 바로 입장 불가, 로비 대기 후 입장 / 웨딩홀 입구 병목", "url": "https://m.blog.naver.com/memymee/224416859336", "date": "2026-09-19"}, {"text": "여름 예식 '너무 더웠다'는 지인 평", "url": "https://m.blog.naver.com/youlim_0404/224447089809", "date": "2026-10-19"}, {"text": "가격은 상·하반기 시작 무렵 각 1회 인상하는 것 같다(홍보형 글)", "url": "https://m.blog.naver.com/tlawodyd0929/224445369514", "date": "2026-10-18"}, {"text": "리모델링 소식: 2026 블로그에서 라도무스 추가 리모델링 계획 언급 못 찾음(신관 2개 홀·주차타워는 2025년 오픈)", "url": "", "date": ""}], "top": [{"title": "라도무스 공시가(패키지520·생화150·대관300·뷔페59,000·음주류5,000)", "url": "https://m.blog.naver.com/ramrecord/223482080444", "date": "2024-06-17", "why": "유일하게 텍스트로 정가 구성이 다 나온 글, mg 견적 할인폭 기준점"}, {"title": "대전 웨딩홀 온라인 견적조사(신관 대관 500 전후·생화 100 중반·식대 5만대)", "url": "https://m.blog.naver.com/1017yyl/224238408276", "date": "2026-04-02", "why": "2027 신관 시세 범위"}, {"title": "라도무스 계약 후 팔레드오페라로 변경한 이유", "url": "https://m.blog.naver.com/youlim_0404/224447089809", "date": "2026-10-19", "why": "시간대별 보증인원(200/250/300)·패키지 필수 조건, 여름 더위"}, {"title": "라도무스 아트리움홀 계약 후기(sujan1746)", "url": "https://m.blog.naver.com/sujan1746/224358705649", "date": "2026-07-26", "why": "세금 포함, 8세 이하 무료, 대관 시 편의시설 제외 안내, 신관-본관 가격차 300~500"}, {"title": "라도무스 플래닝, 드레스 추가금 방어, 이미지투어", "url": "https://m.blog.naver.com/susuya1216/224370414834", "date": "2026-08-06", "why": "라메종블랑쉬 추가금 0~130 실물 기준"}, {"title": "패키지에서 대관으로 변경(c2p2a)", "url": "https://m.blog.naver.com/c2p2a/224428787370", "date": "2026-10-01", "why": "드레스 추가금 150, 성수기 토요일은 대관 불가 정보"}, {"title": "라도무스 본식 오후 2시 솔직 후기", "url": "https://m.blog.naver.com/100youngrong/224378699228", "date": "2026-08-14", "why": "본식 당일 주차 막힘·원판 24만·직원 대응 실사례"}, {"title": "라도무스 패키지 견적 2탄", "url": "https://m.blog.naver.com/100youngrong/224360482583", "date": "2026-07-28", "why": "패키지 구성, 보증 2주 전 확정·20% 여유, 계약금 100만"}, {"title": "아트리움홀 하객 후기, 주차 40분", "url": "https://m.blog.naver.com/leh5965/224438036400", "date": "2026-10-11", "why": "하객 입장 주차 대기 실측, 음식 아쉬움"}, {"title": "라도무스 뷔페 하객 방문 후기 주차 안내", "url": "https://m.blog.naver.com/manduoh-/224428074429", "date": "2026-10-01", "why": "진입로 1차로, 주차요원 대응 문제"}, {"title": "라도무스홀 솔직 후기(계약O)", "url": "https://m.blog.naver.com/jjenn327/224419219065", "date": "2026-09-23", "why": "mg 후보 라도무스홀 좌석 160·250명 수용·30분대 예식"}, {"title": "라도무스홀 홀투어 장단점(계약x)", "url": "https://m.blog.naver.com/tjr9965/224331540766", "date": "2026-06-30", "why": "3층 동시예식·신부대기실 같은 복도·60분 예식 단점"}, {"title": "홀별 패키지 필수 시간대", "url": "https://m.blog.naver.com/exampleri/224301718492", "date": "2026-05-31", "why": "16:30이 패키지 필수 밖인지 판단 근거"}, {"title": "아모리움 본식 후기(마이크 사고)", "url": "https://m.blog.naver.com/eoulic/224362239077", "date": "2026-07-29", "why": "진행 실수 사례"}, {"title": "라도무스 루미니스홀 총정리(식대 카드·현금 동일)", "url": "https://m.blog.naver.com/kelly211101/224407410819", "date": "2026-09-10", "why": "식대 결제수단 조건 비교"}], "read": 206, "ind": 190}};
+const esc=s=>String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+document.getElementById('me-read').textContent=D.me.read+' / '+D.me.ind;
+document.getElementById('la-read').textContent=D.la.read+' / '+D.la.ind;
+const pn=(f)=>{const t=f.pos+f.neg;return `<div class="pn"><span>음식</span><div class="tr"><div class="g" style="width:${f.pos/t*100}%"></div><div class="r" style="width:${f.neg/t*100}%"></div></div><span>${f.pos}:${f.neg}</span></div>`};
+document.getElementById('me-pn').innerHTML=pn(D.me.food);
+document.getElementById('la-pn').innerHTML=pn(D.la.food);
+const item=(n,cls)=>`<div class="evi ${cls||''}">${esc(n.text)}${n.date?`<span class="d">${esc(n.date)}</span>`:''}${n.url?`<a href="${n.url}" target="_blank" rel="noopener">원문</a>`:''}</div>`;
+const T={
+ '음식':v=>v.food.notes.map(n=>item(n)).join(''),
+ '주차·교통':v=>`<div class="evi">${esc(v.park.facts)}</div>`+v.park.jam_cases.map(n=>item(n,'bad')).join(''),
+ '홀·동선':v=>v.hall.map(n=>item(n)).join(''),
+ '드레스·헤메':v=>`<div class="evi"><b>${esc(v.dress.vendor)}</b><br>${esc(v.dress.basic_ok)}</div><div class="chips">${v.dress.upgrade_paid.map(u=>`<span class="chip hi">${esc(u)}</span>`).join('')}</div><div class="evi">${esc(v.dress.extras)}</div>`+v.dress.cases.map(n=>item(n)).join(''),
+ '진행·직원':v=>v.serv.bad.map(n=>item(n,'bad')).join('')+v.serv.good.map(n=>item(n,'good')).join(''),
+ '계약 조건':v=>v.contract.map(n=>item(n)).join('')};
+const tabs=document.getElementById('tabs'),ev=document.getElementById('ev');
+Object.keys(T).forEach((k,i)=>{const b=document.createElement('button');b.className='tab'+(i?'':' on');b.textContent=k;b.onclick=()=>{tabs.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');show(k)};tabs.appendChild(b)});
+function show(k){ev.innerHTML=['me','la'].map(h=>`<div class="ev venue c-${h}" style="border-top:4px solid var(--v);padding-top:10px"><b style="color:var(--v)">${D[h].name}</b>${T[k](D[h])}</div>`).join('')}
+show('음식');
+const top=document.getElementById('top');
+function showTop(f){top.innerHTML=['me','la'].filter(h=>f==='all'||f===h).flatMap(h=>D[h].top.map(t=>`<div class="evi"><span class="tag t-${h}">${D[h].name}</span><b>${esc(t.title)}</b><span class="d">${esc(t.date)}</span><a href="${t.url}" target="_blank" rel="noopener">열기</a><div class="note" style="margin-top:3px">${esc(t.why)}</div></div>`)).join('')}
+document.querySelectorAll('#ftabs .tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('#ftabs .tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');showTop(b.dataset.f)});
+showTop('all');
+let LS=null;try{LS=localStorage;LS.getItem('x')}catch(e){LS=null}
+const boxes=[...document.querySelectorAll('#chk input')];const K='hall_chk_v1';let S={};try{S=JSON.parse((LS&&LS.getItem(K))||'{}')}catch(e){}
+boxes.forEach((b,i)=>{b.checked=!!S[i];b.onchange=()=>{S[i]=b.checked;if(LS)try{LS.setItem(K,JSON.stringify(S))}catch(e){}}});
+})();</script></body></html>
