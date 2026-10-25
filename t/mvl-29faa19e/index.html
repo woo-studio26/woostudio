@@ -1,0 +1,184 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>메종드보네르 vs 라도무스 최종 비교</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"><style>img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: 공통 조건 → 두 홀 나란히(시간·방식 선택 + 내역 + 총액) → 추가 옵션 체크 → 차액 요약. 모바일에선 1열 */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#1d2230; --muted:#5f6675; --line:#dfe3ea; --soft:#eef0f5;
+  --accent:#6b3f6e; --accent-soft:#f1e9f2;
+  --me:#3f7d5c; --la:#b0563a; --warn:#b07a12; --bad:#b23b3b;
+  --display:"Gowun Batang","Nanum Myeongjo",serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14161c; --surface:#1c1f27; --ink:#e9ebf1; --muted:#a2a8b6; --line:#2e3340; --soft:#232733;
+  --accent:#d6a6d9; --accent-soft:#2f2433; --me:#7cc39b; --la:#e58d6f; --warn:#e0b14a; --bad:#e47a7a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14161c; --surface:#1c1f27; --ink:#e9ebf1; --muted:#a2a8b6; --line:#2e3340; --soft:#232733;
+  --accent:#d6a6d9; --accent-soft:#2f2433; --me:#7cc39b; --la:#e58d6f; --warn:#e0b14a; --bad:#e47a7a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 56px}
+.wrap{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,5.5vw,36px);line-height:1.2}
+h2{font-size:20px}
+h3{font-size:19px}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:600}
+.sub{color:var(--muted);margin:6px 0 0;max-width:64ch}
+.num{font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+label{cursor:pointer}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.field b{color:var(--ink);font-size:14px}
+input[type=number]{width:96px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:17px;height:17px;vertical-align:-3px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toggle{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.toggle small{display:block;color:var(--muted);font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.venue{border-top:5px solid var(--v)}
+.c-me{--v:var(--me)} .c-la{--v:var(--la)}
+.vhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.vhead span{font-size:12.5px;color:var(--muted)}
+.choices{display:flex;flex-direction:column;gap:6px}
+.choice{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.choice:has(input:checked){border-color:var(--v);background:color-mix(in srgb,var(--v) 8%,transparent)}
+.choice small{display:block;color:var(--muted);font-size:12px}
+.lines{width:100%;border-collapse:collapse;font-size:13.5px}
+.lines td{padding:7px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+.lines td:last-child{text-align:right;white-space:nowrap;padding-left:10px;font-variant-numeric:tabular-nums}
+.lines .grp td{font-weight:600;color:var(--muted);font-size:12px;padding-top:12px;border-bottom:1px solid var(--line)}
+.lines small{color:var(--muted);display:block;font-size:11.5px}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--v);padding-top:10px}
+.total b{font-size:15px}
+.total .amt{font-size:32px;font-weight:700;color:var(--v);line-height:1}
+.total .amt small{font-size:15px;color:var(--muted);font-weight:500}
+.meta{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.warn{color:var(--warn)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;align-items:start}
+.opt:has(input[type=checkbox]:checked){background:var(--accent-soft)}
+.opt .p{grid-column:2;font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.opt .p .m{color:var(--me)} .opt .p .l{color:var(--la)}
+.opt .extra{grid-column:2;display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.opt .extra input{width:64px;padding:4px 6px}
+.diff{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.diff strong{font-family:var(--display);font-size:19px}
+.cmp{display:flex;flex-direction:column;gap:8px}
+.cbar{display:grid;grid-template-columns:96px 1fr 84px;gap:10px;align-items:center;font-size:13.5px}
+.cbar .track{height:14px;background:var(--surface);border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.cbar .fill{height:100%;background:var(--v)}
+.cbar .val{text-align:right;font-weight:600}
+.cmpt{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+.cmpt th,.cmpt td{padding:9px 10px;border:1px solid var(--line);vertical-align:top;text-align:left}
+.cmpt thead th{background:var(--soft)}
+.cmpt tbody th{font-weight:600;white-space:nowrap}
+.cmpt tfoot th,.cmpt tfoot td{background:var(--accent-soft)}
+.cmpt small{display:block;color:var(--muted);font-size:11.5px}
+.cmpt b{font-size:16px}
+.flagc{color:var(--bad);font-weight:600}
+.warnc{color:var(--warn);display:block;margin-top:6px}
+.verdict2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.verdict2>div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;min-width:0}
+.verdict2 ul{margin:6px 0 0;padding-left:18px}
+@media (max-width:640px){.verdict2{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--muted)}
+.foot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+
+.big2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.big2{grid-template-columns:1fr}}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:12px 14px;border-top:4px solid var(--v)}
+.kpi .n{font-size:30px;font-weight:700;color:var(--v);font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .n small{font-size:14px;color:var(--muted);font-weight:500}
+.kpi .s{font-size:12.5px;color:var(--muted)}
+.tw{overflow-x:auto}
+.cmpt td.best{background:color-mix(in srgb,var(--me) 14%,transparent)}
+.cmpt td.bestl{background:color-mix(in srgb,var(--la) 14%,transparent)}
+ul.l{margin:0;padding-left:18px;font-size:14px} ul.l li{margin:3px 0}
+.src{font-size:11.5px;color:var(--muted)}
+</style></head><body><div class="wrap">
+<header><div class="eyebrow">2026.10.25 상담 녹음·견적서 기준 · 하객 200명 · 단위 만원</div>
+<h1>메종드보네르 vs 라도무스 최종 비교</h1>
+<p class="sub">상담 녹음 7개를 받아쓰고 견적서와 대조한 금액이에요. 메종은 상담 당일 혜택이 그대로 적용되고, 대관료·패키지에 부가세 10%를 더해 계산했어요. 조건을 바꾸면 총액이 바로 바뀌어요.</p></header>
+
+<section class="panel"><h2>공통 조건</h2>
+<div class="row">
+ <label class="field" for="g"><b>예상 하객 (식권 수)</b><span><input id="g" type="number" min="100" max="400" value="200"> 명</span></label>
+ <label class="toggle"><input type="checkbox" id="vat" checked><span>메종 부가세 10% 포함<small>견적서 '대관료·패키지 VAT 별도' → 대관 +10, 패키지 +28</small></span></label>
+ <label class="field" for="dr"><b>드레스 업그레이드 추가금 (패키지일 때)</b><span><input id="dr" type="number" min="0" max="300" value="100"> 만원 <small>(메종은 50% 할인)</small></span></label>
+ <label class="field" for="ext"><b>대관일 때 외부 본식 드메 비용</b><span><input id="ext" type="number" min="0" max="400" value="0"> 만원 <small>(대전 시세 125~220)</small></span></label>
+ <button class="btn" id="reset">처음 값으로</button>
+</div></section>
+
+<div class="big2" id="kpis"></div>
+
+<div class="two">
+ <section class="panel venue c-me"><div class="vhead"><h3>메종드보네르</h3><span>둔산동 · 단독 보네르홀 · 6/19 11·12시, 6/26 11시 (금액 동일)</span></div>
+  <div class="choices" id="me-c"></div><table class="lines" id="me-l"></table>
+  <div class="total"><b>총액</b><span class="amt" id="me-t"></span></div><div class="meta" id="me-m"></div></section>
+ <section class="panel venue c-la"><div class="vhead"><h3>라도무스</h3><span>원신흥동 · 3층 라도무스홀</span></div>
+  <div class="choices" id="la-c"></div><table class="lines" id="la-l"></table>
+  <div class="total"><b>총액</b><span class="amt" id="la-t"></span></div><div class="meta" id="la-m"></div></section>
+</div>
+
+<section class="diff" id="diff"></section>
+
+<section class="panel"><h2>조건 비교</h2><p class="sub">연두·주황 칸이 그 항목에서 더 유리한 쪽이에요.</p>
+<div class="tw"><table class="cmpt"><thead><tr><th>항목</th><th>메종드보네르</th><th>라도무스</th></tr></thead><tbody>
+<tr><th>가능 타임 (토)</th><td>6/19 11:00·12:00, 6/26 11:00</td><td>점심 6/12·5/29 11:30 (각 1타임) / 오후 6/12·6/26 16:30</td></tr>
+<tr><th>보증인원</th><td class="best"><b>150명부터</b></td><td>점심 250 / 오후 200</td></tr>
+<tr><th>식대 (1인)</th><td class="best">50,000 → 45,000 → 당일 <b>43,000</b><small>음주류 포함</small></td><td>62,000 → 56,000 → 현금 <b>50,000</b>(점심) / <b>46,000</b>(오후)<small>음주류·부가세 포함 (녹음)</small></td></tr>
+<tr><th>대관 / 생화</th><td class="best">대관 300 → <b>100</b> (VAT 별도) / 생화 100 → <b>50</b></td><td>대관 360 → <b>170</b> (오후만) / 생화 170 → <b>130</b></td></tr>
+<tr><th>패키지</th><td class="best">450 → 300 → <b>280</b> (생화 포함) + 헬퍼 15<small>드레스 추가금 10~150, 확정 시 50% 할인</small></td><td>580 → 460 → 6월 점심 <b>400</b> / 오후 6/12 <b>370</b>·6/26 <b>340</b> + 생화 130 + 이모님 15<small>드레스 추가금 할인 없음 (블로그 30~170)</small></td></tr>
+<tr><th>홀·연회장</th><td>홀 1개 단독, 연회장도 단독 사용 · 하객석 약 200석</td><td class="bestl"><b>1:1 연회장 · 음식 200가지 이상</b> · 홀 5개 중 메인홀, 원탁</td></tr>
+<tr><th>주차</th><td class="best">750대 무료·시간제한 없음 · 블로그 대기 사례 0건</td><td>2,400대 · 입구 1개, 오후 피크 20~40분 대기 사례</td></tr>
+<tr><th>교통</th><td class="best">정부청사역 도보 약 8분</td><td>지하철 없음 · 유성IC 약 3km</td></tr>
+<tr><th>시식</th><td>확인 필요</td><td class="bestl">예식 1달 전 6인 무료</td></tr>
+<tr><th>계약금 / 환불</th><td>50 / 15일 안 전액 (견적서·블로그)</td><td class="bestl">100 / 예식 5개월 전까지 (2주 지나면 10 차감)</td></tr>
+<tr><th>날짜 변경</th><td>확인 필요</td><td class="bestl"><b>횟수 제한 없음</b></td></tr>
+<tr><th>주의</th><td><span class="flagc">진행 실수 후기</span> (요청 누락·서약서 누락·포토테이블 미정리) · 7~8월 연회장 리모델링</td><td>점심은 패키지 필수 · 같은 층 아트리움홀과 동시 예식</td></tr>
+</tbody></table></div></section>
+
+<section class="panel"><h2>계약 전 확인할 것</h2><div class="verdict2">
+ <div><b style="color:var(--me)">메종드보네르</b><ul class="l"><li>10/25 당일 혜택(생화 50%, 식대 43,000, 드레스 50%) 계약서에 명시</li><li>할인가 부가세 포함 여부 (이 표는 별도로 보고 +10/+28 반영)</li><li>헬퍼비 금액 (15로 계산)</li><li>진행 요청사항 서면 전달 + 당일 담당자 이름</li><li>당일 축포·꽃가루 추가 판매 안 받는다고 미리 말하기</li></ul></div>
+ <div><b style="color:var(--la)">라도무스</b><ul class="l"><li>60만·식대 6천원 할인 서면으로 받기 (당일계약 조건이었음)</li><li>견적서에 인쇄된 음주류 5,000이 식대에 포함인지 (녹음: 포함)</li><li>점심 카드 결제 시 56,000 → 현금가와 같게 요청</li><li>대관(170) 선택 시 혼주대기실 포함 여부</li><li>패키지면 드레스 추가금 상한 먼저 정하기</li></ul></div>
+</div></section>
+
+<div class="foot">출처: 2026.10.25 상담 녹음(클로바노트 받아쓰기) · 견적서 사진 · 네이버 블로그 후기. 라도무스 오후 패키지 370(6/12)·식대 46,000은 받아쓰기가 깨진 구간이라 견적서 손글씨로 맞춘 값이에요. 메종 헬퍼비 15와 환불 규정은 녹음에 없고 견적서·블로그 기준이에요.</div>
+</div>
+<script>(()=>{
+const ME=[{id:"rent",label:"대관",note:"홀·조명음향·혼구 + 생화 50 · 드레스·헤메 직접"},{id:"pkg",label:"패키지",note:"대관 + 드레스·턱시도·헤메·부케·원판앨범 3권 + 생화"}];
+const LA=[{id:"r626",label:"6/26(토) 16:30 · 대관",note:"보증 200 · 식대 46,000 · 드레스·헤메 직접"},{id:"p626",label:"6/26(토) 16:30 · 패키지 340",note:"보증 200 · 식대 46,000"},{id:"p612",label:"6/12(토) 16:30 · 패키지 370",note:"보증 200 · 식대 46,000"},{id:"l612",label:"6/12 또는 5/29(토) 11:30 · 점심 패키지 400",note:"보증 250 · 식대 현금 50,000 · 패키지 필수"}];
+const D={g:200,vat:true,dr:100,ext:0,me:"rent",la:"r626"};let S={...D};
+let LS=null;try{LS=localStorage;S={...S,...JSON.parse(LS.getItem("mvl")||"{}")}}catch(e){LS=null}
+const sv=()=>{if(LS)try{LS.setItem("mvl",JSON.stringify(S))}catch(e){}};
+const f=n=>(Math.round(n*10)/10).toLocaleString("ko-KR",{maximumFractionDigits:1});
+function me(){const L=[];const ppl=Math.max(S.g,150);
+ if(S.me==="rent"){L.push(["g","홀 비용"]);L.push(["대관료","정가 300 → 당일 혜택",100]);if(S.vat)L.push(["대관료 부가세 10%","견적서 'VAT 별도'",10]);L.push(["생화장식 (필수)","정가 100 → 당일 50%",50]);if(S.ext>0)L.push(["외부 본식 드메","직접 계약 (입력값)",S.ext]);}
+ else{L.push(["g","패키지"]);L.push(["패키지","450 → 300 → 당일 280 (생화 포함)",280]);if(S.vat)L.push(["패키지 부가세 10%","견적서 'VAT 별도'",28]);L.push(["헬퍼비","드레스 헬퍼 (녹음엔 금액 없음, 15로 계산)",15]);if(S.dr>0)L.push(["드레스 업그레이드",`${S.dr} → 50% 할인`,S.dr*0.5]);}
+ L.push(["g","식대"]);L.push(["뷔페 (음주류 포함)",`43,000원 × ${ppl}명${S.g<150?" (보증 150)":""}`,ppl*4.3]);
+ return {L,t:L.filter(x=>x[0]!=="g").reduce((a,x)=>a+x[2],0),m:["계약금 50 · 15일 안 취소 시 전액 환불 (견적서·블로그)","보증 최소 150명 · 당일 20%까지 추가 식사","7~8월 연회장 리모델링 (6월 예식은 해당 없음)"]};}
+function la(){const L=[];const lunch=S.la==="l612";const g=lunch?250:200;const ppl=Math.max(S.g,g);const price=lunch?5:4.6;
+ if(S.la==="r626"){L.push(["g","대관 (오후)"]);L.push(["대관비용","정가 360",170]);L.push(["생화장식 (필수)","정가 170",130]);if(S.ext>0)L.push(["외부 본식 드메","직접 계약 (입력값)",S.ext]);}
+ else{const p=S.la==="p626"?340:S.la==="p612"?370:400;L.push(["g",lunch?"패키지 (점심 필수)":"패키지 (오후)"]);L.push(["웨딩 패키지",lunch?"580 → 460 → 6월 점심 60 추가 할인":"6월 오후 프로모션가",p]);L.push(["생화장식 (필수)","정가 170",130]);L.push(["본식 이모님","당일 현금",15]);if(S.dr>0)L.push(["드레스 업그레이드","할인 없음",S.dr]);}
+ L.push(["g","식대"]);L.push(["프리미엄 뷔페 (음주류·부가세 포함)",`${(price*10000).toLocaleString()}원 × ${ppl}명${S.g<g?` (보증 ${g})`:""} · 현금`,ppl*price]);
+ return {L,t:L.filter(x=>x[0]!=="g").reduce((a,x)=>a+x[2],0),m:["계약금 100 · 예식 5개월 전까지 환불·변경 (2주 지나면 10 차감)","날짜 변경 횟수 제한 없음 · 시식 1달 전 6인",lunch?"점심은 보증 250명이라 하객이 적어도 250명분":"오후 보증 200명"]};}
+function rl(id,r){document.getElementById(id+"-l").innerHTML=r.L.map(x=>x[0]==="g"?`<tr class="grp"><td colspan="2">${x[1]}</td></tr>`:`<tr><td>${x[0]}<small>${x[1]}</small></td><td>${f(x[2])}</td></tr>`).join("");document.getElementById(id+"-t").innerHTML=`${f(r.t)}<small> 만원</small>`;document.getElementById(id+"-m").innerHTML=r.m.map(s=>`<span>${s}</span>`).join("");}
+function ch(){document.getElementById("me-c").innerHTML=ME.map(c=>`<label class="choice"><input type="radio" name="me" value="${c.id}" ${S.me===c.id?"checked":""}><span>${c.label}<small>${c.note}</small></span></label>`).join("");
+ document.getElementById("la-c").innerHTML=LA.map(c=>`<label class="choice"><input type="radio" name="la" value="${c.id}" ${S.la===c.id?"checked":""}><span>${c.label}<small>${c.note}</small></span></label>`).join("");
+ document.querySelectorAll("input[name=me]").forEach(e=>e.onchange=()=>{S.me=e.value;up()});document.querySelectorAll("input[name=la]").forEach(e=>e.onchange=()=>{S.la=e.value;up()});}
+function up(){const a=me(),b=la();rl("me",a);rl("la",b);sv();
+ const all=[["메종 대관",{...S,me:"rent"}],["메종 패키지",{...S,me:"pkg"}]];
+ const sc=(k,v)=>{const o=S[k];S[k]=v;const r=(k==="me"?me():la()).t;S[k]=o;return r};
+ document.getElementById("kpis").innerHTML=`<div class="kpi c-me" style="--v:var(--me)"><div class="s">메종드보네르 · 하객 ${S.g}명</div><div class="n">${f(sc("me","rent"))}<small> 대관</small></div><div class="s">패키지 ${f(sc("me","pkg"))} (드레스 ${S.dr} 반영)</div></div><div class="kpi c-la" style="--v:var(--la)"><div class="s">라도무스 · 하객 ${S.g}명</div><div class="n">${f(sc("la","r626"))}<small> 6/26 대관</small></div><div class="s">오후 패키지 ${f(sc("la","p626"))}~${f(sc("la","p612"))} · 점심 ${f(sc("la","l612"))}</div></div>`;
+ const d=b.t-a.t;document.getElementById("diff").innerHTML=`<strong>지금 고른 조합: 메종 ${f(a.t)} vs 라도무스 ${f(b.t)} → ${d>=0?"메종이 "+f(d)+" 쌈":"라도무스가 "+f(-d)+" 쌈"}</strong><div class="cmp">${[["메종",a.t,"me"],["라도무스",b.t,"la"]].map(x=>`<div class="cbar c-${x[2]}"><span>${x[0]}</span><span class="track"><span class="fill" style="width:${x[1]/Math.max(a.t,b.t)*100}%"></span></span><span class="val">${f(x[1])}</span></div>`).join("")}</div><p class="note">같은 방식끼리 보면 대관은 메종 ${f(sc("me","rent"))} vs 라도무스 ${f(sc("la","r626"))}, 패키지는 메종 ${f(sc("me","pkg"))} vs 라도무스 오후 ${f(sc("la","p626"))}·점심 ${f(sc("la","l612"))}예요. 라도무스는 점심이 패키지 필수이고 보증 250명이라 가장 비싸요.</p>`;}
+const bind=(id,k,num)=>{const e=document.getElementById(id);if(num){e.value=S[k];e.oninput=()=>{S[k]=+e.value||0;up()}}else{e.checked=S[k];e.onchange=()=>{S[k]=e.checked;up()}}};
+bind("g","g",1);bind("dr","dr",1);bind("ext","ext",1);bind("vat","vat",0);
+document.getElementById("reset").onclick=()=>{S={...D};bind("g","g",1);bind("dr","dr",1);bind("ext","ext",1);bind("vat","vat",0);ch();up()};
+ch();up();})();</script></body></html>
