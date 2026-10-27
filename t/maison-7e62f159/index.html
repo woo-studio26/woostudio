@@ -168,7 +168,7 @@ function render(){
  document.querySelectorAll("#opts select").forEach(s=>s.onchange=()=>{sel[key(M,s.dataset.k)]=+s.value;save();render()});
  const t=total(M),o=total(M==="rent"?"pkg":"rent");
  document.getElementById("tot").innerHTML=`${f(t)}<small> 만원 · ${M==="rent"?"대관":"패키지"} · 하객 ${G}명</small>`;
- document.getElementById("tot2").innerHTML=`기본 ${f(base(M).reduce((a,x)=>a+x[2],0))} + 옵션 ${f(optsum(M))} · 참고: ${M==="rent"?"패키지":"대관"}로 하면 ${f(o)}${M==="pkg"?" (대구 스튜디오 촬영은 양쪽 다 별도)":" (대구 스튜디오 촬영 별도)"}`;
+ document.getElementById("tot2").innerHTML=`기본 ${f(base(M).reduce((a,x)=>a+x[2],0))} + 옵션 ${f(optsum(M))} · 참고: ${M==="rent"?"패키지로":"대관으로"} 하면 ${f(o)}${M==="pkg"?" (대구 스튜디오 촬영은 양쪽 다 별도)":" (대구 스튜디오 촬영 별도)"}`;
  const extra=OPT[M].filter(x=>x.ask).map(x=>`<li><b>${x.t}</b> — ${x.ask}</li>`).join("");
  document.getElementById("asks").innerHTML=`<h3 class="sub" style="margin:4px 0">${M==="rent"?"대관":"패키지"}일 때</h3><ul class="l">${extra}</ul><h3 class="sub" style="margin:12px 0 4px">공통</h3><ul class="l">${ASK_COMMON.map(a=>`<li>${a}</li>`).join("")}</ul>`;}
 function save(){try{localStorage.setItem("maison_cost",JSON.stringify({M,G,V,sel}))}catch(e){}}
