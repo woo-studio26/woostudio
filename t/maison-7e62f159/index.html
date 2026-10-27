@@ -1,0 +1,178 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>메종드보네르 실제 비용</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"><style>img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: 공통 조건 → 두 홀 나란히(시간·방식 선택 + 내역 + 총액) → 추가 옵션 체크 → 차액 요약. 모바일에선 1열 */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#1d2230; --muted:#5f6675; --line:#dfe3ea; --soft:#eef0f5;
+  --accent:#6b3f6e; --accent-soft:#f1e9f2;
+  --me:#3f7d5c; --la:#b0563a; --warn:#b07a12; --bad:#b23b3b;
+  --display:"Gowun Batang","Nanum Myeongjo",serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14161c; --surface:#1c1f27; --ink:#e9ebf1; --muted:#a2a8b6; --line:#2e3340; --soft:#232733;
+  --accent:#d6a6d9; --accent-soft:#2f2433; --me:#7cc39b; --la:#e58d6f; --warn:#e0b14a; --bad:#e47a7a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14161c; --surface:#1c1f27; --ink:#e9ebf1; --muted:#a2a8b6; --line:#2e3340; --soft:#232733;
+  --accent:#d6a6d9; --accent-soft:#2f2433; --me:#7cc39b; --la:#e58d6f; --warn:#e0b14a; --bad:#e47a7a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 56px}
+.wrap{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,5.5vw,36px);line-height:1.2}
+h2{font-size:20px}
+h3{font-size:19px}
+.eyebrow{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:600}
+.sub{color:var(--muted);margin:6px 0 0;max-width:64ch}
+.num{font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+label{cursor:pointer}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.field b{color:var(--ink);font-size:14px}
+input[type=number]{width:96px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:17px;height:17px;vertical-align:-3px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toggle{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.toggle small{display:block;color:var(--muted);font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.venue{border-top:5px solid var(--v)}
+.c-me{--v:var(--me)} .c-la{--v:var(--la)}
+.vhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.vhead span{font-size:12.5px;color:var(--muted)}
+.choices{display:flex;flex-direction:column;gap:6px}
+.choice{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.choice:has(input:checked){border-color:var(--v);background:color-mix(in srgb,var(--v) 8%,transparent)}
+.choice small{display:block;color:var(--muted);font-size:12px}
+.lines{width:100%;border-collapse:collapse;font-size:13.5px}
+.lines td{padding:7px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+.lines td:last-child{text-align:right;white-space:nowrap;padding-left:10px;font-variant-numeric:tabular-nums}
+.lines .grp td{font-weight:600;color:var(--muted);font-size:12px;padding-top:12px;border-bottom:1px solid var(--line)}
+.lines small{color:var(--muted);display:block;font-size:11.5px}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--v);padding-top:10px}
+.total b{font-size:15px}
+.total .amt{font-size:32px;font-weight:700;color:var(--v);line-height:1}
+.total .amt small{font-size:15px;color:var(--muted);font-weight:500}
+.meta{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.warn{color:var(--warn)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
+.opt{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;align-items:start}
+.opt:has(input[type=checkbox]:checked){background:var(--accent-soft)}
+.opt .p{grid-column:2;font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.opt .p .m{color:var(--me)} .opt .p .l{color:var(--la)}
+.opt .extra{grid-column:2;display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.opt .extra input{width:64px;padding:4px 6px}
+.diff{background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.diff strong{font-family:var(--display);font-size:19px}
+.cmp{display:flex;flex-direction:column;gap:8px}
+.cbar{display:grid;grid-template-columns:96px 1fr 84px;gap:10px;align-items:center;font-size:13.5px}
+.cbar .track{height:14px;background:var(--surface);border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.cbar .fill{height:100%;background:var(--v)}
+.cbar .val{text-align:right;font-weight:600}
+.cmpt{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+.cmpt th,.cmpt td{padding:9px 10px;border:1px solid var(--line);vertical-align:top;text-align:left}
+.cmpt thead th{background:var(--soft)}
+.cmpt tbody th{font-weight:600;white-space:nowrap}
+.cmpt tfoot th,.cmpt tfoot td{background:var(--accent-soft)}
+.cmpt small{display:block;color:var(--muted);font-size:11.5px}
+.cmpt b{font-size:16px}
+.flagc{color:var(--bad);font-weight:600}
+.warnc{color:var(--warn);display:block;margin-top:6px}
+.verdict2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.verdict2>div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;min-width:0}
+.verdict2 ul{margin:6px 0 0;padding-left:18px}
+@media (max-width:640px){.verdict2{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--muted)}
+.foot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+
+.tabs{display:flex;gap:8px;margin:4px 0 14px}.tabs button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer}
+.tabs button.on{border-color:var(--me);background:color-mix(in srgb,var(--me) 16%,transparent);color:var(--me)}
+.big{font-size:34px;font-weight:700;color:var(--me);font-variant-numeric:tabular-nums}.big small{font-size:14px;color:var(--muted);font-weight:500}
+.opt{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.opt h3{margin:0 0 6px;font-size:15px;display:flex;justify-content:space-between;gap:8px}.opt h3 span{color:var(--me);font-variant-numeric:tabular-nums}
+.opt select{width:100%;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit;margin:4px 0}
+.how{font-size:13px;color:var(--muted);margin:6px 0 0;padding-left:18px}.how li{margin:2px 0}
+.ask{font-size:12.5px;margin-top:6px;padding:6px 10px;border-radius:8px;background:color-mix(in srgb,#e5a00d 12%,transparent)}
+.ask b{color:#e5a00d}
+ul.l{margin:0;padding-left:18px;font-size:14px}ul.l li{margin:4px 0}
+select option{color:#000}
+</style></head><body><div class="wrap c-me">
+<header><div class="eyebrow">2027년 6월 토요일 · 6/19 11·12시, 6/26 11시 · 단위 만원</div>
+<h1>메종드보네르 실제 비용</h1>
+<p class="sub">10/25 상담 녹음 기준(당일 혜택 그대로, 부가세 10% 포함). 대관이냐 패키지냐 고르고, 아래 옵션을 바꾸면 합계가 바로 바뀌어요. <b>노란 칸</b>은 메종에 물어봐야 확정되는 것.</p></header>
+
+<div class="tabs"><button id="t-rent">대관</button><button id="t-pkg">패키지</button></div>
+
+<section class="panel"><div class="row">
+ <label class="field"><b>예상 하객 (식권)</b><span><input id="g" type="number" min="150" max="350" value="200"> 명</span></label>
+ <label class="toggle"><input type="checkbox" id="vat" checked><span>부가세 10% 포함<small>견적서 'VAT 별도' 기준</small></span></label>
+</div>
+<div class="big" id="tot"></div><div class="sub" id="tot2"></div></section>
+
+<section class="panel"><h2>기본 (꼭 내는 돈)</h2><table class="lines" id="base"></table></section>
+
+<section class="panel"><h2 id="opt-h"></h2><div id="opts"></div></section>
+
+<section class="panel"><h2>메종에 물어볼 것</h2><div id="asks"></div></section>
+<div class="foot">출처: 10/25 메종 상담 녹음(클로바노트) · 견적서 사진 · 네이버 블로그·플레이스 가격표(2026.10) · 웨딩킹 카페. 외부 업체 비용은 시세 범위라 실제 견적과 다를 수 있어요.</div>
+</div>
+<script>(()=>{
+const OPT={
+rent:[
+ {k:"dress",t:"본식 드레스 (외부)",c:[["대여점 + 헬퍼 (대구 베일즈 18 + 헬퍼 20)",38],["대전 아워드레스 대여 40 + 헬퍼 20",60],["본식 정찰제 샵 (대구 포그급 138 + 헬퍼 17)",155],["구매 후 되팔기 (실지출, 헬퍼 없음)",15]],d:0,
+  how:["드레스 헬퍼(이모님)가 당일 드레스를 홀로 가져와 신부대기실에서 입혀주고, 끝나면 회수","가봉은 샵에서 1~2회 미리","헬퍼 없이 하면 착장·이동·화장실이 어려움 → 헬퍼 권장"],
+  ask:"외부 드레스 반입비가 있는지 · 신부가 어디서 갈아입는지(대기실·탈의실) · 몇 시부터 입실 가능한지 · 외부 헬퍼 출입"},
+ {k:"tux",t:"신랑 턱시도 (외부)",c:[["대여 (금액 미조사)",0],["본인 정장",0]],d:0,how:["드레스샵·턱시도 대여점에서 따로 대여"],ask:"신랑 탈의 공간 · 외부 턱시도 반입 제한 있는지"},
+ {k:"hm",t:"신랑·신부 헤어·메이크업 (외부)",c:[["원스에이치 (갈마동, 2명 동시) 40",40],["헤이미쉬 (둔산동 1인샵) 45",45],["리라메이크업 (탄방역) 44",44],["대전 유명샵급 55",55]],d:0,
+  how:["샵에서 받고 홀로 이동 (11시 예식이면 7시 시작 → 9:30 도착)","얼리스타트 추가비 0~11 (아래 칸)","식 중 수정 메이크업은 샵 동행 시 출장비 별도 (비수도권 중간값 약 21)"],
+  ask:"신랑·신부 몇 시까지 와야 하는지 · 홀 메이크업실을 외부 아티스트가 쓸 수 있는지 · 외부 헤메 반입비"},
+ {k:"early",t:"얼리스타트 추가비",c:[["없음 (05~06시 오픈 샵)",0],["5 (참가격 비수도권 중간값)",5],["11 (높게 잡음)",11]],d:1,how:["샵과 시작 시각 협의"],ask:""},
+ {k:"hj",t:"혼주 헤어·메이크업 (외부)",c:[["안 함 / 각자",0],["어머님 2명 (~31)",31],["어머님 2 + 아버님 2 (~43)",43]],d:1,
+  how:["1인샵은 6명 무리 → 혼주는 다른 샵이나 2인 동시 샵","혼주는 예식 3시간 전 샵 도착 권장"],ask:"혼주 대기 공간 · 혼주 한복 갈아입을 곳"},
+ {k:"bq",t:"부케·코사지",c:[["생화 부케 + 코사지",10],["생화장식 업체에 같이 (금액 확인)",10]],d:0,how:["패키지엔 포함, 대관은 따로"],ask:"생화장식(50)에 부케·코사지 추가하면 얼마인지"},
+ {k:"ph",t:"원판·본식 사진",c:[["데이터형 (보정 40장 + 원본) 54",54],["앨범 포함 69",69],["원판·앨범 3권 포함 (70만원대) 75",75],["홀 원판이 대관에도 포함이면 0",0]],d:0,
+  how:["패키지엔 원판 앨범 3권 포함, 대관은 따로","웨딩킹 홍보글 기준 범위"],ask:"대관도 홀 원판 촬영이 포함인지 · 외부 작가 반입비 · 작가 촬영 위치 제한"},
+ {k:"dvd",t:"영상(DVD)",c:[["안 함",0],["DVD 29",29]],d:0,how:["선택"],ask:"외부 영상 업체 반입비"}
+],
+pkg:[
+ {k:"up",t:"드레스 업그레이드 (메종 드레스실)",c:[["기본 라인 0",0],["50 라인 → 50% 할인 25",25],["70 라인 → 35",35],["100 라인 → 50 (블로그상 가장 많이 고름)",50],["150 라인 → 75",75]],d:3,
+  how:["메종 드레스실 60~70벌, 피팅 4벌 (사진 촬영 불가, 헬퍼 폰으로만)","녹음: 추가금 10~150, 패키지 확정 시 50% 할인","셀렉 당일 드레스 계약금 20 (블로그)"],ask:"50% 할인이 계약서에 들어가는지 · 피팅 몇 벌, 날짜 몇 번"},
+ {k:"ext",t:"드레스가 마음에 안 들 때 → 외부 드레스",c:[["메종 드레스 사용",0],["외부 대여점 + 헬퍼 (차감 없음 가정)",38],["외부 정찰제 샵 + 헬퍼 (차감 없음 가정)",155]],d:0,
+  how:["패키지 280에 드레스 값이 들어 있어서, 외부로 바꾸면 차감이 되는지가 핵심","차감 안 되면 외부 드레스 값을 그대로 더 냄","이 경우 업그레이드 비용(위)은 0으로"],ask:"패키지에서 드레스만 빼면 얼마 빠지는지 · 외부 드레스 반입비 · 메종 헬퍼 15는 그래도 내는지"},
+ {k:"hj",t:"혼주 헤어·메이크업",c:[["안 함 / 각자",0],["외부 1인샵 어머님 2명 (~31)",31],["외부 어머님 2 + 아버님 2 (~43)",43]],d:1,
+  how:["패키지 헤메는 신랑·신부만 포함","메종 뷰티실 혼주 가격은 미확인"],ask:"메종 뷰티실 혼주 헤메 가격 · 신부 메이크업 시연비 (블로그 25)"},
+ {k:"bqup",t:"부케 업그레이드",c:[["기본",0],["+5",5],["+7",7]],d:0,how:["블로그: 기본 / +5 / +7"],ask:""},
+ {k:"dvd",t:"영상(DVD)·스냅",c:[["안 함",0],["DVD 29",29],["스냅 54",54]],d:0,how:["패키지엔 원판 앨범 3권만 포함"],ask:"외부 스냅·영상 업체 반입비"}
+]};
+const ASK_COMMON=["10/25 상담가(대관 100, 생화 50, 식대 43,000, 패키지 280, 드레스 50%)를 계약서에 적어주는지, 언제까지 유지되는지","부가세: 대관 100·패키지 280에 별도인지, 생화 50·식대에도 붙는지","식대 43,000에 음주류 포함인지, 아이 몇 살까지 무료인지","보증 150명 · 2주 전 확정 · 당일 20% 여유 · 그 이상이면 얼마인지","계약금 50 · 15일 안 환불 · 날짜 변경 가능 여부와 수수료","7~8월 리모델링이 6월 예식에 영향 없는지","진행 요청사항 서면 전달, 당일 담당자 · 축포·꽃가루 추가판매는 안 받음","헬퍼비 등 다른 필수 비용이 더 있는지"];
+let M="rent",G=200,V=true;const sel={};
+try{const s=JSON.parse(localStorage.getItem("maison_cost")||"{}");M=s.M||M;G=s.G||G;V=s.V??V;Object.assign(sel,s.sel||{})}catch(e){}
+const f=n=>(Math.round(n*10)/10).toLocaleString("ko-KR",{maximumFractionDigits:1});
+const key=(m,k)=>m+"_"+k;
+function base(m){const L=[];if(m==="rent"){L.push(["대관료","정가 300 → 당일 혜택",100]);if(V)L.push(["대관료 부가세","10%",10]);L.push(["생화장식 (필수)","정가 100 → 당일 50%",50]);}
+ else{L.push(["패키지","450 → 300 → 당일 280 · 홀+생화+드레스·턱시도+신랑신부 헤메+부케+원판 앨범 3권",280]);if(V)L.push(["패키지 부가세","10%",28]);L.push(["드레스 헬퍼","녹음엔 '별도'만, 15로 계산",15]);}
+ L.push(["식대",`43,000원 × ${Math.max(G,150)}명 (음주류 포함, 보증 150부터)`,Math.max(G,150)*4.3]);return L}
+function optsum(m){return OPT[m].reduce((a,o)=>a+o.c[sel[key(m,o.k)]??o.d][1],0)}
+function total(m){return base(m).reduce((a,x)=>a+x[2],0)+optsum(m)}
+function render(){
+ document.getElementById("t-rent").className=M==="rent"?"on":"";document.getElementById("t-pkg").className=M==="pkg"?"on":"";
+ document.getElementById("base").innerHTML=base(M).map(x=>`<tr><td>${x[0]}<small>${x[1]}</small></td><td>${f(x[2])}</td></tr>`).join("")+`<tr class="grp"><td>기본 소계</td><td>${f(base(M).reduce((a,x)=>a+x[2],0))}</td></tr>`;
+ document.getElementById("opt-h").textContent=M==="rent"?"대관이면 우리가 따로 챙길 것":"패키지 옵션 · 추가로 생길 수 있는 돈";
+ document.getElementById("opts").innerHTML=OPT[M].map(o=>{const i=sel[key(M,o.k)]??o.d;return `<div class="opt"><h3>${o.t}<span>${f(o.c[i][1])}</span></h3><select data-k="${o.k}">${o.c.map((c,j)=>`<option value="${j}" ${j==i?"selected":""}>${c[0]}</option>`).join("")}</select><ul class="how">${o.how.map(h=>`<li>${h}</li>`).join("")}</ul>${o.ask?`<div class="ask"><b>물어볼 것</b> · ${o.ask}</div>`:""}</div>`}).join("");
+ document.querySelectorAll("#opts select").forEach(s=>s.onchange=()=>{sel[key(M,s.dataset.k)]=+s.value;save();render()});
+ const t=total(M),o=total(M==="rent"?"pkg":"rent");
+ document.getElementById("tot").innerHTML=`${f(t)}<small> 만원 · ${M==="rent"?"대관":"패키지"} · 하객 ${G}명</small>`;
+ document.getElementById("tot2").innerHTML=`기본 ${f(base(M).reduce((a,x)=>a+x[2],0))} + 옵션 ${f(optsum(M))} · 참고: ${M==="rent"?"패키지":"대관"}로 하면 ${f(o)}${M==="pkg"?" (대구 스튜디오 촬영은 양쪽 다 별도)":" (대구 스튜디오 촬영 별도)"}`;
+ const extra=OPT[M].filter(x=>x.ask).map(x=>`<li><b>${x.t}</b> — ${x.ask}</li>`).join("");
+ document.getElementById("asks").innerHTML=`<h3 class="sub" style="margin:4px 0">${M==="rent"?"대관":"패키지"}일 때</h3><ul class="l">${extra}</ul><h3 class="sub" style="margin:12px 0 4px">공통</h3><ul class="l">${ASK_COMMON.map(a=>`<li>${a}</li>`).join("")}</ul>`;}
+function save(){try{localStorage.setItem("maison_cost",JSON.stringify({M,G,V,sel}))}catch(e){}}
+document.getElementById("t-rent").onclick=()=>{M="rent";save();render()};document.getElementById("t-pkg").onclick=()=>{M="pkg";save();render()};
+const g=document.getElementById("g");g.value=G;g.oninput=()=>{G=+g.value||150;save();render()};
+const v=document.getElementById("vat");v.checked=V;v.onchange=()=>{V=v.checked;save();render()};
+render();})();</script></body></html>
