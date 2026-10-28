@@ -106,6 +106,7 @@ select option{color:#000}
 .num.ed{border-color:#e5a00d;color:#e5a00d}
 .oprow{display:flex;gap:8px;align-items:center}.oprow select{flex:1}
 .lines td:last-child{white-space:nowrap}
+.srow{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}.srow b{flex:1}.srow small{color:var(--muted)}.srow button{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit;font:inherit;font-size:13px;cursor:pointer}
 .rst{margin-top:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit;font:inherit;cursor:pointer}
 </style></head><body><div class="wrap c-me">
 <header><div class="eyebrow">2027년 6월 토요일 · 6/19 11·12시, 6/26 11시 · 단위 만원</div>
@@ -118,7 +119,13 @@ select option{color:#000}
  <label class="field"><b>예상 하객 (식권)</b><span><input id="g" type="number" min="150" max="350" value="200"> 명</span></label>
  <label class="toggle"><input type="checkbox" id="vat" checked><span>부가세 10% 포함<small>견적서 'VAT 별도' 기준</small></span></label>
 </div>
-<div class="big" id="tot"></div><div class="sub" id="tot2"></div><button class="rst" id="rst">입력값 모두 처음으로</button></section>
+<div class="big" id="tot"></div><div class="sub" id="tot2"></div></section>
+<section class="panel" id="savep"><h2>설정 저장</h2>
+<div class="oprow"><input id="sname" type="text" placeholder="이름 (예: 대관 최소, 패키지 100라인)" style="flex:1;font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit"><button class="rst" id="ssave" style="margin:0">저장</button></div>
+<div id="slist" style="margin-top:10px"></div>
+<div class="oprow" style="margin-top:10px;flex-wrap:wrap"><button class="rst" id="share" style="margin:0">지금 설정을 링크로 복사</button><button class="rst" id="rst" style="margin:0">초기화 (상담가 기준으로)</button></div>
+<p class="sub" id="smsg" style="margin:8px 0 0;min-height:1em"></p>
+<p class="src">저장은 이 폰(브라우저)에만 남아요. 다른 사람한테 같은 숫자를 보여주려면 "링크로 복사"를 눌러 보내면 돼요.</p></section>
 
 <section class="panel"><h2>기본 (꼭 내는 돈)</h2><table class="lines" id="base"></table></section>
 
@@ -201,5 +208,18 @@ function save(){try{localStorage.setItem("maison_cost3",JSON.stringify({M,G,V,se
 document.getElementById("t-rent").onclick=()=>{M="rent";save();render()};document.getElementById("t-pkg").onclick=()=>{M="pkg";save();render()};
 const g=document.getElementById("g");g.value=G;g.oninput=()=>{G=+g.value||150;save();render()};
 const v=document.getElementById("vat");v.checked=V;v.onchange=()=>{V=v.checked;save();render()};
-document.getElementById("rst").onclick=()=>{for(const k in OV)delete OV[k];for(const k in sel)delete sel[k];MEAL=4.3;MIN=150;G=200;V=true;g.value=200;v.checked=true;save();render()};
+
+const SK="maison_saves";const msg=t=>{const e=document.getElementById("smsg");e.textContent=t;clearTimeout(msg.t);msg.t=setTimeout(()=>e.textContent="",3000)};
+const snap=()=>JSON.parse(JSON.stringify({M,G,V,sel,OV,MEAL,MIN}));
+function apply(st){M=st.M||"rent";G=st.G||200;V=st.V??true;for(const k in sel)delete sel[k];Object.assign(sel,st.sel||{});for(const k in OV)delete OV[k];Object.assign(OV,st.OV||{});MEAL=st.MEAL??4.3;MIN=st.MIN??150;g.value=G;v.checked=V;save();render();}
+const getS=()=>{try{return JSON.parse(localStorage.getItem(SK)||"[]")}catch(e){return[]}};const putS=a=>{try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}};
+function list(){const a=getS();document.getElementById("slist").innerHTML=a.length?a.map((x,i)=>`<div class="srow"><b>${x.n.replace(/</g,"&lt;")}<br><small>${x.s.M==="rent"?"대관":"패키지"} · ${f(x.t)}만원 · ${x.d}</small></b><button data-l="${i}">불러오기</button><button data-u="${i}">덮어쓰기</button><button data-d="${i}">삭제</button></div>`).join(""):`<p class="sub" style="margin:0">저장한 설정이 없어요.</p>`;
+ document.querySelectorAll("#slist [data-l]").forEach(b=>b.onclick=()=>{const x=getS()[+b.dataset.l];apply(x.s);msg(`"${x.n}" 불러옴`)});
+ document.querySelectorAll("#slist [data-u]").forEach(b=>b.onclick=()=>{const a=getS(),x=a[+b.dataset.u];if(!confirm(`"${x.n}"을 지금 설정으로 덮어쓸까요?`))return;x.s=snap();x.t=total(M);x.d=new Date().toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});putS(a);list();msg("덮어씀")});
+ document.querySelectorAll("#slist [data-d]").forEach(b=>b.onclick=()=>{const a=getS(),x=a[+b.dataset.d];if(!confirm(`"${x.n}" 삭제할까요?`))return;a.splice(+b.dataset.d,1);putS(a);list();msg("삭제함")});}
+document.getElementById("ssave").onclick=()=>{const n=document.getElementById("sname").value.trim()||`${M==="rent"?"대관":"패키지"} ${f(total(M))}만원`;const a=getS();a.unshift({n,s:snap(),t:total(M),d:new Date().toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})});putS(a);document.getElementById("sname").value="";list();msg(`"${n}" 저장함`)};
+document.getElementById("share").onclick=async()=>{const u=location.origin+location.pathname+"#s="+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(snap())))));try{await navigator.clipboard.writeText(u);msg("링크 복사됨 · 카톡에 붙여넣기")}catch(e){prompt("이 링크를 복사하세요",u)}};
+document.getElementById("rst").onclick=()=>{if(!confirm("상담가 기준으로 초기화할까요? (저장한 설정은 그대로 남아요)"))return;apply({});msg("초기화함")};
+try{const h=location.hash.match(/#s=(.+)/);if(h){const st=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(h[1])))));setTimeout(()=>{apply(st);history.replaceState(null,"",location.pathname);msg("공유받은 설정을 불러왔어요")},10)}}catch(e){}
+list();
 render();})();</script></body></html>
