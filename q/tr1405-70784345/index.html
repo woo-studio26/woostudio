@@ -117,7 +117,7 @@ figcaption{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.55);color:#
 <div class="opts" id="opts"></div>
 <div class="vw" id="vw"><button class="on" data-v="liv">거실 3D</button><button data-v="plan">집 전체 평면</button><button data-v="van">화장대 3D</button></div>
 <div class="ba" id="ba"><img id="bB" alt="현재"><img class="after" id="bA" alt="변경 후"><div class="h" id="bH"></div><span class="tl">현재</span><span class="tr" id="bT"></span><input type="range" min="0" max="100" value="50" id="bR" aria-label="비교 슬라이더"></div>
-<div id="v3d"><div class="ld" id="v3ld">3D 불러오는 중…</div><div class="vb"><button id="v3door">양옆 문 열기</button><button id="v3reset">정면</button></div><div class="hint">손가락으로 돌리고, 두 손가락으로 확대</div></div><div class="cap" id="cap"></div>
+<div id="v3d"><div class="ld" id="v3ld">3D 불러오는 중…</div><div class="vb"><button id="v3door">양옆 문 열기</button><button id="v3dim">치수 보기</button><button id="v3reset">정면</button></div><div class="hint">손가락으로 돌리고, 두 손가락으로 확대</div></div><div class="cap" id="cap"></div>
 <p class="note">견적은 구정마루 그랜드 텍스쳐 165 기준입니다. 색상은 실물 샘플을 보고 정하고, 다른 제품으로 바꾸면 금액이 달라질 수 있습니다. 3D 화면은 예시라 실제 색감과 차이가 있을 수 있습니다.</p>
 </div>
 
@@ -175,6 +175,27 @@ for(const [x0,x1,y0,y1,z0,z1,k,f] of G){const d=M[k]||{c:0xcccccc};
  if(k==='거울'&&(z1-z0)<300){const top=z0>1500;const piv=new THREE.Group();piv.position.set(0,top?z1:z0,m.position.z-3);m.position.set(m.position.x,top?-(z1-z0)/2:(z1-z0)/2,3);piv.add(m);grp.add(piv);doors.push({p:piv,ax:'x',a:top?-1.2:1.2,id:'F',o:0});continue}
  if(k==='서랍전면'&&(z1-z0)>500){const left=x0<600;const piv=new THREE.Group();piv.position.set(left?x0-600:x1-600,(z0+z1)/2,m.position.z+9);m.position.set(left?(x1-x0)/2:-(x1-x0)/2,0,-9);piv.add(m);grp.add(piv);doors.push({p:piv,ax:'y',a:left?-1.6:1.6,id:'K',o:0});continue}
  grp.add(m)}
+
+const DIM=new THREE.Group();DIM.visible=false;sc.add(DIM);
+const lm=new THREE.LineBasicMaterial({color:0xd0452b,depthTest:false});
+const lab=(t,p)=>{const c=document.createElement('canvas');const x=c.getContext('2d');x.font='bold 44px sans-serif';const w=x.measureText(t).width+28;c.width=w;c.height=64;x.font='bold 44px sans-serif';x.fillStyle='rgba(255,255,255,.92)';x.fillRect(0,0,w,64);x.fillStyle='#c0391f';x.textBaseline='middle';x.fillText(t,14,34);const tx=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthTest:false}));s.scale.set(w*1.9,64*1.9,1);s.position.copy(p);s.renderOrder=10;DIM.add(s)};
+const dim=(a,b,t,tk)=>{const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b);const g=new THREE.BufferGeometry().setFromPoints([A,B]);const l=new THREE.Line(g,lm);l.renderOrder=9;DIM.add(l);
+ for(const P of [A,B]){const q=[P.clone().add(new THREE.Vector3(...tk)),P.clone().sub(new THREE.Vector3(...tk))];const lt=new THREE.Line(new THREE.BufferGeometry().setFromPoints(q),lm);lt.renderOrder=9;DIM.add(lt)}
+ lab(t,A.clone().add(B).multiplyScalar(.5))};
+const V=[30,0,0],H=[0,30,0];
+dim([-700,0,300],[-700,2300,300],'전체 높이 2300',V);
+dim([700,0,300],[700,780,300],'상판 높이 780',V);
+dim([700,780,300],[700,980,300],'200',V);
+dim([700,980,300],[700,2210,300],'거울장 1230',V);
+dim([700,2210,300],[700,2300,300],'90',V);
+dim([-600,2420,300],[600,2420,300],'전체 폭 1200',H);
+dim([-530,930,-40],[530,930,-40],'거울장 폭 1060',H);
+dim([-512,1100,-40],[-280,1100,-40],'232',H);
+dim([-262,1100,-40],[262,1100,-40],'524',H);
+dim([280,1100,-40],[512,1100,-40],'232',H);
+dim([-700,10,300],[-700,10,-300],'깊이 600',V);
+dim([-700,2210,-102],[-700,2210,-282],'거울장 깊이 180',V);
+dim([-280,0,300],[-280,609,300],'다리 공간 609',[0,0,30]);
 const fl=new THREE.Mesh(new THREE.PlaneGeometry(2600,1800),new THREE.MeshStandardMaterial({color:0xcfc6ba,roughness:.9}));fl.rotation.x=-Math.PI/2;fl.position.z=-100;sc.add(fl);
 const T=new THREE.Vector3(0,1100,-250);let th=.45,ph=1.3,rad=5600,tth=th,tph=ph,trad=rad;
 const home=()=>{tth=.45;tph=1.3;trad=5600};
@@ -190,7 +211,7 @@ cv.addEventListener('wheel',e=>{e.preventDefault();trad=Math.min(8000,Math.max(1
 let st=0,dv=0;const LB=['양옆 문 열기','가운데 거울 열기','문 닫기'];const btn=document.getElementById('v3door');btn.textContent=LB[0];
 const tg=id=>st===0?0:id==='C'?(st===2?1:0):(id==='L'||id==='R')?(st===1?1:0):1;
 btn.onclick=()=>{st=(st+1)%3;btn.textContent=LB[st]};
-document.getElementById('v3reset').onclick=home;
+document.getElementById('v3reset').onclick=home;document.getElementById('v3dim').onclick=e=>{DIM.visible=!DIM.visible;e.target.textContent=DIM.visible?'치수 숨기기':'치수 보기'};
 const fit=()=>{const w=el.clientWidth,h=el.clientHeight;if(!w)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
 new ResizeObserver(fit).observe(el);fit();
 (function loop(){requestAnimationFrame(loop);if(el.offsetParent===null)return;for(const d of doors){d.o+=(tg(d.id)-d.o)*.12;d.p.rotation[d.ax]=d.a*d.o}dv+=((st?1:0)-dv)*.12;DL.position.z=dv*330;DR.position.z=Math.max(0,dv-.15)*390;upd();r.render(sc,cam)})();
