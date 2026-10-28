@@ -188,9 +188,9 @@ function render(){
  document.querySelectorAll("#base input[data-b]").forEach(e=>e.onchange=()=>{OV[M+"_b_"+e.dataset.b]=e.value===""?undefined:+e.value;if(e.value==="")delete OV[M+"_b_"+e.dataset.b];save();render()});
  document.getElementById("meal").onchange=e=>{MEAL=+e.target.value||0;save();render()};document.getElementById("min").onchange=e=>{MIN=+e.target.value||0;save();render()};
  document.getElementById("opt-h").textContent=M==="rent"?"대관이면 우리가 따로 챙길 것 + 메종 선택사항":"패키지 옵션 + 메종 선택사항 (견적서 금액)";
- document.querySelectorAll("#opts .opt").forEach((el,i)=>{const o=OPT[M][i];if(COMMON.includes(o)&&!(i>0&&COMMON.includes(OPT[M][i-1])))el.insertAdjacentHTML("beforebegin",`<h3 class="sub" style="margin:18px 0 4px">메종 견적서 선택사항 (대관·패키지 공통)</h3>`)});
  document.getElementById("opts").innerHTML=OPT[M].map(o=>{const i=sel[key(M,o.k)]??o.d;return `<div class="opt"><h3>${o.t}</h3><div class="oprow"><select data-k="${o.k}">${o.c.map((c,j)=>`<option value="${j}" ${j==i?"selected":""}>${c[0]}${c[2]?(V?" (+VAT "+cv(c)+")":" (VAT 별도)"):""}</option>`).join("")}</select><input class="num${OV[key(M,o.k)]!=null?" ed":""}" data-o="${o.k}" type="number" step="0.1" value="${ov(M,o)}"></div><ul class="how">${o.how.map(h=>`<li>${h}</li>`).join("")}</ul>${o.ask?`<div class="ask"><b>물어볼 것</b> · ${o.ask}</div>`:""}</div>`}).join("");
  document.querySelectorAll("#opts select").forEach(s=>s.onchange=()=>{sel[key(M,s.dataset.k)]=+s.value;delete OV[key(M,s.dataset.k)];save();render()});
+ document.querySelectorAll("#opts .opt").forEach((el,i)=>{const o=OPT[M][i];if(COMMON.includes(o)&&!(i>0&&COMMON.includes(OPT[M][i-1])))el.insertAdjacentHTML("beforebegin",`<h3 class="sub" style="margin:18px 0 4px">메종 견적서 선택사항 (대관·패키지 공통)</h3>`)});
  document.querySelectorAll("#opts input[data-o]").forEach(e=>e.onchange=()=>{const k=key(M,e.dataset.o);if(e.value==="")delete OV[k];else OV[k]=+e.value;save();render()});
  const t=total(M),o=total(M==="rent"?"pkg":"rent");
  document.getElementById("tot").innerHTML=`${f(t)}<small> 만원 · ${M==="rent"?"대관":"패키지"} · 하객 ${G}명</small>`;
