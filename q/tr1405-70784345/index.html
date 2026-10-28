@@ -154,7 +154,6 @@ window.addEventListener('van3d',async()=>{if(started)return;started=true;
 const el=document.getElementById('v3d');
 try{
 const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
-const {OrbitControls}=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js');
 document.getElementById('v3ld').remove();
 const r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));el.prepend(r.domElement);
 const sc=new THREE.Scene();
@@ -174,15 +173,24 @@ for(const [x0,x1,y0,y1,z0,z1,k] of G){const d=M[k]||{c:0xcccccc};
  if(k==='서랍전면'&&(z1-z0)>500){const left=x0<600;const piv=new THREE.Group();piv.position.set(left?x0-600:x1-600,(z0+z1)/2,m.position.z+9);m.position.set(left?(x1-x0)/2:-(x1-x0)/2,0,-9);piv.add(m);grp.add(piv);doors.push({p:piv,ax:'y',a:left?-1.6:1.6});continue}
  grp.add(m)}
 const fl=new THREE.Mesh(new THREE.PlaneGeometry(2600,1800),new THREE.MeshStandardMaterial({color:0xcfc6ba,roughness:.9}));fl.rotation.x=-Math.PI/2;fl.position.z=-100;sc.add(fl);
-const ctl=new OrbitControls(cam,r.domElement);ctl.target.set(0,1100,-250);ctl.enableDamping=true;ctl.minDistance=1200;ctl.maxDistance=6500;ctl.maxPolarAngle=Math.PI*0.52;ctl.enablePan=false;
-const home=()=>{cam.position.set(1500,1500,3600);ctl.target.set(0,1100,-250);ctl.update()};home();
+const T=new THREE.Vector3(0,1100,-250);let th=.38,ph=1.32,rad=4100,tth=th,tph=ph,trad=rad;
+const home=()=>{tth=.38;tph=1.32;trad=4100};
+const upd=()=>{th+=(tth-th)*.15;ph+=(tph-ph)*.15;rad+=(trad-rad)*.15;cam.position.set(T.x+rad*Math.sin(ph)*Math.sin(th),T.y+rad*Math.cos(ph),T.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(T)};
+const pts=new Map();let pd=0;const cv=r.domElement;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){const [a,b]=[...pts.values()];pd=Math.hypot(a[0]-b[0],a[1]-b[1])}});
+cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);
+ if(pts.size===1){tth-=(e.clientX-p[0])*.008;tph=Math.min(1.62,Math.max(.25,tph-(e.clientY-p[1])*.006))}
+ pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)trad=Math.min(7000,Math.max(1300,trad*pd/d));pd=d}});
+const up=e=>{pts.delete(e.pointerId);pd=0};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+cv.addEventListener('wheel',e=>{e.preventDefault();trad=Math.min(7000,Math.max(1300,trad*(1+e.deltaY*.001)))},{passive:false});
 let open=0,goal=0;
 document.getElementById('v3door').onclick=e=>{goal=goal?0:1;e.target.textContent=goal?'문 닫기':'문 열기'};
 document.getElementById('v3reset').onclick=home;
 const fit=()=>{const w=el.clientWidth,h=el.clientHeight;if(!w)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
 new ResizeObserver(fit).observe(el);fit();
-(function loop(){requestAnimationFrame(loop);if(el.offsetParent===null)return;open+=(goal-open)*.12;for(const d of doors)d.p.rotation[d.ax]=d.a*open;ctl.update();r.render(sc,cam)})();
-}catch(err){document.getElementById('v3ld').textContent='3D를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.'}
+(function loop(){requestAnimationFrame(loop);if(el.offsetParent===null)return;open+=(goal-open)*.12;for(const d of doors)d.p.rotation[d.ax]=d.a*open;upd();r.render(sc,cam)})();
+}catch(err){console.error(err);const l=document.getElementById('v3ld');if(l)l.textContent='3D를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.'}
 });
 </script>
 </body>
