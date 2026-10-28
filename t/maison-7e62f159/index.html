@@ -125,39 +125,50 @@ select option{color:#000}
 <section class="panel"><h2 id="opt-h"></h2><div id="opts"></div></section>
 
 <section class="panel"><h2>메종에 물어볼 것</h2><div id="asks"></div></section>
-<div class="foot">출처: 10/25 메종 상담 녹음(클로바노트) · 견적서 사진 · 네이버 블로그·플레이스 가격표(2026.10) · 웨딩킹 카페. 외부 업체 비용은 시세 범위라 실제 견적과 다를 수 있어요.</div>
+<div class="foot">선택사항 금액: 메종 견적서(홀비용 안내·예식비용 안내) 인쇄 금액 그대로. 피에타 스냅·DVD와 제휴 웨딩촬영은 VAT 별도라 부가세 칸 체크 시 10% 더함. 출처: 10/25 메종 상담 녹음(클로바노트) · 견적서 사진 · 네이버 블로그·플레이스 가격표(2026.10) · 웨딩킹 카페. 외부 업체 비용은 시세 범위라 실제 견적과 다를 수 있어요.</div>
 </div>
 <script>(()=>{
+const COMMON=[
+ {k:"hjm",t:"혼주 헤어·메이크업",c:[["안 함 / 각자",0],["메종 어머님 2명 (여 17 × 2)",34],["메종 어머님 2 + 아버님 2 (17×2 + 6×2)",46],["외부 1인샵 어머님 2명 (~31)",31],["외부 어머님 2 + 아버님 2 (~43)",43]],d:1,how:["메종 견적서: 혼주 Makeup & hair 여 170,000 / 남 60,000","외부는 근처 1인샵 가격표 기준"],ask:"혼주 헤메 시작 시간 · 혼주 대기 공간"},
+ {k:"hanbok",t:"한복 대여 (메종)",c:[["안 함 / 따로 준비",0],["1벌 40",40],["2벌 (양가 어머님) 80",80]],d:0,how:["메종 견적서: 한복 대여 400,000"],ask:"40이 1벌 가격인지"},
+ {k:"snap",t:"본식 스냅 (메종 연계 피에타, 원본 포함)",c:[["안 함 / 외부",0],["스냅박스 50장 50",50,1],["앨범 40P 65",65,1],["앨범 50P 75",75,1]],d:0,how:["메종 견적서 '피에타' · 원본 포함 · VAT 별도 (부가세 칸 체크 시 +10%)"],ask:""},
+ {k:"dvd",t:"본식 영상 DVD",c:[["안 함",0],["씬스틸 1캠 40",40],["피에타 2캠 50 (메인편집본·인터뷰·USB 2개)",50,1]],d:0,how:["메종 견적서 선택사항"],ask:"외부 영상 업체 반입 가능한지·반입비"},
+ {k:"mc",t:"사회자",c:[["지인 사회",0],["일반 사회자 20",20],["주례 없는 예식 사회자 30",30]],d:0,how:["메종 견적서 선택사항"],ask:""},
+ {k:"jr",t:"주례",c:[["없음",0],["주례 15",15]],d:0,how:["메종 견적서 선택사항"],ask:""},
+ {k:"song",t:"축가",c:[["지인 / 없음",0],["전문 축가 15",15]],d:0,how:["메종 견적서 선택사항"],ask:""},
+ {k:"fs",t:"플라워샤워",c:[["없음",0],["플라워샤워 20",20]],d:0,how:["메종 견적서 20만원 · 라비에벨은 당일계약 서비스로 줬음 → 협상 카드"],ask:"서비스로 넣어줄 수 있는지"},
+ {k:"pb",t:"포토부스 (심플큐브)",c:[["없음",0],["포토부스 50",50]],d:0,how:["메종 견적서: 외부 진행 불가"],ask:""},
+ {k:"pb2",t:"폐백 음식 (신부측)",c:[["폐백 안 함",0],["폐백 음식 21~",21]],d:0,how:["메종 견적서: 신부측 210,000~"],ask:""}
+];
 const OPT={
 rent:[
  {k:"dress",t:"본식 드레스 (외부)",c:[["대여점 + 헬퍼 (대구 베일즈 18 + 헬퍼 20)",38],["대전 아워드레스 대여 40 + 헬퍼 20",60],["본식 정찰제 샵 (대구 포그급 138 + 헬퍼 17)",155],["구매 후 되팔기 (실지출, 헬퍼 없음)",15]],d:0,
   how:["드레스 헬퍼(이모님)가 당일 드레스를 홀로 가져와 신부대기실에서 입혀주고, 끝나면 회수","가봉은 샵에서 1~2회 미리","헬퍼 없이 하면 착장·이동·화장실이 어려움 → 헬퍼 권장"],
   ask:"외부 드레스 반입비가 있는지 · 신부가 어디서 갈아입는지(대기실·탈의실) · 몇 시부터 입실 가능한지 · 외부 헬퍼 출입"},
- {k:"tux",t:"신랑 턱시도 (외부)",c:[["대여 (금액 미조사)",0],["본인 정장",0]],d:0,how:["드레스샵·턱시도 대여점에서 따로 대여"],ask:"신랑 탈의 공간 · 외부 턱시도 반입 제한 있는지"},
+ {k:"tux",t:"신랑 턱시도 (외부)",c:[["대여 (금액 미조사, 직접 입력)",0],["본인 정장",0]],d:0,how:["드레스샵·턱시도 대여점에서 따로 대여"],ask:"신랑 탈의 공간 · 외부 턱시도 반입 제한 있는지"},
  {k:"hm",t:"신랑·신부 헤어·메이크업 (외부)",c:[["원스에이치 (갈마동, 2명 동시) 40",40],["헤이미쉬 (둔산동 1인샵) 45",45],["리라메이크업 (탄방역) 44",44],["대전 유명샵급 55",55]],d:0,
-  how:["샵에서 받고 홀로 이동 (11시 예식이면 7시 시작 → 9:30 도착)","얼리스타트 추가비 0~11 (아래 칸)","식 중 수정 메이크업은 샵 동행 시 출장비 별도 (비수도권 중간값 약 21)"],
+  how:["샵에서 받고 홀로 이동 (11시 예식이면 7시 시작 → 9:30 도착)","식 중 수정 메이크업은 샵 동행 시 출장비 별도 (비수도권 중간값 약 21)"],
   ask:"신랑·신부 몇 시까지 와야 하는지 · 홀 메이크업실을 외부 아티스트가 쓸 수 있는지 · 외부 헤메 반입비"},
  {k:"early",t:"얼리스타트 추가비",c:[["없음 (05~06시 오픈 샵)",0],["5 (참가격 비수도권 중간값)",5],["11 (높게 잡음)",11]],d:1,how:["샵과 시작 시각 협의"],ask:""},
- {k:"hj",t:"혼주 헤어·메이크업 (외부)",c:[["안 함 / 각자",0],["어머님 2명 (~31)",31],["어머님 2 + 아버님 2 (~43)",43]],d:1,
-  how:["1인샵은 6명 무리 → 혼주는 다른 샵이나 2인 동시 샵","혼주는 예식 3시간 전 샵 도착 권장"],ask:"혼주 대기 공간 · 혼주 한복 갈아입을 곳"},
- {k:"bq",t:"부케·코사지",c:[["생화 부케 + 코사지",10],["생화장식 업체에 같이 (금액 확인)",10]],d:0,how:["패키지엔 포함, 대관은 따로"],ask:"생화장식(50)에 부케·코사지 추가하면 얼마인지"},
- {k:"ph",t:"원판·본식 사진",c:[["데이터형 (보정 40장 + 원본) 54",54],["앨범 포함 69",69],["원판·앨범 3권 포함 (70만원대) 75",75],["홀 원판이 대관에도 포함이면 0",0]],d:0,
-  how:["패키지엔 원판 앨범 3권 포함, 대관은 따로","웨딩킹 홍보글 기준 범위"],ask:"대관도 홀 원판 촬영이 포함인지 · 외부 작가 반입비 · 작가 촬영 위치 제한"},
- {k:"dvd",t:"영상(DVD)",c:[["안 함",0],["DVD 29",29]],d:0,how:["선택"],ask:"외부 영상 업체 반입비"}
+ {k:"bq",t:"부케·부토니아·코사지",c:[["생화 부케 + 코사지 (시세)",10],["생화장식 업체에 같이 (금액 확인)",10]],d:0,how:["패키지엔 신부 부케·신랑 부토니아·코사지 6개 포함, 대관은 따로"],ask:"생화장식(50)에 부케·코사지 추가하면 얼마인지"},
+ {k:"ph",t:"원판 사진 (단체 사진)",c:[["외부 작가 데이터형 54",54],["외부 앨범 포함 69",69],["외부 원판·앨범 3권 75",75],["홀 원판이 대관에도 포함이면 0",0]],d:0,
+  how:["패키지엔 '본식 앨범 11×14 10page 3권' 포함, 대관 견적서엔 없음","외부 작가는 웨딩킹 홍보글 기준 범위"],ask:"대관이면 원판 촬영을 어떻게 하는지 · 외부 작가 반입비 · 촬영 위치 제한"},
+ {k:"pbk",t:"폐백 용품",c:[["폐백 안 함",0],["따로 준비 (금액 직접 입력)",0]],d:0,how:["대관 견적서: 폐백실 '폐백용품 별도준비' (패키지는 폐백의상 사모관대·원삼·족두리 포함)"],ask:""},
+ ...COMMON
 ],
 pkg:[
  {k:"up",t:"드레스 업그레이드 (메종 드레스실)",c:[["기본 라인 0",0],["50 라인 → 50% 할인 25",25],["70 라인 → 35",35],["100 라인 → 50 (블로그상 가장 많이 고름)",50],["150 라인 → 75",75]],d:3,
-  how:["메종 드레스실 60~70벌, 피팅 4벌 (사진 촬영 불가, 헬퍼 폰으로만)","녹음: 추가금 10~150, 패키지 확정 시 50% 할인","셀렉 당일 드레스 계약금 20 (블로그)"],ask:"50% 할인이 계약서에 들어가는지 · 피팅 몇 벌, 날짜 몇 번"},
+  how:["견적서: '고급 웨딩드레스, 턱시도' 포함, 추가금은 손글씨 메모","녹음: 추가금 10~150, 패키지 확정 시 50% 할인","드레스실 60~70벌, 피팅 4벌 (사진 촬영 불가) · 셀렉 당일 드레스 계약금 20 (블로그)"],ask:"50% 할인이 계약서에 들어가는지 · 피팅 몇 벌, 날짜 몇 번"},
  {k:"ext",t:"드레스가 마음에 안 들 때 → 외부 드레스",c:[["메종 드레스 사용",0],["외부 대여점 + 헬퍼 (차감 없음 가정)",38],["외부 정찰제 샵 + 헬퍼 (차감 없음 가정)",155]],d:0,
-  how:["패키지 280에 드레스 값이 들어 있어서, 외부로 바꾸면 차감이 되는지가 핵심","차감 안 되면 외부 드레스 값을 그대로 더 냄","이 경우 업그레이드 비용(위)은 0으로"],ask:"패키지에서 드레스만 빼면 얼마 빠지는지 · 외부 드레스 반입비 · 메종 헬퍼 15는 그래도 내는지"},
- {k:"hj",t:"혼주 헤어·메이크업",c:[["안 함 / 각자",0],["외부 1인샵 어머님 2명 (~31)",31],["외부 어머님 2 + 아버님 2 (~43)",43]],d:1,
-  how:["패키지 헤메는 신랑·신부만 포함","메종 뷰티실 혼주 가격은 미확인"],ask:"메종 뷰티실 혼주 헤메 가격 · 신부 메이크업 시연비 (블로그 25)"},
- {k:"bqup",t:"부케 업그레이드",c:[["기본",0],["+5",5],["+7",7]],d:0,how:["블로그: 기본 / +5 / +7"],ask:""},
- {k:"dvd",t:"영상(DVD)·스냅",c:[["안 함",0],["DVD 29",29],["스냅 54",54]],d:0,how:["패키지엔 원판 앨범 3권만 포함"],ask:"외부 스냅·영상 업체 반입비"}
+  how:["패키지 280에 드레스 값이 들어 있어서, 외부로 바꾸면 차감이 되는지가 핵심","차감 안 되면 외부 드레스 값을 그대로 더 냄 · 이 경우 업그레이드는 0으로"],ask:"패키지에서 드레스만 빼면 얼마 빠지는지 · 외부 드레스 반입비 · 메종 헬퍼 15는 그래도 내는지"},
+ {k:"wig",t:"가발비 (헤메)",c:[["없음",0],["가발 사용 (금액 미확인, 직접 입력)",0]],d:0,how:["견적서: 신랑·신부 Hair/Make-up '상담 후 연출 진행 (가발비 별도)'"],ask:"가발비 얼마인지"},
+ {k:"bqup",t:"부케 업그레이드",c:[["기본 (신부 부케·부토니아·코사지 6개)",0],["+5",5],["+7",7]],d:0,how:["블로그: 기본 / +5 / +7"],ask:""},
+ {k:"studio",t:"웨딩 촬영 (메종 제휴 스튜디오)",c:[["대구 스튜디오 따로 (이 페이지 밖)",0],["메종 제휴 100 (올제·그레이스케일·바닐라M·바라봄·라망·씨엘오브)",100,1]],d:0,how:["견적서: 1,000,000 VAT 별도 · 원본CD 별도 구매 · 촬영 헬퍼비 별도"],ask:"원본·헬퍼비 얼마인지"},
+ ...COMMON
 ]};
 const ASK_COMMON=["10/25 상담가(대관 100, 생화 50, 식대 43,000, 패키지 280, 드레스 50%)를 계약서에 적어주는지, 언제까지 유지되는지","부가세: 대관 100·패키지 280에 별도인지, 생화 50·식대에도 붙는지","식대 43,000에 음주류 포함인지, 아이 몇 살까지 무료인지","보증 150명 · 2주 전 확정 · 당일 20% 여유 · 그 이상이면 얼마인지","계약금 50 · 15일 안 환불 · 날짜 변경 가능 여부와 수수료","7~8월 리모델링이 6월 예식에 영향 없는지","진행 요청사항 서면 전달, 당일 담당자 · 축포·꽃가루 추가판매는 안 받음","헬퍼비 등 다른 필수 비용이 더 있는지"];
 let M="rent",G=200,V=true;const sel={};
-try{const s=JSON.parse(localStorage.getItem("maison_cost2")||"{}");M=s.M||M;G=s.G||G;V=s.V??V;Object.assign(sel,s.sel||{});setTimeout(()=>{Object.assign(OV,s.OV||{});if(s.MEAL!=null)MEAL=s.MEAL;if(s.MIN!=null)MIN=s.MIN;render()},0)}catch(e){}
+try{const s=JSON.parse(localStorage.getItem("maison_cost3")||"{}");M=s.M||M;G=s.G||G;V=s.V??V;Object.assign(sel,s.sel||{});setTimeout(()=>{Object.assign(OV,s.OV||{});if(s.MEAL!=null)MEAL=s.MEAL;if(s.MIN!=null)MIN=s.MIN;render()},0)}catch(e){}
 const f=n=>(Math.round(n*10)/10).toLocaleString("ko-KR",{maximumFractionDigits:1});
 const key=(m,k)=>m+"_"+k;
 const BD={rent:[["rent","대관료","정가 300 → 당일 혜택",100],["vat","대관료 부가세","10% (대관료 기준 자동)",null],["fl","생화장식 (필수)","정가 100 → 당일 50%",50]],
@@ -167,7 +178,8 @@ const bv=(m,k,d)=>OV[m+"_b_"+k]??d;
 function base(m){const L=[];const rows=BD[m];const main=bv(m,rows[0][0],rows[0][3]);
  rows.forEach(r=>{if(r[0]==="vat"){if(V)L.push([r[0],r[1],r[2],bv(m,"vat",Math.round(main*0.1*10)/10)])}else L.push([r[0],r[1],r[2],bv(m,r[0],r[3])])});
  const ppl=Math.max(G,MIN);L.push(["meal","식대",`${(MEAL*10000).toLocaleString()}원 × ${ppl}명 (음주류 포함, 보증 ${MIN}부터)`,Math.round(ppl*MEAL*10)/10]);return L}
-const ov=(m,o)=>{const k=key(m,o.k);return OV[k]??o.c[sel[k]??o.d][1]};
+const cv=c=>Math.round(c[1]*(c[2]&&V?1.1:1)*10)/10;
+const ov=(m,o)=>{const k=key(m,o.k);return OV[k]??cv(o.c[sel[k]??o.d])};
 function optsum(m){return OPT[m].reduce((a,o)=>a+ov(m,o),0)}
 function total(m){return base(m).reduce((a,x)=>a+x[3],0)+optsum(m)}
 function render(){
@@ -175,16 +187,17 @@ function render(){
  const B=base(M);document.getElementById("base").innerHTML=B.map(x=>x[0]==="meal"?`<tr><td>${x[1]}<small>${x[2]}</small><div class="oprow" style="margin-top:6px;font-size:13px">1인 <input class="num${MEAL!==4.3?" ed":""}" id="meal" type="number" step="0.1" value="${MEAL}"> 만원 · 보증 <input class="num${MIN!==150?" ed":""}" id="min" type="number" value="${MIN}"> 명</div></td><td>${f(x[3])}</td></tr>`:`<tr><td>${x[1]}<small>${x[2]}</small></td><td><input class="num${OV[M+"_b_"+x[0]]!=null?" ed":""}" data-b="${x[0]}" type="number" step="0.1" value="${x[3]}"></td></tr>`).join("")+`<tr class="grp"><td>기본 소계</td><td>${f(B.reduce((a,x)=>a+x[3],0))}</td></tr>`;
  document.querySelectorAll("#base input[data-b]").forEach(e=>e.onchange=()=>{OV[M+"_b_"+e.dataset.b]=e.value===""?undefined:+e.value;if(e.value==="")delete OV[M+"_b_"+e.dataset.b];save();render()});
  document.getElementById("meal").onchange=e=>{MEAL=+e.target.value||0;save();render()};document.getElementById("min").onchange=e=>{MIN=+e.target.value||0;save();render()};
- document.getElementById("opt-h").textContent=M==="rent"?"대관이면 우리가 따로 챙길 것":"패키지 옵션 · 추가로 생길 수 있는 돈";
- document.getElementById("opts").innerHTML=OPT[M].map(o=>{const i=sel[key(M,o.k)]??o.d;return `<div class="opt"><h3>${o.t}</h3><div class="oprow"><select data-k="${o.k}">${o.c.map((c,j)=>`<option value="${j}" ${j==i?"selected":""}>${c[0]}</option>`).join("")}</select><input class="num${OV[key(M,o.k)]!=null?" ed":""}" data-o="${o.k}" type="number" step="0.1" value="${ov(M,o)}"></div><ul class="how">${o.how.map(h=>`<li>${h}</li>`).join("")}</ul>${o.ask?`<div class="ask"><b>물어볼 것</b> · ${o.ask}</div>`:""}</div>`}).join("");
+ document.getElementById("opt-h").textContent=M==="rent"?"대관이면 우리가 따로 챙길 것 + 메종 선택사항":"패키지 옵션 + 메종 선택사항 (견적서 금액)";
+ document.querySelectorAll("#opts .opt").forEach((el,i)=>{const o=OPT[M][i];if(COMMON.includes(o)&&!(i>0&&COMMON.includes(OPT[M][i-1])))el.insertAdjacentHTML("beforebegin",`<h3 class="sub" style="margin:18px 0 4px">메종 견적서 선택사항 (대관·패키지 공통)</h3>`)});
+ document.getElementById("opts").innerHTML=OPT[M].map(o=>{const i=sel[key(M,o.k)]??o.d;return `<div class="opt"><h3>${o.t}</h3><div class="oprow"><select data-k="${o.k}">${o.c.map((c,j)=>`<option value="${j}" ${j==i?"selected":""}>${c[0]}${c[2]?(V?" (+VAT "+cv(c)+")":" (VAT 별도)"):""}</option>`).join("")}</select><input class="num${OV[key(M,o.k)]!=null?" ed":""}" data-o="${o.k}" type="number" step="0.1" value="${ov(M,o)}"></div><ul class="how">${o.how.map(h=>`<li>${h}</li>`).join("")}</ul>${o.ask?`<div class="ask"><b>물어볼 것</b> · ${o.ask}</div>`:""}</div>`}).join("");
  document.querySelectorAll("#opts select").forEach(s=>s.onchange=()=>{sel[key(M,s.dataset.k)]=+s.value;delete OV[key(M,s.dataset.k)];save();render()});
  document.querySelectorAll("#opts input[data-o]").forEach(e=>e.onchange=()=>{const k=key(M,e.dataset.o);if(e.value==="")delete OV[k];else OV[k]=+e.value;save();render()});
  const t=total(M),o=total(M==="rent"?"pkg":"rent");
  document.getElementById("tot").innerHTML=`${f(t)}<small> 만원 · ${M==="rent"?"대관":"패키지"} · 하객 ${G}명</small>`;
  document.getElementById("tot2").innerHTML=`기본 ${f(base(M).reduce((a,x)=>a+x[3],0))} + 옵션 ${f(optsum(M))} · 참고: ${M==="rent"?"패키지로":"대관으로"} 하면 ${f(o)}${M==="pkg"?" (대구 스튜디오 촬영은 양쪽 다 별도)":" (대구 스튜디오 촬영 별도)"}`;
- const extra=OPT[M].filter(x=>x.ask).map(x=>`<li><b>${x.t}</b> — ${x.ask}</li>`).join("");
+ const extra=OPT[M].filter(x=>x.ask&&!COMMON.includes(x)).map(x=>`<li><b>${x.t}</b> — ${x.ask}</li>`).join("");
  document.getElementById("asks").innerHTML=`<h3 class="sub" style="margin:4px 0">${M==="rent"?"대관":"패키지"}일 때</h3><ul class="l">${extra}</ul><h3 class="sub" style="margin:12px 0 4px">공통</h3><ul class="l">${ASK_COMMON.map(a=>`<li>${a}</li>`).join("")}</ul>`;}
-function save(){try{localStorage.setItem("maison_cost2",JSON.stringify({M,G,V,sel,OV,MEAL,MIN}))}catch(e){}}
+function save(){try{localStorage.setItem("maison_cost3",JSON.stringify({M,G,V,sel,OV,MEAL,MIN}))}catch(e){}}
 document.getElementById("t-rent").onclick=()=>{M="rent";save();render()};document.getElementById("t-pkg").onclick=()=>{M="pkg";save();render()};
 const g=document.getElementById("g");g.value=G;g.oninput=()=>{G=+g.value||150;save();render()};
 const v=document.getElementById("vat");v.checked=V;v.onchange=()=>{V=v.checked;save();render()};
