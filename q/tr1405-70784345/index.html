@@ -178,7 +178,7 @@ for(const [x0,x1,y0,y1,z0,z1,k,f] of G){const d=M[k]||{c:0xcccccc};
 
 const DIM=new THREE.Group();DIM.visible=false;sc.add(DIM);
 const lm=new THREE.LineBasicMaterial({color:0xd0452b,depthTest:false});
-const lab=(t,p)=>{const c=document.createElement('canvas');const x=c.getContext('2d');x.font='bold 44px sans-serif';const w=x.measureText(t).width+28;c.width=w;c.height=64;x.font='bold 44px sans-serif';x.fillStyle='rgba(255,255,255,.92)';x.fillRect(0,0,w,64);x.fillStyle='#c0391f';x.textBaseline='middle';x.fillText(t,14,34);const tx=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthTest:false}));s.scale.set(w*1.9,64*1.9,1);s.position.copy(p);s.renderOrder=10;DIM.add(s)};
+const lab=(t,p)=>{const c=document.createElement('canvas');const x=c.getContext('2d');x.font='bold 44px sans-serif';const w=x.measureText(t).width+28;c.width=w;c.height=64;x.font='bold 44px sans-serif';x.fillStyle='rgba(255,255,255,.92)';x.fillRect(0,0,w,64);x.fillStyle='#c0391f';x.textBaseline='middle';x.fillText(t,14,34);const tx=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthTest:false}));s.scale.set(w*1.35,64*1.35,1);s.position.copy(p);s.renderOrder=10;DIM.add(s)};
 const dim=(a,b,t,tk)=>{const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b);const g=new THREE.BufferGeometry().setFromPoints([A,B]);const l=new THREE.Line(g,lm);l.renderOrder=9;DIM.add(l);
  for(const P of [A,B]){const q=[P.clone().add(new THREE.Vector3(...tk)),P.clone().sub(new THREE.Vector3(...tk))];const lt=new THREE.Line(new THREE.BufferGeometry().setFromPoints(q),lm);lt.renderOrder=9;DIM.add(lt)}
  lab(t,A.clone().add(B).multiplyScalar(.5))};
