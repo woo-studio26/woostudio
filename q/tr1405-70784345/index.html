@@ -161,7 +161,7 @@ const cam=new THREE.PerspectiveCamera(35,1,10,20000);
 sc.add(new THREE.HemisphereLight(0xffffff,0xb8b0a6,1.6));
 const dl=new THREE.DirectionalLight(0xffffff,1.4);dl.position.set(900,2600,2200);sc.add(dl);
 const dl2=new THREE.DirectionalLight(0xffffff,.5);dl2.position.set(-1500,1200,800);sc.add(dl2);
-const M={'프레임':{c:0xc9c5bf},'니치뒷판':{c:0xd8d6d1},'라인LED':{c:0xfffbee,e:0xfff3c8},'상판':{c:0xf3f2ef},'수납내부':{c:0x968474},'서랍전면':{c:0xbdb7af},'거울':{c:0xcfdbe3,m:.9,ro:.08}};
+const M={'프레임':{c:0xc9c5bf},'니치뒷판':{c:0xd8d6d1},'라인LED':{c:0xfffbee,e:0xfff3c8},'상판':{c:0xf3f2ef},'수납내부':{c:0x968474},'서랍전면':{c:0xbdb7af},'거울':{c:0xb9cbd6,m:0,ro:.25,e:0x26323a}};
 const grp=new THREE.Group();sc.add(grp);
 const doors=[];
 for(const [x0,x1,y0,y1,z0,z1,k] of G){const d=M[k]||{c:0xcccccc};
@@ -173,17 +173,17 @@ for(const [x0,x1,y0,y1,z0,z1,k] of G){const d=M[k]||{c:0xcccccc};
  if(k==='서랍전면'&&(z1-z0)>500){const left=x0<600;const piv=new THREE.Group();piv.position.set(left?x0-600:x1-600,(z0+z1)/2,m.position.z+9);m.position.set(left?(x1-x0)/2:-(x1-x0)/2,0,-9);piv.add(m);grp.add(piv);doors.push({p:piv,ax:'y',a:left?-1.6:1.6});continue}
  grp.add(m)}
 const fl=new THREE.Mesh(new THREE.PlaneGeometry(2600,1800),new THREE.MeshStandardMaterial({color:0xcfc6ba,roughness:.9}));fl.rotation.x=-Math.PI/2;fl.position.z=-100;sc.add(fl);
-const T=new THREE.Vector3(0,1100,-250);let th=.38,ph=1.32,rad=4100,tth=th,tph=ph,trad=rad;
-const home=()=>{tth=.38;tph=1.32;trad=4100};
+const T=new THREE.Vector3(0,1100,-250);let th=.45,ph=1.3,rad=5600,tth=th,tph=ph,trad=rad;
+const home=()=>{tth=.45;tph=1.3;trad=5600};
 const upd=()=>{th+=(tth-th)*.15;ph+=(tph-ph)*.15;rad+=(trad-rad)*.15;cam.position.set(T.x+rad*Math.sin(ph)*Math.sin(th),T.y+rad*Math.cos(ph),T.z+rad*Math.sin(ph)*Math.cos(th));cam.lookAt(T)};
 const pts=new Map();let pd=0;const cv=r.domElement;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){const [a,b]=[...pts.values()];pd=Math.hypot(a[0]-b[0],a[1]-b[1])}});
 cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);
- if(pts.size===1){tth-=(e.clientX-p[0])*.008;tph=Math.min(1.62,Math.max(.25,tph-(e.clientY-p[1])*.006))}
+ if(pts.size===1){tth=Math.min(1.45,Math.max(-1.45,tth-(e.clientX-p[0])*.005));tph=Math.min(1.6,Math.max(.35,tph-(e.clientY-p[1])*.004))}
  pts.set(e.pointerId,[e.clientX,e.clientY]);
- if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)trad=Math.min(7000,Math.max(1300,trad*pd/d));pd=d}});
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)trad=Math.min(8000,Math.max(1800,trad*pd/d));pd=d}});
 const up=e=>{pts.delete(e.pointerId);pd=0};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
-cv.addEventListener('wheel',e=>{e.preventDefault();trad=Math.min(7000,Math.max(1300,trad*(1+e.deltaY*.001)))},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();trad=Math.min(8000,Math.max(1800,trad*(1+e.deltaY*.001)))},{passive:false});
 let open=0,goal=0;
 document.getElementById('v3door').onclick=e=>{goal=goal?0:1;e.target.textContent=goal?'문 닫기':'문 열기'};
 document.getElementById('v3reset').onclick=home;
