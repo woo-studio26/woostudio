@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>포터2 클러치 수리 요청서</title>
+<style>
+:root{--b:#1f4e8c;--bg:#f6f7f9;--line:#dfe3e8;--red:#c62828;--mut:#6b7280;--ok:#2e7d32}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:#111;font-size:15px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:14px}
+h1{font-size:21px;margin:4px 0 2px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px;margin-bottom:12px}
+.card h2{font-size:16px;margin:0 0 10px;color:var(--b);display:flex;align-items:center;gap:8px}
+.num{background:var(--b);color:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+table.info{width:100%;border-collapse:collapse;font-size:14px}
+table.info td{padding:6px 4px;border-bottom:1px solid var(--line)}
+table.info td:first-child{color:var(--mut);width:34%}
+input.t{border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:14px;width:100%}
+.sym{background:#fff4f4;border-left:4px solid var(--red);padding:10px 12px;border-radius:6px;font-size:15px}
+.sym b{color:var(--red)}
+.item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+.item:last-child{border-bottom:0}
+.item input[type=checkbox]{width:22px;height:22px;margin-top:1px;flex:0 0 auto;accent-color:var(--b)}
+.item .txt{flex:1}
+.item .note{color:var(--mut);font-size:12.5px;display:block}
+.item .pn{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#eef2f7;border-radius:4px;padding:1px 5px;margin-left:4px;white-space:nowrap}
+.item input.price{width:92px;text-align:right;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:14px;flex:0 0 auto}
+.warn{color:var(--red);font-weight:700}
+.tag{display:inline-block;font-size:11px;border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:1px}
+.tag.must{background:#fde8e8;color:var(--red)}
+.tag.opt{background:#eef2f7;color:#374151}
+.tag.hs{background:#e8f3ea;color:var(--ok)}
+.sum{display:flex;justify-content:space-between;align-items:center;background:#eef3fb;border-radius:8px;padding:10px 12px;margin-top:8px;font-weight:700}
+.sum span:last-child{font-size:18px;color:var(--b)}
+table.ref{width:100%;border-collapse:collapse;font-size:13.5px}
+table.ref th,table.ref td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+table.ref th{color:var(--mut);font-weight:500;font-size:12px}
+table.ref td.r{text-align:right;white-space:nowrap}
+.say{background:#f3f6fa;border-radius:8px;padding:10px 12px;font-size:14.5px}
+.btns{display:flex;gap:8px;margin:6px 0 20px}
+.btns button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:14px}
+.foot{color:var(--mut);font-size:12px;text-align:center;margin-bottom:24px}
+@media print{body{background:#fff}.btns{display:none}.card{break-inside:avoid;border-color:#bbb}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>포터2 클러치 수리 요청서</h1>
+<div class="sub">정비소에서 이 화면을 보여주면서 하나씩 체크하세요. 체크와 금액은 이 기기에 자동 저장됩니다.</div>
+
+<div class="card">
+<h2><span class="num">1</span>차량 정보</h2>
+<table class="info">
+<tr><td>차종</td><td>현대 포터2 2017년식 슈퍼캡 (90오4469)</td></tr>
+<tr><td>구동 · 변속기</td><td>2륜(후륜) · 6단 수동 · 2.5 디젤</td></tr>
+<tr><td>현재 주행거리</td><td><input class="t" data-k="km" placeholder="계기판 숫자 (예: 18X,XXX km)"></td></tr>
+<tr><td>클러치 교체 이력</td><td>없음 (정비내역 기준)</td></tr>
+<tr><td>최근 정비</td><td>2025-11 EGR 밸브·가스켓, 부동액<br>2025-12 엔진오일, 연료필터</td></tr>
+<tr><td>정비소 · 날짜</td><td><input class="t" data-k="shop" placeholder="예: 카포스 황소카서비스 / 11월 OO일"></td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2><span class="num">2</span>증상</h2>
+<div class="sym">
+· <b>여름이나 차가 열을 받으면 클러치 페달이 딱딱해짐</b><br>
+· <b>반클러치 조절이 안 됨</b> (컨트롤이 안 됨)<br>
+· 차가 식으면 다시 정상으로 돌아옴
+</div>
+<div class="say" style="margin-top:10px">
+"차 식으면 정상으로 나와서, <b>달궈진 상태로 가져왔습니다.</b> 지금 상태에서 한번 봐주세요."
+</div>
+</div>
+
+<div class="card">
+<h2><span class="num">3</span>작업 전 진단 요청 <span class="tag must">먼저</span></h2>
+<div class="item"><input type="checkbox" data-k="d1"><div class="txt">차 달궈진 상태에서 증상 직접 확인<span class="note">식으면 정상이라 꼭 뜨거울 때 확인</span></div></div>
+<div class="item"><input type="checkbox" data-k="d2"><div class="txt">증상 있을 때 <b>오페라 실린더 블리더 열어서 잔압 확인</b><span class="note">오일이 쏘듯 나오면 유압이 안 빠지는 것 → 마스터 실린더·호스 쪽 원인 (해외 H100 같은 증상 사례)</span></div></div>
+<div class="item"><input type="checkbox" data-k="d3"><div class="txt">마스터 실린더 푸시로드 유격 확인<span class="note">유격 0이면 열팽창으로 유압이 남음</span></div></div>
+<div class="item"><input type="checkbox" data-k="d4"><div class="txt">클러치 고무 호스 상태 (속 부풂·막힘)</div></div>
+<div class="item"><input type="checkbox" data-k="d5"><div class="txt">클러치액 오염·수분·다른 오일 섞임 여부</div></div>
+<div class="item"><input type="checkbox" data-k="d6"><div class="txt">원인 설명 듣기: <input class="t" data-k="cause" placeholder="정비사 진단 내용 메모" style="margin-top:4px"></div></div>
+</div>
+
+<div class="card">
+<h2><span class="num">4</span>교체 작업 · 견적</h2>
+<div class="note" style="color:var(--mut);font-size:12.5px;margin-bottom:4px">오른쪽 칸에 정비소가 말한 금액(원)을 적으면 합계가 자동 계산됩니다.</div>
+
+<div class="item"><input type="checkbox" data-k="w1"><div class="txt"><b>클러치 세트</b> <span class="tag must">필수</span><span class="note">디스크 <span class="pn">41100-47200</span> · 커버(삼발이) <span class="pn">41300-47200</span> · 릴리스 베어링 <span class="pn">41412-49670</span> · 포크 <span class="pn">41413-4A000</span> · 센터 베어링 <span class="pn">23221-42020</span><br>황소카 견적: 세트만 47만원</span></div><input class="price" data-k="p1" inputmode="numeric" placeholder="470000"></div>
+
+<div class="item"><input type="checkbox" data-k="w2"><div class="txt"><b>오페라(릴리스) 실린더</b> <span class="tag must">필수</span> <span class="pn">41700-4F010</span><span class="note">미션 내린 김에 → 공임 거의 추가 없어야 정상</span></div><input class="price" data-k="p2" inputmode="numeric" placeholder="금액"></div>
+
+<div class="item"><input type="checkbox" data-k="w3"><div class="txt"><b>클러치 마스터 실린더</b> <span class="tag must">필수</span> <span class="pn">41600-4F000</span><span class="note">증상 핵심 부위. 실내 작업이라 공임 따로 (8~10만 정도)</span></div><input class="price" data-k="p3" inputmode="numeric" placeholder="금액"></div>
+
+<div class="item"><input type="checkbox" data-k="w4"><div class="txt"><b>클러치 호스</b> <span class="tag opt">점검 후</span><span class="note">부풂·노후 있으면 교체</span></div><input class="price" data-k="p4" inputmode="numeric" placeholder="금액"></div>
+
+<div class="item"><input type="checkbox" data-k="w5"><div class="txt"><b>플라이휠</b> <span class="tag opt">상태 보고</span> <span class="pn">23200-4A550</span><span class="note">균열·열변형 있을 때만. <b>사진 보여달라고 하기</b></span></div><input class="price" data-k="p5" inputmode="numeric" placeholder="금액"></div>
+
+<div class="item"><input type="checkbox" data-k="w6"><div class="txt"><b>미션 내렸을 때 그리스 도포</b><span class="note">포크 피벗 볼, 입력축 스플라인 (말라 있으면 뜨거울 때 뻑뻑해짐)</span></div></div>
+
+<div class="item"><input type="checkbox" data-k="w7"><div class="txt"><b>크랭크 뒤 오일씰 · 미션 입력축 씰 누유 확인</b><span class="note">미션 내렸을 때만 볼 수 있음. 새면 같이 교체가 이득</span></div><input class="price" data-k="p7" inputmode="numeric" placeholder="금액"></div>
+</div>
+
+<div class="card">
+<h2><span class="num">5</span>오일류 교환</h2>
+<div class="item"><input type="checkbox" data-k="o1"><div class="txt"><b>수동 미션오일</b> 2.2L <span class="tag must">필수</span><span class="note"><span class="warn">75W-85 GL-4만. GL-5 넣으면 안 됨</span> · 세트 47만에 포함인지 확인</span></div><input class="price" data-k="q1" inputmode="numeric" placeholder="금액"></div>
+<div class="item"><input type="checkbox" data-k="o2"><div class="txt"><b>데후(리어액슬) 오일</b> 1.8L <span class="tag must">필수</span><span class="note">GL-4 이상 SAE 90 · 교환 기록 없음 · LD(차동잠금) 달려 있으면 전용오일</span></div><input class="price" data-k="q2" inputmode="numeric" placeholder="금액"></div>
+<div class="item"><input type="checkbox" data-k="o3"><div class="txt"><b>브레이크 · 클러치액 전체 교환</b> <span class="tag must">필수</span><span class="note">2017년식 DOT3 (DOT4도 가능) · 실린더 교환하면서 에어빼기 하니까 공임 겹침 → 깎아달라고 하기</span></div><input class="price" data-k="q3" inputmode="numeric" placeholder="금액"></div>
+<div class="item"><input type="checkbox" data-k="o4"><div class="txt"><b>엔진오일 + 필터</b> 7.4L <span class="tag must">필수</span><span class="note">ACEA C2/C3 (DPF 차량용) · 마지막 교환 2025-12</span></div><input class="price" data-k="q4" inputmode="numeric" placeholder="금액"></div>
+<div class="item"><input type="checkbox" data-k="o5"><div class="txt">파워스티어링 오일 <span class="tag opt">점검</span><span class="note">PSF-4 · 색 나쁘면 교환</span></div><input class="price" data-k="q5" inputmode="numeric" placeholder="금액"></div>
+
+<div class="item"><input type="checkbox" data-k="e1"><div class="txt">엔진 전반 점검 (인젝터 · DPF · 매연) <span class="tag hs">황소카</span><span class="note">커먼레일 전문점이라 같이 봐달라고 하기</span></div><input class="price" data-k="q6" inputmode="numeric" placeholder="금액"></div>
+
+<div class="sum"><span>견적 합계</span><span id="total">0원</span></div>
+</div>
+
+<div class="card">
+<h2><span class="num">6</span>부품 · 견적 조건</h2>
+<div class="item"><input type="checkbox" data-k="c1"><div class="txt">부품은 <b>모비스 순정</b> 또는 <b>평화발레오</b> (중국산 호환품 X)</div></div>
+<div class="item"><input type="checkbox" data-k="c2"><div class="txt">명세서 부품 구분란 표기 확인 <span class="note">A = 순정 신품, D = 인증 대체품</span></div></div>
+<div class="item"><input type="checkbox" data-k="c3"><div class="txt">항목별로 <b>부품값 / 공임</b> 나눠서 받기</div></div>
+<div class="item"><input type="checkbox" data-k="c4"><div class="txt">추가 작업 생기면 <b>먼저 전화로 물어보고</b> 진행</div></div>
+<div class="item"><input type="checkbox" data-k="c5"><div class="txt">뗀 부품(구품) 보여주기 · 디스크 잔량 사진</div></div>
+<div class="item"><input type="checkbox" data-k="c6"><div class="txt">작업 기간 <input class="t" data-k="days" placeholder="예: 당일 / 1일" style="width:120px;display:inline-block"> · 보증 <input class="t" data-k="warr" placeholder="예: 30일" style="width:110px;display:inline-block"></div></div>
+</div>
+
+<div class="card">
+<h2><span class="num">7</span>출고할 때 확인</h2>
+<div class="item"><input type="checkbox" data-k="f1"><div class="txt"><b>20분 이상 시운전 후</b> 뜨거운 상태에서 페달 확인<span class="note">예전에 20분쯤 지나서 증상 나왔으면 그 시간만큼</span></div></div>
+<div class="item"><input type="checkbox" data-k="f2"><div class="txt">반클러치 조절 · 기어 변속 부드러운지</div></div>
+<div class="item"><input type="checkbox" data-k="f3"><div class="txt">페달 유격 · 페달 높이 정상</div></div>
+<div class="item"><input type="checkbox" data-k="f4"><div class="txt">브레이크 페달 감 (액 교환 후 에어 없는지)</div></div>
+<div class="item"><input type="checkbox" data-k="f5"><div class="txt">하부 누유 없는지 (미션·실린더 주변)</div></div>
+<div class="item"><input type="checkbox" data-k="f6"><div class="txt"><b>자동차 점검·정비 명세서</b> 받기 (부품 구분 A/D 표기)</div></div>
+</div>
+
+<div class="card">
+<h2><span class="num">8</span>적정 가격 참고</h2>
+<table class="ref">
+<tr><th>항목</th><th style="text-align:right">적정 범위 (VAT 포함)</th></tr>
+<tr><td>클러치 세트 (부품 + 미션 탈거 공임)</td><td class="r">42~47만</td></tr>
+<tr><td>오페라 + 마스터 실린더 추가</td><td class="r">+13~18만</td></tr>
+<tr><td>오일류 4종 (미션·데후·브레이크·엔진)</td><td class="r">+21~30만</td></tr>
+<tr><td>플라이휠 (필요 시)</td><td class="r">+15~20만</td></tr>
+<tr><td><b>총액 (플라이휠 제외)</b></td><td class="r"><b>약 78~92만</b></td></tr>
+<tr><td>공임만 따로 물었을 때</td><td class="r">30~40만 정상 / 50만↑ 비쌈</td></tr>
+</table>
+<div class="note" style="color:var(--mut);font-size:12px;margin-top:6px">부품값: 모비스 공식몰(파츠로)·현기몰 / 오일값: 다나와 최저가 / 공임: 블로그·공임나라 표준공임 기준 추정 (2026-11-07)</div>
+</div>
+
+<div class="btns">
+<button onclick="window.print()">인쇄 / PDF</button>
+<button onclick="if(confirm('체크와 입력을 모두 지울까요?')){localStorage.removeItem(KEY);location.reload()}">초기화</button>
+</div>
+<div class="foot">2026-11-07 작성</div>
+</div>
+
+<script>
+const KEY='porter2-clutch-req-v1';
+const st=JSON.parse(localStorage.getItem(KEY)||'{}');
+const els=document.querySelectorAll('[data-k]');
+function total(){let s=0;document.querySelectorAll('input.price').forEach(i=>{const v=parseInt((i.value||'').replace(/[^\d]/g,''));if(v)s+=v});document.getElementById('total').textContent=s.toLocaleString('ko-KR')+'원'+(s?' ('+(s/10000).toFixed(1)+'만)':'')}
+els.forEach(el=>{const k=el.dataset.k;
+ if(el.type==='checkbox'){el.checked=!!st[k];el.addEventListener('change',()=>{st[k]=el.checked;localStorage.setItem(KEY,JSON.stringify(st))})}
+ else{if(st[k]!=null)el.value=st[k];el.addEventListener('input',()=>{st[k]=el.value;localStorage.setItem(KEY,JSON.stringify(st));total()})}
+});
+total();
+</script>
+</body>
+</html>
