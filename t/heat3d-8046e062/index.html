@@ -106,19 +106,24 @@ const P={
 };
 const comps=new THREE.Group(); scene.add(comps);
 box(0.07,0.55,0.48,M(0xffffff,{transparent:true,opacity:.35}),P.encl.x,P.encl.y,P.encl.z,comps);
-box(0.06,0.10,0.05,M(0x222222),P.brk.x,P.brk.y,P.brk.z,comps);
+box(0.04,0.05,0.06,M(0x9aa3ad),P.brk.x,P.brk.y,P.brk.z,comps);
+// 분전함 (별도 위치)
+const DB=V(2.95,1.85,5.0);
+box(0.08,0.40,0.32,M(0x6b7280),DB.x,DB.y,DB.z,comps);
+box(0.01,0.09,0.035,M(0x111111),DB.x-0.045,DB.y+0.05,DB.z,comps);
 box(0.07,0.09,0.06,M(0x3b4a5a),P.mc.x,P.mc.y,P.mc.z,comps);
 box(0.03,0.04,0.04,M(0xf5f5f5),P.zb.x,P.zb.y,P.zb.z,comps);
 box(0.03,0.12,0.08,M(0xf8f8f8),P.uA.x,P.uA.y,P.uA.z,comps);
 box(0.03,0.12,0.08,M(0xf8f8f8),P.uB.x,P.uB.y,P.uB.z,comps);
 box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),P.uA.x-0.017,P.uA.y+0.02,P.uA.z,comps);
 box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),P.uB.x-0.017,P.uB.y+0.02,P.uB.z,comps);
-label('차단기 20A',V(P.brk.x-0.05,P.brk.y+0.08,P.brk.z-0.05),'s');
+label('분기 단자대',V(P.brk.x-0.05,P.brk.y+0.07,P.brk.z-0.05),'s');
+label('분전함: 전용 누전차단기 20A',V(DB.x-0.05,DB.y+0.28,DB.z),'s');
 label('접촉기 MC-22b',V(P.mc.x-0.05,P.mc.y+0.08,P.mc.z+0.05),'s');
 label('ZBMINIR2',V(P.zb.x-0.05,P.zb.y-0.05,P.zb.z-0.05),'s');
 label('UTH-135 A',V(P.uA.x-0.05,P.uA.y+0.1,P.uA.z),'s');
 label('UTH-135 B',V(P.uB.x-0.05,P.uB.y+0.1,P.uB.z),'s');
-label('분전반 전원 2.5sq',V(2.93,2.3,3.1));
+label('HFIX 2.5sq (L·N·접지)',V(2.93,1.85,4.1));
 
 
 // sensors
@@ -136,11 +141,11 @@ function floorFeed(parent,dropZ,zone,offL,offN){
   });
 }
 function sensorWire(parent,s,ctrl){wire([s,V(2.90,W,s.z),V(2.90,W,ctrl.z-0.02),V(2.90,ctrl.y-0.06,ctrl.z-0.02),V(ctrl.x-0.01,ctrl.y-0.06,ctrl.z-0.02)],COL.S,parent,0.003);}
-const ceil=(z)=>V(2.93,2.4,z);
+const sup=(g)=>{wire([V(2.93,DB.y-0.2,DB.z-0.02),V(2.93,1.75,DB.z-0.02),V(2.93,1.75,3.06),V(2.93,P.brk.y+0.03,3.06)],COL.L,g);wire([V(2.92,DB.y-0.2,DB.z+0.02),V(2.92,1.77,DB.z+0.02),V(2.92,1.77,3.10),V(2.92,P.brk.y+0.03,3.10)],COL.N,g);wire([V(2.94,DB.y-0.2,DB.z+0.06),V(2.94,1.79,DB.z+0.06),V(2.94,1.79,3.14),V(2.94,P.brk.y+0.03,3.14)],0x2e9e44,g,0.004);};
 
 // ===== option 1: breaker -> MC -> split to UTH A,B -> films
 (function(){const g=wireSets.o1;
-  wire([ceil(3.06),V(2.93,P.brk.y+0.05,3.06)],COL.L,g); wire([ceil(3.10),V(2.93,P.brk.y+0.05,3.10)],COL.N,g);
+  sup(g);
   wire([V(2.92,P.brk.y-0.05,3.06),V(2.92,1.40,3.06),V(2.92,1.40,3.28),V(2.92,P.mc.y+0.045,3.28)],COL.L,g);
   wire([V(2.91,P.brk.y-0.05,3.10),V(2.91,1.39,3.10),V(2.91,1.39,3.32),V(2.91,P.mc.y+0.045,3.32)],COL.N,g);
   // ZB power (always on) from breaker out
@@ -161,7 +166,7 @@ const ceil=(z)=>V(2.93,2.4,z);
 })();
 // ===== option 2: breaker -> UTH A,B (always on) -> MC pole1/2 -> films
 (function(){const g=wireSets.o2;
-  wire([ceil(3.06),V(2.93,P.brk.y+0.05,3.06)],COL.L,g); wire([ceil(3.10),V(2.93,P.brk.y+0.05,3.10)],COL.N,g);
+  sup(g);
   [[P.uA],[P.uB]].forEach(([u])=>{
     wire([V(2.92,P.brk.y-0.05,3.06),V(2.92,1.09,3.06),V(2.92,1.09,u.z+0.02),V(2.95,u.y-0.06,u.z+0.02)],COL.L,g,0.005);
     wire([V(2.905,P.brk.y-0.05,3.10),V(2.905,1.08,3.10),V(2.905,1.08,u.z+0.035),V(2.95,u.y-0.06,u.z+0.035)],COL.N,g,0.005);
@@ -186,9 +191,9 @@ const lbJang=label('장판 3T',V(0.6,0.09,0.6));
 // ---- UI
 const lg=document.getElementById('lg');
 const TXT={
-o1:`<b>결선 ① 앞단 차단</b><br>분전반 → 차단기 → <b>접촉기</b> → UTH-135 A·B로 나눔 → 필름 A·B<br>지그비가 접촉기 코일만 켜고 꺼요. 꺼지면 조절기 전원도 같이 꺼져요.<br><i>조건: UTH-135가 정전 후 다시 켜지는지 확인</i>`,
-o2:`<b>결선 ② 뒷단 차단</b><br>분전반 → 차단기 → UTH-135 A·B (상시 전원) → <b>접촉기 극1·극2</b> → 필름 A·B<br>조절기는 항상 켜져 있고, 접촉기가 출력 L선만 끊어요.`};
-const colors=`<br><span class="sw" style="background:#d62828"></span>L(활선) <span class="sw" style="background:#1d4ed8"></span>N(중성) <span class="sw" style="background:#8e44ad"></span>지그비→코일 <span class="sw" style="background:#e0a800"></span>온도센서`;
+o1:`<b>결선 ① 앞단 차단</b><br>분전함 누전차단기 20A → 단자대 → <b>접촉기</b> → UTH-135 A·B로 나눔 → 필름 A·B<br>지그비가 접촉기 코일만 켜고 꺼요. 꺼지면 조절기 전원도 같이 꺼져요.<br><i>조건: UTH-135가 정전 후 다시 켜지는지 확인</i>`,
+o2:`<b>결선 ② 뒷단 차단</b><br>분전함 누전차단기 20A → 단자대 → UTH-135 A·B (상시 전원) → <b>접촉기 극1·극2</b> → 필름 A·B<br>조절기는 항상 켜져 있고, 접촉기가 출력 L선만 끊어요.`};
+const colors=`<br><span class="sw" style="background:#d62828"></span>L(활선) <span class="sw" style="background:#1d4ed8"></span>N(중성) <span class="sw" style="background:#8e44ad"></span>지그비→코일 <span class="sw" style="background:#e0a800"></span>온도센서 <span class="sw" style="background:#2e9e44"></span>접지`;
 function setOpt(k){wireSets.o1.visible=k==='o1';wireSets.o2.visible=k==='o2';document.getElementById('b1').classList.toggle('on',k==='o1');document.getElementById('b2').classList.toggle('on',k==='o2');lg.innerHTML=TXT[k]+colors;}
 setOpt('o1');
 document.getElementById('b1').onclick=()=>setOpt('o1');
