@@ -1,243 +1,121 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>필름난방 설치 3D (3000×5400/5700, 2구역 + 지그비)</title>
-<style>
-html,body{margin:0;padding:0;font-family:system-ui,sans-serif;color:var(--foreground,#222);background:transparent}
-#wrap{position:relative;width:100%;height:min(640px,85vh);border-radius:10px;overflow:hidden;background:#eef1f5}
-#c{width:100%;height:100%;display:block}
-.bar{position:absolute;left:8px;top:8px;display:flex;flex-wrap:wrap;gap:6px;z-index:5;max-width:calc(100% - 16px)}
-.bar button{font-size:12px;padding:6px 9px;border-radius:8px;border:1px solid #c9ced6;background:#fff;color:#222;cursor:pointer}
-.bar button.on{background:#2563eb;color:#fff;border-color:#2563eb}
-.legend{margin-top:8px;background:#f6f7f9;color:#222;border:1px solid #e3e6ea;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.6}
-.legend b{font-size:12px}
-.sw{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
-.lbl{font-size:11px;background:rgba(17,24,39,.82);color:#fff;padding:2px 6px;border-radius:5px;white-space:nowrap;pointer-events:none}
-.lbl.s{background:rgba(37,99,235,.9)}
-.note{font-size:11.5px;color:#6b7280;margin-top:6px;line-height:1.5}
-</style>
+<html><head><meta charset="utf-8"><title>필름난방 최종안 3D (4줄 · 1구역 · 지그비 매립 콘센트)</title>
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
-</head><body>
-<div id="wrap">
-<canvas id="c"></canvas>
+<style>
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;color:#222;background:#fff}
+.wrapall{max-width:980px;margin:0 auto;padding:8px}
+h1{font-size:17px;margin:4px 2px 8px}
+#wrap{position:relative;width:100%;height:min(640px,78vh);border-radius:10px;overflow:hidden;background:#eef1f5}
+#c{width:100%;height:100%;display:block}
+.bar{position:absolute;left:8px;top:8px;display:flex;flex-wrap:wrap;gap:6px;z-index:5;max-width:calc(100% - 16px)}
+.bar button{font-size:12px;padding:6px 9px;border-radius:8px;border:1px solid #c9ced6;background:#fff;color:#222;cursor:pointer}
+.bar button.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.lbl{font-size:11px;background:rgba(17,24,39,.82);color:#fff;padding:2px 6px;border-radius:5px;white-space:nowrap;pointer-events:none}
+.lbl.s{background:rgba(37,99,235,.92)}
+.lbl.w{background:rgba(220,120,0,.92)}
+.box{margin-top:8px;background:#f6f7f9;border:1px solid #e3e6ea;border-radius:8px;padding:9px 11px;font-size:12.5px;line-height:1.65}
+.sw{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:4px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:6px}
+td,th{padding:5px 6px;border-bottom:1px solid #e3e6ea;text-align:left}
+th{color:#6b7280;font-weight:500;font-size:11px}
+td.n{text-align:right;white-space:nowrap}
+.note{font-size:11.5px;color:#6b7280;margin-top:6px;line-height:1.5}
+</style></head><body><div class="wrapall">
+<h1>필름난방 최종안 · 3000×5400/5700 · 필름 4줄 1구역 · 지그비 매립 콘센트</h1>
+<div id="wrap"><canvas id="c"></canvas>
 <div class="bar">
-<button id="b3" class="on">간단안 (지그비 매립 콘센트)</button>
-<button id="b1">접촉기안 ①</button>
-<button id="b2">접촉기안 ②</button>
 <button id="bx">층 분리</button>
 <button id="bt" class="on">보호판·장판 숨김</button>
 <button id="bl" class="on">이름표</button>
-<button id="bw">박스 확대</button>
+<button id="bw">벽 쪽 확대</button>
+</div></div>
+<div class="box">
+<b>결선 순서</b><br>
+분전함 <b>전용 누전차단기 20A</b> → HFIX 2.5sq (L·N·접지) → <b>다원 지그비 매립 콘센트 PM-C150-ZB</b> → 주황색 구(제어되는 구)에 <b>UTH-135 파워코드</b> → 조절기 출력 L·N → 필름 4줄 단자(병렬) · 바닥 센서 1개<br>
+남는 아래 구는 항상 전기가 들어오는 일반 콘센트로 사용<br>
+<span class="sw" style="background:#d62828"></span>L <span class="sw" style="background:#1d4ed8"></span>N <span class="sw" style="background:#2e9e44"></span>접지 <span class="sw" style="background:#555"></span>파워코드 <span class="sw" style="background:#e0a800"></span>온도센서
+<table>
+<tr><th>항목</th><th class="n">값</th></tr>
+<tr><td>필름</td><td class="n">PTC 100폭 2.75m × 4줄 = 11m · 11㎡</td></tr>
+<tr><td>출력 / 전류</td><td class="n">약 2.42kW / 11A</td></tr>
+<tr><td>매립 콘센트 16A 대비</td><td class="n">69%</td></tr>
+<tr><td>UTH-135 4kW 대비</td><td class="n">61%</td></tr>
+</table></div>
+<div class="note">드래그 회전 · 휠/핀치 확대. 전선 굵기와 층 두께는 잘 보이게 과장했어요(실제 단열재 5mm, 필름 0.4mm).</div>
 </div>
-</div>
-<div class="legend" id="lg"></div>
-<div class="note">드래그하면 회전, 휠·핀치로 확대할 수 있어요. 전선 굵기와 층 두께는 잘 보이게 과장했어요. 실제 단열재는 5mm, 필름은 0.4mm예요.</div>
 <script>
 (function(){
-if(!window.THREE){document.getElementById('lg').innerHTML='3D 라이브러리를 불러오지 못했어요. 새로고침해 주세요.';return;}
-const OrbitControls=THREE.OrbitControls, CSS2DRenderer=THREE.CSS2DRenderer, CSS2DObject=THREE.CSS2DObject;
-
-const wrap=document.getElementById('wrap'), canvas=document.getElementById('c');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(45,1,0.01,100);
-camera.position.set(-0.6,4.6,8.2);
-const lr=new CSS2DRenderer(); lr.domElement.style.position='absolute'; lr.domElement.style.top='0'; lr.domElement.style.pointerEvents='none'; wrap.appendChild(lr.domElement);
-const controls=new OrbitControls(camera,renderer.domElement); controls.target.set(1.7,0.2,2.7); controls.enableDamping=true;
-scene.add(new THREE.HemisphereLight(0xffffff,0x8899aa,1.1));
-const dl=new THREE.DirectionalLight(0xffffff,1.1); dl.position.set(-3,6,-2); scene.add(dl);
-
-const M=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.75,metalness:0,...o});
-const labels=[];
-function label(txt,pos,cls=''){const d=document.createElement('div');d.className='lbl '+cls;d.textContent=txt;const o=new CSS2DObject(d);o.position.copy(pos);scene.add(o);labels.push(o);return o;}
-function box(w,h,d,mat,x,y,z,parent=scene){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);parent.add(m);return m;}
-const V=(x,y,z)=>new THREE.Vector3(x,y,z);
-
-// ---- room floor shape (x across 0..3, z along 0..5.4/5.7)
-function floorShape(){const s=new THREE.Shape();s.moveTo(0,0);s.lineTo(3,0);s.lineTo(3,5.7);s.lineTo(0,5.4);s.closePath();return s;}
-function layer(th,mat,y){const g=new THREE.ExtrudeGeometry(floorShape(),{depth:th,bevelEnabled:false});g.rotateX(Math.PI/2);const m=new THREE.Mesh(g,mat);m.position.y=y+th;scene.add(m);return m;}
-// shape is in x,y -> rotateX(+90) maps y->z
-const slab=layer(0.12,M(0xb9bec6),-0.12);
-const insul=layer(0.02,M(0xd9dde3,{metalness:.3,roughness:.4}),0);
-const FY=0.022; // film level
-const prot=layer(0.012,M(0xe8dcc8,{transparent:true,opacity:.85}),0.03);
-const jang=layer(0.008,M(0xc8a27a,{transparent:true,opacity:.85}),0.045);
-const topLayers=[prot,jang]; const baseY=topLayers.map(m=>m.position.y);
-
-// walls (transparent) - right wall full height
-const wallMat=M(0xffffff,{transparent:true,opacity:.18,side:THREE.DoubleSide});
-box(0.02,2.4,5.7,wallMat,3.01,1.2,2.85);
-box(3,0.35,0.02,wallMat,1.5,0.175,-0.01);
-box(0.02,0.35,5.4,wallMat,-0.01,0.175,2.7);
-
-// ---- films
-const films=new THREE.Group(); scene.add(films);
-const strips=[[0.125,1.125,'A'],[1.15,2.15,'A'],[2.175,3.175,'A'],[3.2,4.2,'B'],[4.225,5.225,'B']];
-const terms=[]; // {zone, L:Vector3, N:Vector3}
-strips.forEach(([z0,z1,zone],i)=>{
-  const zc=(z0+z1)/2;
-  box(2.75,0.003,1.0,M(zone==='A'?0x2b2b2b:0x3a3030),1.5,FY,zc,films);
-  // carbon lines (선상) hint
-  for(let k=1;k<10;k++) box(2.72,0.0035,0.012,M(0x111111),1.5,FY+0.001,z0+0.05+k*0.09,films);
-  // copper busbars along both edges
-  box(2.75,0.004,0.035,M(0xc8792e,{metalness:.6,roughness:.35}),1.5,FY+0.002,z0+0.03,films);
-  box(2.75,0.004,0.035,M(0xc8792e,{metalness:.6,roughness:.35}),1.5,FY+0.002,z1-0.03,films);
-  // butyl insulation at left cut end & on terminals
-  box(0.05,0.006,1.0,M(0x777777),0.15,FY+0.003,zc,films);
-  const tL=V(2.80,FY+0.006,z0+0.03), tN=V(2.80,FY+0.006,z1-0.03);
-  [tL,tN].forEach(p=>{box(0.04,0.01,0.04,M(0xaaaaaa,{metalness:.8,roughness:.3}),p.x,p.y,p.z,films);});
-  terms.push({zone,L:tL,N:tN,i});
-  label(`필름 ${zone}${zone==='A'?i+1:i-2}`,V(0.9,FY+0.05,zc));
-});
-label('끝단 부틸 절연',V(0.15,FY+0.06,4.7));
-label('면상단자',V(2.8,FY+0.06,0.0));
-
-// ---- wires
-const wireSets={o1:new THREE.Group(),o2:new THREE.Group(),o3:new THREE.Group()}; scene.add(wireSets.o1,wireSets.o2,wireSets.o3);
-const COL={L:0xd62828,N:0x1d4ed8,C:0x8e44ad,S:0xe0a800};
-function wire(pts,color,parent,r=0.006){const path=new THREE.CurvePath();for(let i=0;i<pts.length-1;i++)path.add(new THREE.LineCurve3(pts[i],pts[i+1]));const g=new THREE.TubeGeometry(path,pts.length*24,r,8,false);const m=new THREE.Mesh(g,M(color,{roughness:.5}));parent.add(m);return m;}
-
-// component positions (right wall x=3, facing -x)
-const P={
-  brk:V(2.93,1.50,3.08), mc:V(2.93,1.47,3.30), zb:V(2.94,1.22,3.08),
-  uA:V(2.965,1.30,2.72), uB:V(2.965,1.30,3.68), encl:V(2.94,1.33,3.2)
-};
-const comps=new THREE.Group(); scene.add(comps); const mcGrp=new THREE.Group(); scene.add(mcGrp);
-box(0.07,0.55,0.48,M(0xffffff,{transparent:true,opacity:.35}),P.encl.x,P.encl.y,P.encl.z,mcGrp);
-box(0.04,0.05,0.06,M(0x9aa3ad),P.brk.x,P.brk.y,P.brk.z,mcGrp);
-// 분전함 (별도 위치)
-const DB=V(2.95,1.85,5.0);
-box(0.08,0.40,0.32,M(0x6b7280),DB.x,DB.y,DB.z,comps);
-box(0.01,0.09,0.035,M(0x111111),DB.x-0.045,DB.y+0.05,DB.z,comps);
-box(0.07,0.09,0.06,M(0x3b4a5a),P.mc.x,P.mc.y,P.mc.z,mcGrp);
-box(0.03,0.04,0.04,M(0xf5f5f5),P.zb.x,P.zb.y,P.zb.z,mcGrp);
-box(0.03,0.12,0.08,M(0xf8f8f8),P.uA.x,P.uA.y,P.uA.z,comps);
-box(0.03,0.12,0.08,M(0xf8f8f8),P.uB.x,P.uB.y,P.uB.z,comps);
-box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),P.uA.x-0.017,P.uA.y+0.02,P.uA.z,comps);
-box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),P.uB.x-0.017,P.uB.y+0.02,P.uB.z,comps);
-const mcLabels=[];
-mcLabels.push(label('분기(와고 커넥터)',V(P.brk.x-0.05,P.brk.y+0.07,P.brk.z-0.05),'s'));
+if(!window.THREE){document.querySelector('.note').textContent='3D 라이브러리를 불러오지 못했어요. 새로고침해 주세요.';return;}
+const wrap=document.getElementById('wrap'),canvas=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(45,1,0.01,100);
+const lr=new THREE.CSS2DRenderer();lr.domElement.style.position='absolute';lr.domElement.style.top='0';lr.domElement.style.pointerEvents='none';wrap.appendChild(lr.domElement);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xffffff,0x8899aa,1.1));const dl=new THREE.DirectionalLight(0xffffff,1.0);dl.position.set(-3,6,-2);scene.add(dl);
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.75,metalness:0},o));
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);const labels=[];
+function label(t,p,c=''){const d=document.createElement('div');d.className='lbl '+c;d.textContent=t;const o=new THREE.CSS2DObject(d);o.position.copy(p);scene.add(o);labels.push(o);return o;}
+function box(w,h,d,m,x,y,z,par=scene){const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);par.add(b);return b;}
+function wire(pts,col,r=0.005){const path=new THREE.CurvePath();for(let i=0;i<pts.length-1;i++)path.add(new THREE.LineCurve3(pts[i],pts[i+1]));scene.add(new THREE.Mesh(new THREE.TubeGeometry(path,pts.length*24,r,8,false),M(col,{roughness:.5})));}
+function shape(){const s=new THREE.Shape();s.moveTo(0,0);s.lineTo(3,0);s.lineTo(3,5.7);s.lineTo(0,5.4);s.closePath();return s;}
+function layer(th,m,y){const g=new THREE.ExtrudeGeometry(shape(),{depth:th,bevelEnabled:false});g.rotateX(Math.PI/2);const o=new THREE.Mesh(g,m);o.position.y=y+th;scene.add(o);return o;}
+layer(0.12,M(0xb9bec6),-0.12);layer(0.02,M(0xd9dde3,{metalness:.3,roughness:.4}),0);
+const prot=layer(0.012,M(0xe8dcc8,{transparent:true,opacity:.85}),0.03),jang=layer(0.008,M(0xc8a27a,{transparent:true,opacity:.85}),0.045);
+const tops=[prot,jang],baseY=tops.map(m=>m.position.y);
+const wm=M(0xffffff,{transparent:true,opacity:.18,side:THREE.DoubleSide});
+box(0.02,2.4,5.7,wm,3.01,1.2,2.85);box(3,0.35,0.02,wm,1.5,0.175,-0.01);box(0.02,0.35,5.4,wm,-0.01,0.175,2.7);
+const FY=0.022,W=0.025,COL={L:0xd62828,N:0x1d4ed8,E:0x2e9e44,S:0xe0a800,C:0x555555};
+// furniture zone (no film)
+const fz=new THREE.Shape();fz.moveTo(0,4.25);fz.lineTo(3,4.25);fz.lineTo(3,5.7);fz.lineTo(0,5.4);fz.closePath();
+const fg=new THREE.ShapeGeometry(fz);fg.rotateX(Math.PI/2);const fm=new THREE.Mesh(fg,M(0xf59e0b,{transparent:true,opacity:.25,side:THREE.DoubleSide}));fm.position.y=0.0215;scene.add(fm);
+label('가구 자리 · 필름 없음 (사선 쪽)',V(1.5,0.06,4.85),'w');
+// films
+const strips=[[0.125,1.125],[1.15,2.15],[2.175,3.175],[3.2,4.2]];const terms=[];
+strips.forEach(([z0,z1],i)=>{const zc=(z0+z1)/2;
+ box(2.75,0.003,1.0,M(0x2b2b2b),1.5,FY,zc);for(let k=1;k<10;k++)box(2.72,0.0035,0.012,M(0x111111),1.5,FY+0.001,z0+0.05+k*0.09);
+ box(2.75,0.004,0.035,M(0xc8792e,{metalness:.6,roughness:.35}),1.5,FY+0.002,z0+0.03);box(2.75,0.004,0.035,M(0xc8792e,{metalness:.6,roughness:.35}),1.5,FY+0.002,z1-0.03);
+ box(0.05,0.006,1.0,M(0x777777),0.15,FY+0.003,zc);
+ const tL=V(2.80,FY+0.006,z0+0.03),tN=V(2.80,FY+0.006,z1-0.03);[tL,tN].forEach(p=>box(0.04,0.01,0.04,M(0xaaaaaa,{metalness:.8,roughness:.3}),p.x,p.y,p.z));
+ terms.push({L:tL,N:tN});label(`필름 ${i+1} · 2.75m`,V(0.95,FY+0.05,zc));});
+label('끝단 부틸 절연',V(0.15,FY+0.06,0.6));label('면상단자 + 부틸',V(2.8,FY+0.06,0.0));
+// components on right wall
+const DB=V(2.95,1.85,5.0),OUT=V(2.982,0.36,3.35),UTH=V(2.965,1.3,2.95);
+box(0.08,0.40,0.32,M(0x6b7280),DB.x,DB.y,DB.z);box(0.01,0.09,0.035,M(0x111111),DB.x-0.045,DB.y+0.05,DB.z);
 label('분전함: 전용 누전차단기 20A',V(DB.x-0.05,DB.y+0.28,DB.z),'s');
-mcLabels.push(label('접촉기 MC-22b',V(P.mc.x-0.05,P.mc.y+0.08,P.mc.z+0.05),'s'));
-mcLabels.push(label('ZBMINIR2',V(P.zb.x-0.05,P.zb.y-0.05,P.zb.z-0.05),'s'));
-label('UTH-135 A',V(P.uA.x-0.05,P.uA.y+0.1,P.uA.z),'s');
-label('UTH-135 B',V(P.uB.x-0.05,P.uB.y+0.1,P.uB.z),'s');
-label('HFIX 2.5sq (L·N·접지)',V(2.93,1.85,4.1));
-
-
-// sensors
-const sA=V(1.5,FY+0.008,1.65), sB=V(1.5,FY+0.008,3.7);
-[sA,sB].forEach(p=>box(0.06,0.012,0.02,M(COL.S),p.x,p.y,p.z,scene));
-label('센서 A',V(sA.x,sA.y+0.06,sA.z)); label('센서 B',V(sB.x,sB.y+0.06,sB.z));
-
-const W=0.025; // floor wire height
-// floor run from controller-ish wall drop point to each terminal
-function floorFeed(parent,dropZ,zone,offL,offN){
-  terms.filter(t=>t.zone===zone).forEach((t,k)=>{
-    const o=k*0.006;
-    wire([V(2.94+offL,W,dropZ),V(2.94+offL,W,t.L.z+o),V(t.L.x,W,t.L.z+o),t.L],COL.L,parent,0.004);
-    wire([V(2.96+offN,W,dropZ),V(2.96+offN,W,t.N.z-o),V(t.N.x,W,t.N.z-o),t.N],COL.N,parent,0.004);
-  });
-}
-function sensorWire(parent,s,ctrl){wire([s,V(2.90,W,s.z),V(2.90,W,ctrl.z-0.02),V(2.90,ctrl.y-0.06,ctrl.z-0.02),V(ctrl.x-0.01,ctrl.y-0.06,ctrl.z-0.02)],COL.S,parent,0.003);}
-const sup=(g)=>{wire([V(2.93,DB.y-0.2,DB.z-0.02),V(2.93,1.75,DB.z-0.02),V(2.93,1.75,3.06),V(2.93,P.brk.y+0.03,3.06)],COL.L,g);wire([V(2.92,DB.y-0.2,DB.z+0.02),V(2.92,1.77,DB.z+0.02),V(2.92,1.77,3.10),V(2.92,P.brk.y+0.03,3.10)],COL.N,g);wire([V(2.94,DB.y-0.2,DB.z+0.06),V(2.94,1.79,DB.z+0.06),V(2.94,1.79,3.14),V(2.94,P.brk.y+0.03,3.14)],0x2e9e44,g,0.004);};
-
-
-// ===== simple option: 분전함 -> 콘센트(2구) -> 지그비 플러그 16A x2 -> UTH-135 A,B (파워코드) -> 필름
-const o3Grp=new THREE.Group(); scene.add(o3Grp); const o3Labels=[];
-const OUT=V(2.985,0.35,3.2);
-const PLA=V(2.975,0.35,3.12), PLB=V(2.975,0.35,3.28);
-[PLA,PLB].forEach(p=>{box(0.025,0.12,0.075,M(0xf4f4f4),p.x,p.y,p.z,o3Grp);box(0.004,0.035,0.035,M(0xff8a00),p.x-0.014,p.y+0.025,p.z,o3Grp);box(0.004,0.035,0.035,M(0xdddddd),p.x-0.014,p.y-0.025,p.z,o3Grp);});
-[PLA,PLB].forEach(p=>box(0.04,0.03,0.025,M(0x333333),p.x-0.03,p.y+0.025,p.z,o3Grp));
-o3Labels.push(label('지그비 매립 콘센트 A',V(PLA.x-0.05,PLA.y+0.11,PLA.z-0.03),'s'));
-o3Labels.push(label('지그비 매립 콘센트 B',V(PLB.x-0.05,PLB.y-0.1,PLB.z+0.03),'s'));
-(function(){const g=wireSets.o3;
-  wire([V(2.97,DB.y-0.2,DB.z-0.02),V(2.97,0.55,DB.z-0.02),V(2.97,0.55,3.2),V(2.97,OUT.y+0.06,3.2),V(2.97,OUT.y+0.06,3.12)],COL.L,g);
-  wire([V(2.96,DB.y-0.2,DB.z+0.02),V(2.96,0.57,DB.z+0.02),V(2.96,0.57,3.22),V(2.96,OUT.y+0.06,3.22)],COL.N,g);
-  wire([V(2.98,DB.y-0.2,DB.z+0.06),V(2.98,0.59,DB.z+0.06),V(2.98,0.59,3.24),V(2.98,OUT.y+0.06,3.24)],0x2e9e44,g,0.004);
-  // power cords (gray) plug -> UTH
-  [[PLA,P.uA],[PLB,P.uB]].forEach(([p,u])=>wire([V(p.x-0.05,p.y+0.025,p.z),V(2.90,p.y+0.025,p.z),V(2.90,0.6,u.z+0.02),V(2.95,u.y-0.06,u.z+0.02)],0x555555,g,0.006));
-  [[P.uA,'A'],[P.uB,'B']].forEach(([u,z])=>{
-    wire([V(2.95,u.y-0.06,u.z-0.01),V(2.94,W,u.z-0.01)],COL.L,g); wire([V(2.96,u.y-0.06,u.z-0.03),V(2.96,W,u.z-0.03)],COL.N,g);
-    floorFeed(g,u.z-0.02,z,0,0);
-  });
-  sensorWire(g,sA,P.uA); sensorWire(g,sB,P.uB);
-})();
-
-// ===== option 1: breaker -> MC -> split to UTH A,B -> films
-(function(){const g=wireSets.o1;
-  sup(g);
-  wire([V(2.92,P.brk.y-0.05,3.06),V(2.92,1.40,3.06),V(2.92,1.40,3.28),V(2.92,P.mc.y+0.045,3.28)],COL.L,g);
-  wire([V(2.91,P.brk.y-0.05,3.10),V(2.91,1.39,3.10),V(2.91,1.39,3.32),V(2.91,P.mc.y+0.045,3.32)],COL.N,g);
-  // ZB power (always on) from breaker out
-  wire([V(2.935,1.40,3.06),V(2.935,P.zb.y+0.02,3.06)],COL.L,g,0.004); wire([V(2.925,1.39,3.10),V(2.925,P.zb.y+0.02,3.10)],COL.N,g,0.004);
-  // ZB out -> MC coil
-  wire([V(2.94,P.zb.y-0.02,3.08),V(2.94,1.16,3.08),V(2.95,1.16,3.36),V(2.95,P.mc.y,3.36),V(2.94,P.mc.y,3.33)],COL.C,g,0.004);
-  // MC out -> split to UTH A & B inputs
-  [[P.uA,0],[P.uB,1]].forEach(([u,j])=>{
-    wire([V(2.92,P.mc.y-0.045,3.28),V(2.92,1.09,3.28),V(2.92,1.09,u.z+0.02),V(2.95,u.y-0.06,u.z+0.02)],COL.L,g,0.005);
-    wire([V(2.905,P.mc.y-0.045,3.32),V(2.905,1.08,3.32),V(2.905,1.08,u.z+0.035),V(2.95,u.y-0.06,u.z+0.035)],COL.N,g,0.005);
-  });
-  // UTH outputs down to floor
-  [[P.uA,'A'],[P.uB,'B']].forEach(([u,z])=>{
-    wire([V(2.95,u.y-0.06,u.z-0.01),V(2.94,W,u.z-0.01)],COL.L,g); wire([V(2.96,u.y-0.06,u.z-0.03),V(2.96,W,u.z-0.03)],COL.N,g);
-    floorFeed(g,u.z-0.02,z,0,0);
-  });
-  sensorWire(g,sA,P.uA); sensorWire(g,sB,P.uB);
-})();
-// ===== option 2: breaker -> UTH A,B (always on) -> MC pole1/2 -> films
-(function(){const g=wireSets.o2;
-  sup(g);
-  [[P.uA],[P.uB]].forEach(([u])=>{
-    wire([V(2.92,P.brk.y-0.05,3.06),V(2.92,1.09,3.06),V(2.92,1.09,u.z+0.02),V(2.95,u.y-0.06,u.z+0.02)],COL.L,g,0.005);
-    wire([V(2.905,P.brk.y-0.05,3.10),V(2.905,1.08,3.10),V(2.905,1.08,u.z+0.035),V(2.95,u.y-0.06,u.z+0.035)],COL.N,g,0.005);
-  });
-  wire([V(2.935,1.40,3.06),V(2.935,P.zb.y+0.02,3.06)],COL.L,g,0.004); wire([V(2.925,1.39,3.10),V(2.925,P.zb.y+0.02,3.10)],COL.N,g,0.004);
-  wire([V(2.94,P.zb.y-0.02,3.08),V(2.94,1.16,3.08),V(2.95,1.16,3.36),V(2.95,P.mc.y,3.36),V(2.94,P.mc.y,3.33)],COL.C,g,0.004);
-  // UTH out L -> up to MC pole -> down to floor ; N straight down
-  [[P.uA,'A',3.27],[P.uB,'B',3.31]].forEach(([u,z,pz])=>{
-    wire([V(2.95,u.y+0.06,u.z-0.01),V(2.95,1.62,u.z-0.01),V(2.95,1.62,pz),V(2.93,P.mc.y+0.045,pz)],COL.L,g,0.005);
-    wire([V(2.93,P.mc.y-0.045,pz),V(2.935,1.02,pz),V(2.94,1.02,u.z-0.01),V(2.94,W,u.z-0.01)],COL.L,g,0.005);
-    wire([V(2.96,u.y-0.06,u.z-0.03),V(2.96,W,u.z-0.03)],COL.N,g);
-    floorFeed(g,u.z-0.02,z,0,0);
-  });
-  sensorWire(g,sA,P.uA); sensorWire(g,sB,P.uB);
-})();
-wireSets.o2.visible=false; wireSets.o1.visible=false;
-
-const lbIns=label('단열재 5T',V(0.4,0.03,5.35));
-const lbProt=label('부직포 보호판',V(0.6,0.06,0.3));
-const lbJang=label('장판 3T',V(0.6,0.09,0.6));
-
-// ---- UI
-const lg=document.getElementById('lg');
-const TXT={
-o3:`<b>간단안 (추천)</b><br>분전함 누전차단기 20A → HFIX 2.5sq → <b>지그비 매립 콘센트 2개</b>(2개용 박스, 건너 물림) → 주황색 구에 UTH-135 A·B 파워코드 → 필름 A·B<br>매립 콘센트는 주황색 첫 번째 구만 켜고 꺼져요. 구역마다 1개씩 써요.<br><i>조건: UTH-135가 전원이 다시 들어오면 자동으로 켜져야 함</i>`,
-o1:`<b>접촉기안 ① 앞단 차단</b><br>분전함 누전차단기 20A → 단자대 → <b>접촉기</b> → UTH-135 A·B로 나눔 → 필름 A·B<br>지그비가 접촉기 코일만 켜고 꺼요. 꺼지면 조절기 전원도 같이 꺼져요.<br><i>조건: UTH-135가 정전 후 다시 켜지는지 확인</i>`,
-o2:`<b>접촉기안 ② 뒷단 차단</b><br>분전함 누전차단기 20A → 단자대 → UTH-135 A·B (상시 전원) → <b>접촉기 극1·극2</b> → 필름 A·B<br>조절기는 항상 켜져 있고, 접촉기가 출력 L선만 끊어요.`};
-const colors=`<br><span class="sw" style="background:#d62828"></span>L(활선) <span class="sw" style="background:#1d4ed8"></span>N(중성) <span class="sw" style="background:#8e44ad"></span>지그비→코일 <span class="sw" style="background:#e0a800"></span>온도센서 <span class="sw" style="background:#2e9e44"></span>접지 <span class="sw" style="background:#555"></span>파워코드`;
-let cur='o3';
-function setOpt(k){cur=k;['o1','o2','o3'].forEach(o=>{wireSets[o].visible=o===k;document.getElementById('b'+o[1]).classList.toggle('on',o===k);});mcGrp.visible=k!=='o3';o3Grp.visible=k==='o3';mcLabels.forEach(l=>l.visible=k!=='o3'&&lb);o3Labels.forEach(l=>l.visible=k==='o3'&&lb);lg.innerHTML=TXT[k]+colors;}
-document.getElementById('b1').onclick=()=>setOpt('o1');
-document.getElementById('b2').onclick=()=>setOpt('o2');
-document.getElementById('b3').onclick=()=>setOpt('o3');
-let ex=false,hid=true,lb=true,zoom=false;
-const bx=document.getElementById('bx'),bt=document.getElementById('bt'),bl=document.getElementById('bl'),bw=document.getElementById('bw');
-function applyLayers(){topLayers.forEach((m,i)=>{m.visible=!hid;m.position.y=baseY[i]+(ex?0.45*(i+1):0);m.material.opacity=ex?0.4:0.85;});lbProt.position.y=0.06+(ex?0.45:0);lbJang.position.y=0.09+(ex?0.9:0);lbProt.visible=!hid&&lb;lbJang.visible=!hid&&lb;}
-bx.onclick=()=>{ex=!ex;bx.classList.toggle('on',ex);applyLayers();};
-bt.onclick=()=>{hid=!hid;bt.classList.toggle('on',hid);applyLayers();};
-bl.onclick=()=>{lb=!lb;bl.classList.toggle('on',lb);labels.forEach(o=>o.visible=lb);setOpt(cur);applyLayers();};
-bw.onclick=()=>{zoom=!zoom;bw.classList.toggle('on',zoom);if(zoom){const n=wrap.clientWidth<600;const y=cur==='o3'?0.85:1.25;controls.target.set(2.95,y,3.2);camera.position.set(n?1.2:1.8,y+0.3,n?5.0:4.4);}else{HOME();}};
-setOpt('o3');
-applyLayers();
-
-const HOME=()=>{const narrow=wrap.clientWidth<600;camera.position.set(narrow?-1.2:-0.6,narrow?7.4:4.6,narrow?10.5:8.2);controls.target.set(1.6,0.2,2.8);};
+box(0.03,0.13,0.08,M(0xf4f4f4),OUT.x,OUT.y,OUT.z);box(0.004,0.04,0.04,M(0xff8a00),OUT.x-0.016,OUT.y+0.03,OUT.z);box(0.004,0.04,0.04,M(0xdddddd),OUT.x-0.016,OUT.y-0.03,OUT.z);
+box(0.04,0.03,0.025,M(0x333333),OUT.x-0.035,OUT.y+0.03,OUT.z);
+label('지그비 매립 콘센트 (주황=제어 구)',V(OUT.x-0.05,OUT.y+0.12,OUT.z),'s');
+box(0.03,0.12,0.08,M(0xf8f8f8),UTH.x,UTH.y,UTH.z);box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),UTH.x-0.017,UTH.y+0.02,UTH.z);
+label('UTH-135',V(UTH.x-0.05,UTH.y+0.1,UTH.z),'s');label('HFIX 2.5sq (L·N·접지)',V(2.93,0.75,4.3));
+// supply DB -> outlet
+wire([V(2.97,DB.y-0.2,DB.z-0.03),V(2.97,0.6,DB.z-0.03),V(2.97,0.6,OUT.z),V(2.97,OUT.y+0.07,OUT.z)],COL.L,0.006);
+wire([V(2.955,DB.y-0.2,DB.z+0.01),V(2.955,0.62,DB.z+0.01),V(2.955,0.62,OUT.z+0.02),V(2.955,OUT.y+0.07,OUT.z+0.02)],COL.N,0.006);
+wire([V(2.985,DB.y-0.2,DB.z+0.05),V(2.985,0.64,DB.z+0.05),V(2.985,0.64,OUT.z+0.035),V(2.985,OUT.y+0.07,OUT.z+0.035)],COL.E,0.004);
+// power cord outlet -> UTH
+wire([V(OUT.x-0.055,OUT.y+0.03,OUT.z),V(2.90,OUT.y+0.03,OUT.z),V(2.90,0.7,UTH.z+0.02),V(2.95,UTH.y-0.06,UTH.z+0.02)],COL.C,0.006);
+// UTH out -> floor -> 4 strips parallel
+wire([V(2.95,UTH.y-0.06,UTH.z-0.01),V(2.94,W,UTH.z-0.01)],COL.L);wire([V(2.96,UTH.y-0.06,UTH.z-0.03),V(2.96,W,UTH.z-0.03)],COL.N);
+terms.forEach((t,k)=>{const o=k*0.006;
+ wire([V(2.94,W,UTH.z-0.01),V(2.94,W,t.L.z+o),V(t.L.x,W,t.L.z+o),t.L],COL.L,0.004);
+ wire([V(2.96,W,UTH.z-0.03),V(2.96,W,t.N.z-o),V(t.N.x,W,t.N.z-o),t.N],COL.N,0.004);});
+// sensor
+const sA=V(1.5,FY+0.008,1.65);box(0.06,0.012,0.02,M(COL.S),sA.x,sA.y,sA.z);label('바닥 온도센서',V(sA.x,sA.y+0.06,sA.z));
+wire([sA,V(2.90,W,sA.z),V(2.90,W,UTH.z-0.05),V(2.90,UTH.y-0.06,UTH.z-0.05),V(2.95,UTH.y-0.06,UTH.z-0.05)],COL.S,0.003);
+const lbP=label('부직포 보호판',V(0.6,0.06,0.3)),lbJ=label('장판 3T',V(0.6,0.09,0.6));label('단열재 5T (바닥 전체)',V(0.4,0.03,5.3));
+// UI
+let ex=false,hid=true,lb=true,zoom=false;const $=id=>document.getElementById(id);
+function apply(){tops.forEach((m,i)=>{m.visible=!hid;m.position.y=baseY[i]+(ex?0.45*(i+1):0);m.material.opacity=ex?0.4:0.85;});lbP.position.y=0.06+(ex?0.45:0);lbJ.position.y=0.09+(ex?0.9:0);lbP.visible=!hid&&lb;lbJ.visible=!hid&&lb;}
+const HOME=()=>{const n=wrap.clientWidth<600;camera.position.set(n?-1.2:-0.6,n?7.4:4.6,n?10.5:8.2);controls.target.set(1.6,0.2,2.8);};
+$('bx').onclick=()=>{ex=!ex;$('bx').classList.toggle('on',ex);apply();};
+$('bt').onclick=()=>{hid=!hid;$('bt').classList.toggle('on',hid);apply();};
+$('bl').onclick=()=>{lb=!lb;$('bl').classList.toggle('on',lb);labels.forEach(o=>o.visible=lb);apply();};
+$('bw').onclick=()=>{zoom=!zoom;$('bw').classList.toggle('on',zoom);if(zoom){const n=wrap.clientWidth<600;controls.target.set(2.95,0.85,3.15);camera.position.set(n?1.2:1.7,1.2,n?5.0:4.6);}else HOME();};
 function resize(){const w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h,false);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
-if(window.ResizeObserver)new ResizeObserver(resize).observe(wrap); window.addEventListener('resize',resize); resize(); HOME();
+if(window.ResizeObserver)new ResizeObserver(resize).observe(wrap);window.addEventListener('resize',resize);resize();HOME();apply();
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera);lr.render(scene,camera);});
 })();
-</script>
-</body></html>
+</script></body></html>
