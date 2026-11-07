@@ -23,7 +23,7 @@ html,body{margin:0;padding:0;font-family:system-ui,sans-serif;color:var(--foregr
 <div id="wrap">
 <canvas id="c"></canvas>
 <div class="bar">
-<button id="b3" class="on">간단안 (지그비 플러그)</button>
+<button id="b3" class="on">간단안 (지그비 매립 콘센트)</button>
 <button id="b1">접촉기안 ①</button>
 <button id="b2">접촉기안 ②</button>
 <button id="bx">층 분리</button>
@@ -149,17 +149,17 @@ const sup=(g)=>{wire([V(2.93,DB.y-0.2,DB.z-0.02),V(2.93,1.75,DB.z-0.02),V(2.93,1
 // ===== simple option: 분전함 -> 콘센트(2구) -> 지그비 플러그 16A x2 -> UTH-135 A,B (파워코드) -> 필름
 const o3Grp=new THREE.Group(); scene.add(o3Grp); const o3Labels=[];
 const OUT=V(2.985,0.35,3.2);
-box(0.03,0.12,0.16,M(0xf4f4f4),OUT.x,OUT.y,OUT.z,o3Grp);
-const PLA=V(2.93,0.35,3.15), PLB=V(2.93,0.35,3.25);
-[PLA,PLB].forEach(p=>{box(0.07,0.07,0.06,M(0xffffff),p.x,p.y,p.z,o3Grp);box(0.005,0.01,0.01,M(0x22c55e,{emissive:0x22c55e,emissiveIntensity:.6}),p.x-0.037,p.y+0.02,p.z,o3Grp);});
-o3Labels.push(label('전용 2구 콘센트',V(OUT.x-0.05,OUT.y+0.11,OUT.z),'s'));
-o3Labels.push(label('지그비 플러그 16A ×2',V(PLA.x-0.08,PLA.y-0.08,3.2),'s'));
+const PLA=V(2.975,0.35,3.12), PLB=V(2.975,0.35,3.28);
+[PLA,PLB].forEach(p=>{box(0.025,0.12,0.075,M(0xf4f4f4),p.x,p.y,p.z,o3Grp);box(0.004,0.035,0.035,M(0xff8a00),p.x-0.014,p.y+0.025,p.z,o3Grp);box(0.004,0.035,0.035,M(0xdddddd),p.x-0.014,p.y-0.025,p.z,o3Grp);});
+[PLA,PLB].forEach(p=>box(0.04,0.03,0.025,M(0x333333),p.x-0.03,p.y+0.025,p.z,o3Grp));
+o3Labels.push(label('지그비 매립 콘센트 A',V(PLA.x-0.05,PLA.y+0.11,PLA.z-0.03),'s'));
+o3Labels.push(label('지그비 매립 콘센트 B',V(PLB.x-0.05,PLB.y-0.1,PLB.z+0.03),'s'));
 (function(){const g=wireSets.o3;
-  wire([V(2.97,DB.y-0.2,DB.z-0.02),V(2.97,0.55,DB.z-0.02),V(2.97,0.55,3.2),V(2.97,OUT.y+0.06,3.2)],COL.L,g);
+  wire([V(2.97,DB.y-0.2,DB.z-0.02),V(2.97,0.55,DB.z-0.02),V(2.97,0.55,3.2),V(2.97,OUT.y+0.06,3.2),V(2.97,OUT.y+0.06,3.12)],COL.L,g);
   wire([V(2.96,DB.y-0.2,DB.z+0.02),V(2.96,0.57,DB.z+0.02),V(2.96,0.57,3.22),V(2.96,OUT.y+0.06,3.22)],COL.N,g);
   wire([V(2.98,DB.y-0.2,DB.z+0.06),V(2.98,0.59,DB.z+0.06),V(2.98,0.59,3.24),V(2.98,OUT.y+0.06,3.24)],0x2e9e44,g,0.004);
   // power cords (gray) plug -> UTH
-  [[PLA,P.uA],[PLB,P.uB]].forEach(([p,u])=>wire([V(p.x-0.035,p.y,p.z),V(2.90,p.y,p.z),V(2.90,0.6,u.z+0.02),V(2.95,u.y-0.06,u.z+0.02)],0x555555,g,0.006));
+  [[PLA,P.uA],[PLB,P.uB]].forEach(([p,u])=>wire([V(p.x-0.05,p.y+0.025,p.z),V(2.90,p.y+0.025,p.z),V(2.90,0.6,u.z+0.02),V(2.95,u.y-0.06,u.z+0.02)],0x555555,g,0.006));
   [[P.uA,'A'],[P.uB,'B']].forEach(([u,z])=>{
     wire([V(2.95,u.y-0.06,u.z-0.01),V(2.94,W,u.z-0.01)],COL.L,g); wire([V(2.96,u.y-0.06,u.z-0.03),V(2.96,W,u.z-0.03)],COL.N,g);
     floorFeed(g,u.z-0.02,z,0,0);
@@ -215,7 +215,7 @@ const lbJang=label('장판 3T',V(0.6,0.09,0.6));
 // ---- UI
 const lg=document.getElementById('lg');
 const TXT={
-o3:`<b>간단안 (추천)</b><br>분전함 누전차단기 20A → HFIX 2.5sq → <b>전용 2구 콘센트</b> → 지그비 플러그 16A ×2 → UTH-135 A·B (파워코드) → 필름 A·B<br>함·접촉기·와고 없이 꽂기만 하면 돼요. 스마트싱스에서 플러그를 켜고 끄면 구역별로 켜지고 꺼져요.<br><i>조건: UTH-135가 전원이 다시 들어오면 자동으로 켜져야 함</i>`,
+o3:`<b>간단안 (추천)</b><br>분전함 누전차단기 20A → HFIX 2.5sq → <b>지그비 매립 콘센트 2개</b>(2개용 박스, 건너 물림) → 주황색 구에 UTH-135 A·B 파워코드 → 필름 A·B<br>매립 콘센트는 주황색 첫 번째 구만 켜고 꺼져요. 구역마다 1개씩 써요.<br><i>조건: UTH-135가 전원이 다시 들어오면 자동으로 켜져야 함</i>`,
 o1:`<b>접촉기안 ① 앞단 차단</b><br>분전함 누전차단기 20A → 단자대 → <b>접촉기</b> → UTH-135 A·B로 나눔 → 필름 A·B<br>지그비가 접촉기 코일만 켜고 꺼요. 꺼지면 조절기 전원도 같이 꺼져요.<br><i>조건: UTH-135가 정전 후 다시 켜지는지 확인</i>`,
 o2:`<b>접촉기안 ② 뒷단 차단</b><br>분전함 누전차단기 20A → 단자대 → UTH-135 A·B (상시 전원) → <b>접촉기 극1·극2</b> → 필름 A·B<br>조절기는 항상 켜져 있고, 접촉기가 출력 L선만 끊어요.`};
 const colors=`<br><span class="sw" style="background:#d62828"></span>L(활선) <span class="sw" style="background:#1d4ed8"></span>N(중성) <span class="sw" style="background:#8e44ad"></span>지그비→코일 <span class="sw" style="background:#e0a800"></span>온도센서 <span class="sw" style="background:#2e9e44"></span>접지 <span class="sw" style="background:#555"></span>파워코드`;
