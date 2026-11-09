@@ -37,13 +37,13 @@ td.n{text-align:right;white-space:nowrap}
 </div></div>
 <div class="box">
 <b>결선 순서</b><br>
-(배선은 도어 반대쪽 벽) 분전함 <b>전용 누전차단기 20A</b> → HFIX 2.5sq (L·N·접지) → <b>다원 지그비 매립 콘센트 PM-C150-ZB</b> → 주황색 구(제어되는 구)에 <b>UTH-135 파워코드</b> → 조절기 출력 L·N → 필름 4줄 단자(병렬) · 바닥 센서 1개<br>
+(3연동 도어 = 위쪽 3,000 벽) 분전함 <b>전용 누전차단기 20A</b> → HFIX 2.5sq (L·N·접지) → <b>다원 지그비 매립 콘센트 PM-C150-ZB</b> → 주황색 구(제어되는 구)에 <b>UTH-135 파워코드</b> → 조절기 출력 L·N → 필름 4줄 단자(병렬) · 바닥 센서 1개<br>
 남는 아래 구는 항상 전기가 들어오는 일반 콘센트로 사용<br>
 <span class="sw" style="background:#d62828"></span>L <span class="sw" style="background:#1d4ed8"></span>N <span class="sw" style="background:#2e9e44"></span>접지 <span class="sw" style="background:#555"></span>파워코드 <span class="sw" style="background:#e0a800"></span>온도센서
 <table>
 <tr><th>항목</th><th class="n">값</th></tr>
 <tr><td>필름</td><td class="n">PTC 100폭 2.75m × 4줄 = 11m · 11㎡</td></tr>
-<tr><td>배치</td><td class="n">폭: 벽 50 + 필름 2,750 + 도어 쪽 200 = 3,000 · 길이: 125 + 필름 4,075 + 필름 없음 1,200~1,500</td></tr>
+<tr><td>배치</td><td class="n">폭: 125 + 필름 2,750 + 125 = 3,000 · 길이: 도어 쪽 200 + 필름 4,075 + 필름 없음 1,125~1,425</td></tr>
 <tr><td>필름 면적</td><td class="n">2.75m × 1.0m × 4 = 11.0㎡ (방 16.65㎡의 66%)</td></tr>
 <tr><td>출력 / 전류</td><td class="n">약 2.42kW / 11A</td></tr>
 <tr><td>매립 콘센트 16A 대비</td><td class="n">69%</td></tr>
@@ -72,44 +72,44 @@ const prot=layer(0.012,M(0xe8dcc8,{transparent:true,opacity:.85}),0.03),jang=lay
 const tops=[prot,jang],baseY=tops.map(m=>m.position.y);
 const wm=M(0xffffff,{transparent:true,opacity:.18,side:THREE.DoubleSide});
 box(0.02,2.4,5.7,wm,3.01,1.2,2.85);box(3,0.35,0.02,wm,1.5,0.175,-0.01);box(0.02,2.4,5.4,wm,-0.01,1.2,2.7);
-const FX=1.425,FY=0.022,W=0.025,COL={L:0xd62828,N:0x1d4ed8,E:0x2e9e44,S:0xe0a800,C:0x555555};
+const FX=1.5,FY=0.022,W=0.025,COL={L:0xd62828,N:0x1d4ed8,E:0x2e9e44,S:0xe0a800,C:0x555555};
 // furniture zone (no film)
-const fz=new THREE.Shape();fz.moveTo(0,4.25);fz.lineTo(3,4.25);fz.lineTo(3,5.7);fz.lineTo(0,5.4);fz.closePath();
+const fz=new THREE.Shape();fz.moveTo(0,4.3);fz.lineTo(3,4.3);fz.lineTo(3,5.7);fz.lineTo(0,5.4);fz.closePath();
 const fg=new THREE.ShapeGeometry(fz);fg.rotateX(Math.PI/2);const fm=new THREE.Mesh(fg,M(0xf59e0b,{transparent:true,opacity:.25,side:THREE.DoubleSide}));fm.position.y=0.0215;scene.add(fm);
-label('가구 자리 · 필름 없음 (사선 쪽)',V(1.5,0.06,4.85),'w');
-// films (도어 = 오른쪽 5700 벽 → 필름은 도어 쪽 200, 반대쪽 벽 50 띄움 / 단자·배선은 도어 반대쪽)
-const strips=[[0.125,1.125],[1.15,2.15],[2.175,3.175],[3.2,4.2]];const terms=[];
+label('가구 자리 · 필름 없음 (사선 쪽)',V(1.5,0.06,4.9),'w');
+// films (3연동 도어 = 위쪽 3,000 벽 → 도어에서 200 띄우고 사선 쪽으로 당김)
+const strips=[[0.2,1.2],[1.225,2.225],[2.25,3.25],[3.275,4.275]];const terms=[];
 strips.forEach(([z0,z1],i)=>{const zc=(z0+z1)/2;
  box(2.75,0.003,1.0,M(0x2b2b2b),FX,FY,zc);for(let k=1;k<10;k++)box(2.72,0.0035,0.012,M(0x111111),FX,FY+0.001,z0+0.05+k*0.09);
  box(2.75,0.004,0.035,M(0xc8792e,{metalness:.6,roughness:.35}),FX,FY+0.002,z0+0.03);box(2.75,0.004,0.035,M(0xc8792e,{metalness:.6,roughness:.35}),FX,FY+0.002,z1-0.03);
- box(0.05,0.006,1.0,M(0x777777),FX+1.35,FY+0.003,zc);
- const tL=V(FX-1.30,FY+0.006,z0+0.03),tN=V(FX-1.30,FY+0.006,z1-0.03);[tL,tN].forEach(p=>box(0.04,0.01,0.04,M(0xaaaaaa,{metalness:.8,roughness:.3}),p.x,p.y,p.z));
- terms.push({L:tL,N:tN});label(`필름 ${i+1} · 2.75m`,V(1.6,FY+0.05,zc));});
-label('끝단 부틸 절연 (도어 쪽)',V(FX+1.35,FY+0.06,0.6));label('면상단자 + 부틸',V(FX-1.3,FY+0.06,0.0));
-label('도어 쪽 200 띄움',V(2.9,FY+0.06,2.68),'w');label('벽에서 50',V(0.03,FY+0.06,3.9),'w');
-// 3연동 도어 (오른쪽 5700 벽, 위치 예시)
-[0,1,2].forEach(k=>box(0.03,2.1,0.8,M(0x9ec5e8,{transparent:true,opacity:.35}),2.98-k*0.035,1.05,1.3+k*0.8));
-box(0.12,0.01,2.4,M(0x888888),2.94,0.005,2.1);
-label('3연동 도어 (오른쪽 벽, 위치는 예시)',V(2.95,2.2,2.1),'s');
-// components on left wall (도어 반대쪽)
-const DB=V(0.05,1.85,4.6),OUT=V(0.018,0.36,3.35),UTH=V(0.035,1.3,2.95);
-box(0.08,0.40,0.32,M(0x6b7280),DB.x,DB.y,DB.z);box(0.01,0.09,0.035,M(0x111111),DB.x+0.045,DB.y+0.05,DB.z);
-label('분전함: 전용 누전차단기 20A',V(DB.x+0.05,DB.y+0.28,DB.z),'s');
-box(0.03,0.13,0.08,M(0xf4f4f4),OUT.x,OUT.y,OUT.z);box(0.004,0.04,0.04,M(0xff8a00),OUT.x+0.016,OUT.y+0.03,OUT.z);box(0.004,0.04,0.04,M(0xdddddd),OUT.x+0.016,OUT.y-0.03,OUT.z);
-box(0.04,0.03,0.025,M(0x333333),OUT.x+0.035,OUT.y+0.03,OUT.z);
-label('지그비 매립 콘센트 (주황=제어 구)',V(OUT.x+0.05,OUT.y+0.12,OUT.z),'s');
-box(0.03,0.12,0.08,M(0xf8f8f8),UTH.x,UTH.y,UTH.z);box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),UTH.x+0.017,UTH.y+0.02,UTH.z);
-label('UTH-135',V(UTH.x+0.05,UTH.y+0.1,UTH.z),'s');label('HFIX 2.5sq (L·N·접지)',V(0.07,0.75,4.0));
-wire([V(0.03,DB.y-0.2,DB.z-0.03),V(0.03,0.6,DB.z-0.03),V(0.03,0.6,OUT.z),V(0.03,OUT.y+0.07,OUT.z)],COL.L,0.006);
-wire([V(0.045,DB.y-0.2,DB.z+0.01),V(0.045,0.62,DB.z+0.01),V(0.045,0.62,OUT.z+0.02),V(0.045,OUT.y+0.07,OUT.z+0.02)],COL.N,0.006);
-wire([V(0.015,DB.y-0.2,DB.z+0.05),V(0.015,0.64,DB.z+0.05),V(0.015,0.64,OUT.z+0.035),V(0.015,OUT.y+0.07,OUT.z+0.035)],COL.E,0.004);
-wire([V(OUT.x+0.055,OUT.y+0.03,OUT.z),V(0.10,OUT.y+0.03,OUT.z),V(0.10,0.7,UTH.z+0.02),V(0.05,UTH.y-0.06,UTH.z+0.02)],COL.C,0.006);
-wire([V(0.035,UTH.y-0.06,UTH.z-0.01),V(0.035,W,UTH.z-0.01)],COL.L);wire([V(0.018,UTH.y-0.06,UTH.z-0.03),V(0.018,W,UTH.z-0.03)],COL.N);
+ box(0.05,0.006,1.0,M(0x777777),FX-1.35,FY+0.003,zc);
+ const tL=V(FX+1.30,FY+0.006,z0+0.03),tN=V(FX+1.30,FY+0.006,z1-0.03);[tL,tN].forEach(p=>box(0.04,0.01,0.04,M(0xaaaaaa,{metalness:.8,roughness:.3}),p.x,p.y,p.z));
+ terms.push({L:tL,N:tN});label(`필름 ${i+1} · 2.75m`,V(1.05,FY+0.05,zc));});
+label('끝단 부틸 절연',V(FX-1.35,FY+0.06,0.9));label('면상단자 + 부틸',V(FX+1.3,FY+0.06,0.75));
+label('도어 쪽 200 띄움',V(1.5,FY+0.06,0.1),'w');
+// 3연동 도어 (위쪽 3,000 벽)
+[0,1,2].forEach(k=>box(0.8,2.1,0.03,M(0x9ec5e8,{transparent:true,opacity:.35}),0.7+k*0.8,1.05,0.02+k*0.035));
+box(2.4,0.01,0.12,M(0x888888),1.5,0.005,0.06);
+label('3연동 도어 (위쪽 3,000 벽)',V(1.5,2.2,0.05),'s');
+// components on right wall (5,700 벽)
+const DB=V(2.95,1.85,5.0),OUT=V(2.982,0.36,3.35),UTH=V(2.965,1.3,2.95);
+box(0.08,0.40,0.32,M(0x6b7280),DB.x,DB.y,DB.z);box(0.01,0.09,0.035,M(0x111111),DB.x-0.045,DB.y+0.05,DB.z);
+label('분전함: 전용 누전차단기 20A',V(DB.x-0.05,DB.y+0.28,DB.z),'s');
+box(0.03,0.13,0.08,M(0xf4f4f4),OUT.x,OUT.y,OUT.z);box(0.004,0.04,0.04,M(0xff8a00),OUT.x-0.016,OUT.y+0.03,OUT.z);box(0.004,0.04,0.04,M(0xdddddd),OUT.x-0.016,OUT.y-0.03,OUT.z);
+box(0.04,0.03,0.025,M(0x333333),OUT.x-0.035,OUT.y+0.03,OUT.z);
+label('지그비 매립 콘센트 (주황=제어 구)',V(OUT.x-0.05,OUT.y+0.12,OUT.z),'s');
+box(0.03,0.12,0.08,M(0xf8f8f8),UTH.x,UTH.y,UTH.z);box(0.005,0.04,0.05,M(0x1f6f3f,{emissive:0x0a3,emissiveIntensity:.4}),UTH.x-0.017,UTH.y+0.02,UTH.z);
+label('UTH-135',V(UTH.x-0.05,UTH.y+0.1,UTH.z),'s');label('HFIX 2.5sq (L·N·접지)',V(2.93,0.75,4.3));
+wire([V(2.97,DB.y-0.2,DB.z-0.03),V(2.97,0.6,DB.z-0.03),V(2.97,0.6,OUT.z),V(2.97,OUT.y+0.07,OUT.z)],COL.L,0.006);
+wire([V(2.955,DB.y-0.2,DB.z+0.01),V(2.955,0.62,DB.z+0.01),V(2.955,0.62,OUT.z+0.02),V(2.955,OUT.y+0.07,OUT.z+0.02)],COL.N,0.006);
+wire([V(2.985,DB.y-0.2,DB.z+0.05),V(2.985,0.64,DB.z+0.05),V(2.985,0.64,OUT.z+0.035),V(2.985,OUT.y+0.07,OUT.z+0.035)],COL.E,0.004);
+wire([V(OUT.x-0.055,OUT.y+0.03,OUT.z),V(2.90,OUT.y+0.03,OUT.z),V(2.90,0.7,UTH.z+0.02),V(2.95,UTH.y-0.06,UTH.z+0.02)],COL.C,0.006);
+wire([V(2.965,UTH.y-0.06,UTH.z-0.01),V(2.965,W,UTH.z-0.01)],COL.L);wire([V(2.982,UTH.y-0.06,UTH.z-0.03),V(2.982,W,UTH.z-0.03)],COL.N);
 terms.forEach((t,k)=>{const o=k*0.006;
- wire([V(0.035,W,UTH.z-0.01),V(0.035,W,t.L.z+o),V(t.L.x-0.02,W,t.L.z+o),t.L],COL.L,0.004);
- wire([V(0.018,W,UTH.z-0.03),V(0.018,W,t.N.z-o),V(t.N.x-0.02,W,t.N.z-o),t.N],COL.N,0.004);});
-const sA=V(1.4,FY+0.008,1.65);box(0.06,0.012,0.02,M(COL.S),sA.x,sA.y,sA.z);label('바닥 온도센서',V(sA.x,sA.y+0.06,sA.z));
-wire([sA,V(0.05,W+0.004,sA.z),V(0.05,W+0.004,UTH.z-0.05),V(0.05,UTH.y-0.06,UTH.z-0.05)],COL.S,0.003);
+ wire([V(2.965,W,UTH.z-0.01),V(2.965,W,t.L.z+o),V(t.L.x+0.02,W,t.L.z+o),t.L],COL.L,0.004);
+ wire([V(2.982,W,UTH.z-0.03),V(2.982,W,t.N.z-o),V(t.N.x+0.02,W,t.N.z-o),t.N],COL.N,0.004);});
+const sA=V(1.6,FY+0.008,1.725);box(0.06,0.012,0.02,M(COL.S),sA.x,sA.y,sA.z);label('바닥 온도센서',V(sA.x,sA.y+0.06,sA.z));
+wire([sA,V(2.95,W+0.004,sA.z),V(2.95,W+0.004,UTH.z-0.05),V(2.95,UTH.y-0.06,UTH.z-0.05)],COL.S,0.003);
 
 // ===== 치수선
 const dimGrp=new THREE.Group();scene.add(dimGrp);const dimLabels=[];
@@ -119,20 +119,20 @@ function dimLine(a,b,txt,col=0x111827){const g=new THREE.BufferGeometry().setFro
  const el=document.createElement('div');el.className='lbl';el.style.background='rgba(255,255,255,.95)';el.style.color='#111';el.style.border='1px solid #9ca3af';el.textContent=txt;const o=new THREE.CSS2DObject(el);o.position.copy(a.clone().add(b).multiplyScalar(0.5));o.position.y+=0.02;scene.add(o);labels.push(o);dimLabels.push(o);}
 const DY=0.06;
 // 폭 방향 (위쪽 3000 벽 바깥)
-dimLine(V(0,DY,-0.25),V(0.05,DY,-0.25),'50');
-dimLine(V(0.05,DY,-0.25),V(2.80,DY,-0.25),'필름 2,750');
-dimLine(V(2.80,DY,-0.25),V(3.0,DY,-0.25),'200 (도어 쪽)');
+dimLine(V(0,DY,-0.25),V(0.125,DY,-0.25),'125');
+dimLine(V(0.125,DY,-0.25),V(2.875,DY,-0.25),'필름 2,750');
+dimLine(V(2.875,DY,-0.25),V(3.0,DY,-0.25),'125');
 dimLine(V(0,DY,-0.55),V(3.0,DY,-0.55),'3,000');
 // 길이 방향 (왼쪽 5400 벽 바깥)
-dimLine(V(-0.3,DY,0),V(-0.3,DY,0.125),'125');
-dimLine(V(-0.3,DY,0.125),V(-0.3,DY,4.2),'필름 4줄 4,075 (1,000×4 + 간격 25×3)');
-dimLine(V(-0.3,DY,4.2),V(-0.3,DY,5.4),'필름 없음 1,200');
+dimLine(V(-0.3,DY,0),V(-0.3,DY,0.2),'도어 쪽 200');
+dimLine(V(-0.3,DY,0.2),V(-0.3,DY,4.275),'필름 4줄 4,075 (1,000×4 + 간격 25×3)');
+dimLine(V(-0.3,DY,4.275),V(-0.3,DY,5.4),'필름 없음 1,125');
 dimLine(V(-0.65,DY,0),V(-0.65,DY,5.4),'5,400');
 // 오른쪽 5700 벽 바깥
-dimLine(V(3.35,DY,4.2),V(3.35,DY,5.7),'필름 없음 1,500');
+dimLine(V(3.35,DY,4.275),V(3.35,DY,5.7),'필름 없음 1,425');
 dimLine(V(3.65,DY,0),V(3.65,DY,5.7),'5,700');
 // 줄별 폭
-[[0.125,1.125],[1.15,2.15],[2.175,3.175],[3.2,4.2]].forEach(([a,b])=>dimLine(V(2.4,FY+0.03,a),V(2.4,FY+0.03,b),'1,000',0xf59e0b));
+[[0.2,1.2],[1.225,2.225],[2.25,3.25],[3.275,4.275]].forEach(([a,b])=>dimLine(V(0.6,FY+0.03,a),V(0.6,FY+0.03,b),'1,000',0xf59e0b));
 
 const lbP=label('부직포 보호판',V(0.6,0.06,0.3)),lbJ=label('장판 3T',V(0.6,0.09,0.6));label('단열재 5T (바닥 전체)',V(0.4,0.03,5.3));
 // UI
@@ -142,7 +142,7 @@ const HOME=()=>{const n=wrap.clientWidth<600;camera.position.set(n?-1.6:-1.0,n?8
 $('bx').onclick=()=>{ex=!ex;$('bx').classList.toggle('on',ex);apply();};
 $('bt').onclick=()=>{hid=!hid;$('bt').classList.toggle('on',hid);apply();};
 $('bl').onclick=()=>{lb=!lb;$('bl').classList.toggle('on',lb);labels.forEach(o=>o.visible=lb);apply();};
-$('bw').onclick=()=>{zoom=!zoom;$('bw').classList.toggle('on',zoom);if(zoom){const n=wrap.clientWidth<600;controls.target.set(0.05,0.85,3.15);camera.position.set(n?1.8:1.3,1.2,n?5.0:4.6);}else HOME();};
+$('bw').onclick=()=>{zoom=!zoom;$('bw').classList.toggle('on',zoom);if(zoom){const n=wrap.clientWidth<600;controls.target.set(2.95,0.85,3.15);camera.position.set(n?1.2:1.7,1.2,n?5.0:4.6);}else HOME();};
 $('bd').onclick=()=>{const on=!dimGrp.visible;dimGrp.visible=on;dimLabels.forEach(o=>o.visible=on&&lb);$('bd').classList.toggle('on',on);};
 let top=false;$('btop').onclick=()=>{top=!top;$('btop').classList.toggle('on',top);if(top){controls.target.set(1.5,0,2.85);camera.position.set(1.5,9.5,2.86);}else HOME();};
 function resize(){const w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h,false);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
