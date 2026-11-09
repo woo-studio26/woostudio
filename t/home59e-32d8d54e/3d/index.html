@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>3D 둘러보기 · 인천계양 A6 59E | 우스튜디오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#ece7df;font-family:Pretendard,-apple-system,sans-serif;color:#22201d}
+#c{position:fixed;inset:0}
+.top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(#ece7dfee,#ece7df00);z-index:5}
+.top a{color:#22201d;text-decoration:none;font-size:13px;padding:7px 12px;border:1px solid #d8d0c4;border-radius:99px;background:#fff}
+.top b{font-size:15px}
+.bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:96vw;z-index:5}
+.bar button{font:500 13px Pretendard,sans-serif;border:1px solid #d8d0c4;background:#fffffff0;padding:9px 13px;border-radius:99px;cursor:pointer;color:#22201d}
+.bar button.on{background:#22201d;color:#fff;border-color:#22201d}
+.bar .sep{width:1px;background:#d8d0c4;margin:4px 2px}
+#load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#ece7df;z-index:9;transition:opacity .5s}
+#load .t{font-size:14px;color:#7a746b}
+#load .p{width:220px;height:4px;background:#d8d0c4;border-radius:4px;overflow:hidden}
+#load .p i{display:block;height:100%;width:0;background:#22201d;transition:width .2s}
+.help{position:fixed;right:14px;top:58px;font-size:12px;color:#7a746b;background:#ffffffd0;border-radius:10px;padding:8px 10px;line-height:1.5;z-index:5}
+@media(max-width:700px){.help{display:none}.bar{flex-wrap:nowrap;overflow-x:auto;left:0;right:0;transform:none;max-width:none;padding:0 12px 4px;justify-content:flex-start;-webkit-overflow-scrolling:touch}.bar button{padding:8px 11px;font-size:12px;flex:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="top"><a href="../">← 시안 페이지</a><b>3D 둘러보기</b></div>
+<div class="help">드래그: 회전 · 휠/핀치: 확대 · 우클릭/두 손가락: 이동</div>
+<div class="bar" id="bar">
+  <button data-v="all" class="on">전체</button>
+  <button data-v="living">거실</button>
+  <button data-v="sofa">소파</button>
+  <button data-v="kitchen">주방</button>
+  <button data-v="dining">식당</button>
+  <button data-v="bed1">침실1</button>
+  <button data-v="bed2">침실2</button>
+  <span class="sep"></span>
+  <button id="cut">벽 자르기</button><button id="ceil">천장 보기</button>
+</div>
+<div id="load"><div class="t">3D 모델 불러오는 중… (약 11MB)</div><div class="p"><i id="pg"></i></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script>
+const cv=document.getElementById('c');
+const R=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);
+R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=0.85;
+R.physicallyCorrectLights=true;
+const S=new THREE.Scene();S.background=new THREE.Color(0xece7df);
+const C=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.05,200);
+const O=new THREE.OrbitControls(C,cv);O.enableDamping=true;O.dampingFactor=0.08;O.screenSpacePanning=true;
+S.add(new THREE.HemisphereLight(0xffffff,0xbfae95,1.3));
+const d1=new THREE.DirectionalLight(0xfff1e0,2.0);d1.position.set(8,12,-6);S.add(d1);
+const d2=new THREE.DirectionalLight(0xffffff,0.8);d2.position.set(-6,8,10);S.add(d2);
+S.add(new THREE.AmbientLight(0xffffff,0.15));
+const CUT=new THREE.Plane(new THREE.Vector3(0,-1,0),1.3);
+// plan(px) -> blender(m) -> three(x, z, -y)
+const P=(x,y,z)=>new THREE.Vector3((x-430)*0.02345,z/1000,-(760-y)*0.02345);
+const V={
+ living:[P(790,355,1350),P(520,300,900)],
+ sofa:[P(700,250,1400),P(735,380,500)],
+ dining:[P(500,350,1450),P(780,300,800)],
+ kitchen:[P(600,355,1500),P(520,245,1000)],
+ bed1:[P(690,690,1500),P(760,560,500)],
+ bed2:[P(700,420,1500),P(810,520,700)],
+};
+let ceiling=null,center=new THREE.Vector3(),allPos=new THREE.Vector3();
+function fly(to,tg,ms=900){const p0=C.position.clone(),t0=O.target.clone(),st=performance.now();
+ (function a(){const k=Math.min(1,(performance.now()-st)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+  C.position.lerpVectors(p0,to,e);O.target.lerpVectors(t0,tg,e);if(k<1)requestAnimationFrame(a)})()}
+function setCut(on){R.clippingPlanes=on?[CUT]:[];document.getElementById('cut').classList.toggle('on',on)}
+function setCeil(on){if(ceiling)ceiling.visible=on;document.getElementById('ceil').classList.toggle('on',on)}
+document.querySelectorAll('#bar [data-v]').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('#bar [data-v]').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+ const v=b.dataset.v;
+ if(v==='all'){setCeil(false);setCut(true);C.fov=50;C.updateProjectionMatrix();fly(allPos,center)}
+ else{setCeil(true);setCut(false);C.fov=70;C.updateProjectionMatrix();fly(V[v][0],V[v][1])}
+});
+document.getElementById('cut').onclick=()=>setCut(!R.clippingPlanes.length);
+document.getElementById('ceil').onclick=()=>setCeil(!(ceiling&&ceiling.visible));
+const dl=new THREE.DRACOLoader();dl.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
+const gl=new THREE.GLTFLoader();gl.setDRACOLoader(dl);
+gl.load('home.glb?v=1',g=>{
+ const m=g.scene;
+ m.traverse(o=>{if(o.isMesh){
+   if(/ceiling/i.test(o.name)||(o.parent&&/ceiling/i.test(o.parent.name)))ceiling=ceiling||o;
+   const ms=Array.isArray(o.material)?o.material:[o.material];
+   ms.forEach(mt=>{mt.side=THREE.DoubleSide;if(mt.map)mt.map.anisotropy=4;if(mt.metalness>0.4){mt.metalness=0.35;mt.roughness=Math.max(mt.roughness,0.35)}
+     if(mt.transmission>0){mt.transparent=true;mt.opacity=0.25;mt.transmission=0}});
+ }});
+ m.traverse(o=>{if(/ceiling/i.test(o.name))ceiling=o});
+ S.add(m);
+ const bb=new THREE.Box3().setFromObject(m);bb.getCenter(center);center.y=0.6;
+ const sz=bb.getSize(new THREE.Vector3());
+ const k=Math.max(1,0.62/C.aspect);allPos.set(center.x+sz.x*0.55*k,Math.max(sz.x,sz.z)*1.05*k,center.z+sz.z*0.75*k);
+ setCeil(false);setCut(true);C.position.copy(allPos);O.target.copy(center);O.update();
+ const L=document.getElementById('load');L.style.opacity=0;setTimeout(()=>L.remove(),500);
+},e=>{if(e.total)document.getElementById('pg').style.width=(e.loaded/e.total*100)+'%';else document.getElementById('pg').style.width=Math.min(100,e.loaded/108868)+'%'},
+err=>{document.querySelector('#load .t').textContent='불러오기 실패: '+err.message});
+addEventListener('resize',()=>{C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)});
+(function loop(){requestAnimationFrame(loop);O.update();R.render(S,C)})();
+</script>
+</body>
+</html>
