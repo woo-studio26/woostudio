@@ -27,12 +27,13 @@ html,body{height:100%;overflow:hidden;background:#ece7df;font-family:Pretendard,
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="top"><a href="../">← 시안 페이지</a><b>3D 둘러보기</b></div>
+<div class="top"><a href="../">← 시안 페이지</a><a href="../v1/3d/">v1 3D</a><b>3D 둘러보기 · v2</b></div>
 <div class="help">드래그: 회전 · 휠/핀치: 확대 · 우클릭/두 손가락: 이동</div>
 <div class="bar" id="bar">
   <button data-v="all" class="on">전체</button>
   <button data-v="living">거실</button>
   <button data-v="sofa">소파</button>
+  <button data-v="window">창가</button>
   <button data-v="kitchen">주방</button>
   <button data-v="dining">식당</button>
   <button data-v="bed1">침실1</button>
@@ -40,7 +41,7 @@ html,body{height:100%;overflow:hidden;background:#ece7df;font-family:Pretendard,
   <span class="sep"></span>
   <button id="cut">벽 자르기</button><button id="ceil">천장 보기</button>
 </div>
-<div id="load"><div class="t">3D 모델 불러오는 중… (약 11MB)</div><div class="p"><i id="pg"></i></div></div>
+<div id="load"><div class="t">3D 모델 불러오는 중… (약 7MB)</div><div class="p"><i id="pg"></i></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -63,8 +64,9 @@ const CUT=new THREE.Plane(new THREE.Vector3(0,-1,0),1.3);
 // plan(px) -> blender(m) -> three(x, z, -y)
 const P=(x,y,z)=>new THREE.Vector3((x-430)*0.02345,z/1000,-(760-y)*0.02345);
 const V={
- living:[P(790,355,1350),P(520,300,900)],
- sofa:[P(700,250,1400),P(735,380,500)],
+ living:[P(612,318,1300),P(800,318,950)],
+ sofa:[P(705,368,1450),P(690,252,480)],
+ window:[P(818,318,1400),P(560,322,900)],
  dining:[P(500,350,1450),P(780,300,800)],
  kitchen:[P(600,355,1500),P(520,245,1000)],
  bed1:[P(690,690,1500),P(760,560,500)],
@@ -86,7 +88,7 @@ document.getElementById('cut').onclick=()=>setCut(!R.clippingPlanes.length);
 document.getElementById('ceil').onclick=()=>setCeil(!(ceiling&&ceiling.visible));
 const dl=new THREE.DRACOLoader();dl.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
 const gl=new THREE.GLTFLoader();gl.setDRACOLoader(dl);
-gl.load('home.glb?v=1',g=>{
+gl.load('home_v2.glb?v=2',g=>{
  const m=g.scene;
  m.traverse(o=>{if(o.isMesh){
    if(/ceiling/i.test(o.name)||(o.parent&&/ceiling/i.test(o.parent.name)))ceiling=ceiling||o;
