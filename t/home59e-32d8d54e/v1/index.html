@@ -59,6 +59,25 @@ td.r{white-space:nowrap;color:var(--sub)}
 .btn3d{display:inline-block;margin-top:18px;padding:12px 20px;border-radius:99px;background:#fff;color:#22201d;text-decoration:none;font-weight:600;font-size:15px}
 .cta3d{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:28px;padding:22px 24px;border-radius:16px;background:#22201d;color:#fff;text-decoration:none}
 .cta3d b{font-size:18px}.cta3d span{opacity:.75;font-size:14px}
+
+.bc-wrap{padding:64px 0 24px}
+.bc-row{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;margin-top:26px}
+.bc{width:360px;max-width:100%;aspect-ratio:9/5;border-radius:10px;box-shadow:0 14px 34px rgba(40,30,20,.16);position:relative;overflow:hidden}
+.bc.f{background:#22201d;color:#f6f3ee;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+.bc.f .lg{font-size:26px;font-weight:700;letter-spacing:.32em;padding-left:.32em}
+.bc.f .ln{width:36px;height:1px;background:#c9a77c}
+.bc.f .sl{font-size:11px;letter-spacing:.22em;color:#c9b89d}
+.bc.b{background:#f8f5ef;border:1px solid #e3ddd3;color:#22201d;padding:26px 28px;display:flex;flex-direction:column;justify-content:space-between}
+.bc.b .nm{font-size:20px;font-weight:700;letter-spacing:.04em}
+.bc.b .nm span{font-size:12px;font-weight:500;color:#7a746b;margin-left:8px;letter-spacing:0}
+.bc.b .co{font-size:12px;color:#c9a77c;font-weight:600;letter-spacing:.12em;margin-top:4px}
+.bc.b ul{list-style:none;font-size:12.5px;line-height:1.75}
+.bc.b ul b{display:inline-block;width:16px;color:#c9a77c;font-weight:600}
+.bc.b a{color:inherit;text-decoration:none}
+.bc.b .tg{position:absolute;right:26px;top:28px;font-size:10.5px;color:#7a746b;text-align:right;line-height:1.5}
+.bc-cta{display:flex;justify-content:center;gap:10px;margin-top:22px;flex-wrap:wrap}
+.bc-cta a{font-size:14px;font-weight:600;padding:11px 18px;border-radius:99px;text-decoration:none;border:1px solid #d8d0c4;color:#22201d;background:#fff}
+.bc-cta a.p{background:#22201d;color:#fff;border-color:#22201d}
 footer{padding:56px 0 70px;color:var(--sub);font-size:13px;text-align:center}
 footer b{color:var(--ink);font-size:15px;letter-spacing:.08em}
 #lb{position:fixed;inset:0;background:rgba(15,13,11,.94);display:none;align-items:center;justify-content:center;z-index:99}
@@ -83,7 +102,7 @@ footer b{color:var(--ink);font-size:15px;letter-spacing:.08em}
 </header>
 
 <nav class="tabs"><div class="wrap">
-  <a href="../" style="color:#b0552b;font-weight:700">← 최신 v2</a><a href="../3d/" style="color:#2f4a7a;font-weight:700">3D 보기</a><a href="#overview">개요</a><a href="#living">거실</a><a href="#kitchen">주방·식당</a><a href="#bed">침실</a><a href="#plan">평면</a><a href="#material">마감재</a><a href="#furniture">가구 목록</a>
+  <a href="../" style="color:#b0552b;font-weight:700">← 최신 v2</a><a href="../3d/" style="color:#2f4a7a;font-weight:700">3D 보기</a><a href="#overview">개요</a><a href="#living">거실</a><a href="#kitchen">주방·식당</a><a href="#bed">침실</a><a href="#plan">평면</a><a href="#material">마감재</a><a href="#furniture">가구 목록</a><a href="#contact">연락처</a>
 </div></nav>
 
 <main class="wrap">
@@ -190,9 +209,27 @@ footer b{color:var(--ink);font-size:15px;letter-spacing:.08em}
   </table>
   <p class="note">본 이미지는 분양 평면도와 모델하우스 사진을 바탕으로 만든 시안입니다. 실제 치수는 현장 실측 후 확정되며, 가구 크기와 마감 색은 실제와 다를 수 있습니다.</p>
 </section>
+
+<section class="bc-wrap" id="contact">
+  <div class="eyebrow" style="text-align:center">CONTACT</div>
+  <h2 style="text-align:center">시공 상담</h2>
+  <div class="bc-row">
+    <div class="bc f"><div class="lg">WOO STUDIO</div><div class="ln"></div><div class="sl">INTERIOR · DESIGN · BUILD</div></div>
+    <div class="bc b">
+      <div><div class="nm">우지훈<span>대표</span></div><div class="co">우스튜디오 WOO STUDIO</div></div>
+      <div class="tg">대구 · 경북<br>인테리어 설계 · 시공</div>
+      <ul>
+        <li><b>T</b><a href="tel:050714177558">0507-1417-7558</a></li>
+        <li><b>E</b><a href="mailto:woo_studio26@naver.com">woo_studio26@naver.com</a></li>
+        <li><b>W</b><a href="https://www.woostudio.co.kr">woostudio.co.kr</a> · @woo_studio26</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bc-cta"><a class="p" href="tel:050714177558">전화 상담</a><a href="https://www.instagram.com/woo_studio26/" target="_blank">인스타그램</a><a href="https://www.woostudio.co.kr" target="_blank">홈페이지</a></div>
+</section>
 </main>
 
-<footer><b>WOO STUDIO</b><br>대구 · 경북 인테리어 설계 · 시공 &nbsp;|&nbsp; 0507-1417-7558</footer>
+<footer>© WOO STUDIO</footer>
 
 <div id="lb"><button class="x" aria-label="닫기">✕</button><button class="p" aria-label="이전">‹</button><img alt=""><button class="n" aria-label="다음">›</button><div class="t"></div></div>
 <script>
