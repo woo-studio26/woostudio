@@ -66,7 +66,7 @@ const P=(x,y,z)=>new THREE.Vector3((x-430)*0.02345,z/1000,-(760-y)*0.02345);
 const V={
  living:[P(612,318,1300),P(800,318,950)],
  sofa:[P(705,368,1450),P(690,252,480)],
- window:[P(818,318,1400),P(560,322,900)],
+ window:[P(800,292,1400),P(560,335,900)],
  dining:[P(500,350,1450),P(780,300,800)],
  kitchen:[P(600,355,1500),P(520,245,1000)],
  bed1:[P(690,690,1500),P(760,560,500)],
@@ -88,7 +88,7 @@ document.getElementById('cut').onclick=()=>setCut(!R.clippingPlanes.length);
 document.getElementById('ceil').onclick=()=>setCeil(!(ceiling&&ceiling.visible));
 const dl=new THREE.DRACOLoader();dl.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
 const gl=new THREE.GLTFLoader();gl.setDRACOLoader(dl);
-gl.load('home_v2.glb?v=2',g=>{
+gl.load('home_v2.glb?v=3',g=>{
  const m=g.scene;
  m.traverse(o=>{if(o.isMesh){
    if(/ceiling/i.test(o.name)||(o.parent&&/ceiling/i.test(o.parent.name)))ceiling=ceiling||o;
