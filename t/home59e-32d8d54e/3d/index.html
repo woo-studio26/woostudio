@@ -88,7 +88,7 @@ document.getElementById('cut').onclick=()=>setCut(!R.clippingPlanes.length);
 document.getElementById('ceil').onclick=()=>setCeil(!(ceiling&&ceiling.visible));
 const dl=new THREE.DRACOLoader();dl.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
 const gl=new THREE.GLTFLoader();gl.setDRACOLoader(dl);
-gl.load('home_v2.glb?v=3',g=>{
+gl.load('home_v2.glb?v=4',g=>{
  const m=g.scene;
  m.traverse(o=>{if(o.isMesh){
    if(/ceiling/i.test(o.name)||(o.parent&&/ceiling/i.test(o.parent.name)))ceiling=ceiling||o;
