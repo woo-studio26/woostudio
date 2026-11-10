@@ -1,0 +1,121 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>홈스타일링 제품</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1d1b;--sub:#77736b;--line:#e6e2d9;--acc:#b5532a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Hiragino Sans","Noto Sans KR",sans-serif}
+header{padding:26px 24px 8px;max-width:1400px;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:26px;letter-spacing:-.4px}
+.upd{color:var(--sub);font-size:13px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 6px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 13px;font-size:12px;color:var(--sub)}.stat b{font-size:18px;display:block;color:var(--ink)}
+.chs{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+.ch{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;min-width:170px}
+.ch.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ch .n{font-weight:700;font-size:15px}.ch .m{font-size:12px;color:var(--sub);margin-top:3px}
+.chinfo{font-size:12px;color:var(--sub);margin:6px 0 0}
+.chinfo a{color:var(--acc)}
+.bar{position:sticky;top:0;z-index:5;background:rgba(246,244,239,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1400px;margin:auto;padding:10px 24px;display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.chip small{opacity:.6;margin-left:3px}
+select,input[type=search]{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;background:#fff;max-width:100%}
+input[type=search]{min-width:200px}
+label.ck{font-size:13px;color:var(--sub);display:flex;gap:4px;align-items:center}
+.tabs{display:flex;gap:4px}.tab{padding:6px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid transparent}.tab.on{background:#fff;border-color:var(--line);font-weight:600}
+main{max-width:1400px;margin:auto;padding:12px 24px 60px}
+h2{font-size:18px;margin:26px 0 10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}h2 small{color:var(--sub);font-weight:400;font-size:13px}h2 a{color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:zoom-in;background:#ddd}
+.cb{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.cat{font-size:11px;color:var(--acc);font-weight:600}.brand{font-size:12px;color:var(--sub)}
+.name{font-size:14px;font-weight:600;line-height:1.35}
+.price{font-size:16px;font-weight:700;margin-top:2px}.price span{font-size:12px;color:var(--sub);font-weight:400;margin-left:4px}
+.price.na{font-size:13px;color:#aaa;font-weight:400}
+.vid{margin-top:auto;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;color:var(--sub);display:flex;justify-content:space-between;gap:6px;align-items:center}
+.vid a{color:var(--acc);text-decoration:none;font-weight:600;white-space:nowrap}
+.note{font-size:11px;color:#a07a00}
+details.log{max-width:1400px;margin:0 auto;padding:0 24px;font-size:13px;color:var(--sub)}details.log summary{cursor:pointer}
+details.log li{margin:2px 0}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:9;cursor:zoom-out}#lb img{max-width:92vw;max-height:88vh;border-radius:8px}
+.empty{color:var(--sub);padding:40px;text-align:center}
+</style></head><body>
+<header>
+<div class="top"><h1>홈스타일링 제품</h1><div class="upd" id="upd"></div></div>
+<div class="stats" id="stats"></div>
+<div class="chs" id="chs"></div>
+<div class="chinfo" id="chinfo"></div>
+</header>
+<details class="log"><summary>업데이트 기록</summary><ul id="log"></ul></details>
+<div class="bar"><div class="bar-in">
+<div class="row"><div class="tabs"><div class="tab on" data-v="cat">카테고리별</div><div class="tab" data-v="video">영상별</div></div>
+<select id="grp"></select><select id="vsel"></select>
+<select id="sort"><option value="def">정렬: 기본</option><option value="hi">가격 높은순</option><option value="lo">가격 낮은순</option><option value="new">최근 추가순</option></select>
+<input type="search" id="q" placeholder="브랜드·제품명 검색 (예: IKEA, チェア)">
+<label class="ck"><input type="checkbox" id="po">가격 표기된 것만</label>
+<label class="ck"><input type="checkbox" id="fu">가구·조명만</label></div>
+<div class="chips" id="chips"></div>
+</div></div>
+<main id="main"><div class="empty">불러오는 중…</div></main>
+<div id="lb"><img></div>
+<script>
+const ORDER=["소파","의자·스툴","테이블·데스크","수납·선반","조명","침대·침구","패브릭·러그","거울","시계","바닥·벽재","가전·기기","주방·식기","식물·화병","아트·민예","소품·잡화","책·음반","의류·패션"];
+const FURN=["소파","의자·스툴","테이블·데스크","수납·선반","조명","침대·침구","패브릭·러그","거울","시계"];
+const GRP={recent:'최근 영상',popular:'조회수 상위'};
+const SYM={JPY:'¥',KRW:'₩',USD:'$'};
+let D,V,CH;const S={ch:'',view:'cat',cat:'전체',vid:'',grp:'',sort:'def',q:'',po:false,fu:false};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=(n,c)=>(SYM[c]||'')+n.toLocaleString();
+const won=(n,c)=>{if(c==='KRW')return'';const r=D.rates[c];if(!r)return'';const w=n*r;return w>=10000?'≈'+(Math.round(w/1000)/10).toLocaleString()+'만원':'≈'+Math.round(w).toLocaleString()+'원'};
+const ts=t=>t==null?'':Math.floor(t/60)+':'+String(t%60).padStart(2,'0');
+const inCh=i=>!S.ch||i.channel===S.ch;
+const gOK=i=>!S.grp||V[i.vid]?.group===S.grp;
+function filt(){let a=D.items.filter(i=>inCh(i)&&gOK(i)&&(S.cat==='전체'||i.cat===S.cat)&&(!S.vid||i.vid===S.vid)&&(!S.po||i.price)&&(!S.fu||FURN.includes(i.cat)));
+ if(S.q){const q=S.q.toLowerCase();a=a.filter(i=>(i.brand+' '+i.name+' '+i.cat+' '+(V[i.vid]?.ko||'')).toLowerCase().includes(q))}
+ if(S.sort==='new')a=[...a].sort((x,y)=>(y.added||'').localeCompare(x.added||''));
+ else if(S.sort!=='def'){a=[...a].sort((x,y)=>{const k=i=>i.price?i.price*(D.rates[i.currency]||1):null;const px=k(x)??(S.sort==='hi'?-1:1e15),py=k(y)??(S.sort==='hi'?-1:1e15);return S.sort==='hi'?py-px:px-py})}
+ return a}
+function card(i){const v=V[i.vid]||{};const c=CH[i.channel]||{};const url='https://www.youtube.com/watch?v='+i.vid+(i.t!=null?'&t='+Math.max(0,i.t-2)+'s':'');
+ return `<div class="card"><img loading="lazy" src="img/${i.id}.jpg"><div class="cb"><div class="cat">${i.cat}</div><div class="brand">${esc(i.brand)}</div><div class="name">${esc(i.name)}</div>
+ ${i.price?`<div class="price">${money(i.price,i.currency)}<span>${won(i.price,i.currency)}</span></div>`:`<div class="price na">가격 미표기</div>`}${i.note?`<div class="note">${esc(i.note)}</div>`:''}
+ <div class="vid"><span>${S.ch?'':esc(c.short||c.name)+' · '}${(v.date||'').slice(2).replace(/-/g,'/')} ${esc(v.ko)}</span><a href="${url}" target="_blank">▶ ${ts(i.t)}</a></div></div></div>`}
+function chips(){const base=D.items.filter(i=>inCh(i)&&gOK(i)&&(!S.vid||i.vid===S.vid)&&(!S.po||i.price)&&(!S.fu||FURN.includes(i.cat)));const cnt={};base.forEach(i=>cnt[i.cat]=(cnt[i.cat]||0)+1);
+ document.getElementById('chips').innerHTML=['전체',...ORDER].filter(c=>c==='전체'||cnt[c]).map(c=>`<span class="chip ${S.cat===c?'on':''}" data-c="${c}">${c}<small>${c==='전체'?base.length:cnt[c]}</small></span>`).join('')}
+function selects(){const vs=D.videos.filter(v=>!S.ch||v.channel===S.ch);
+ const gs=[...new Set(vs.map(v=>v.group))];document.getElementById('grp').innerHTML='<option value="">영상 묶음: 전체</option>'+gs.map(g=>`<option value="${g}" ${S.grp===g?'selected':''}>${GRP[g]||g} (${vs.filter(v=>v.group===g).length}편)</option>`).join('');
+ const vv=vs.filter(v=>!S.grp||v.group===S.grp).sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('vsel').innerHTML='<option value="">영상: 전체 ('+vv.length+'편)</option>'+vv.map(v=>`<option value="${v.id}" ${S.vid===v.id?'selected':''}>${v.date.slice(2)} ${esc(v.ko)}</option>`).join('')}
+function head(){const it=D.items;
+ document.getElementById('upd').textContent='마지막 업데이트 '+D.updated+' · 환율 1엔='+D.rates.JPY+'원('+D.rate_date+')';
+ const sel=it.filter(inCh);
+ document.getElementById('stats').innerHTML=[[sel.length,'제품'],[sel.filter(i=>FURN.includes(i.cat)).length,'가구·조명·패브릭'],[sel.filter(i=>i.price).length,'가격 표기'],[D.videos.filter(v=>!S.ch||v.channel===S.ch).length,'영상'],[S.ch?1:D.channels.length,'채널']].map(([n,l])=>`<div class="stat"><b>${n}</b>${l}</div>`).join('');
+ document.getElementById('chs').innerHTML=[{id:'',name:'전체 채널',m:D.channels.length+'개 채널'},...D.channels.map(c=>({id:c.id,name:c.name,m:`${c.country} · 구독 ${c.subs} · 영상 ${D.videos.filter(v=>v.channel===c.id).length}/${c.total_videos}편 · 제품 ${it.filter(i=>i.channel===c.id).length}개`}))].map(c=>`<div class="ch ${S.ch===c.id?'on':''}" data-ch="${c.id}"><div class="n">${esc(c.name)}</div><div class="m">${esc(c.m)}</div></div>`).join('');
+ const c=CH[S.ch];document.getElementById('chinfo').innerHTML=c?`<a href="${c.url}" target="_blank">${esc(c.handle)}</a> · ${esc(c.note||'')}`:'채널을 누르면 그 채널 제품만 봐요';}
+function render(){head();selects();chips();const a=filt();const m=document.getElementById('main');
+ if(!a.length){m.innerHTML='<div class="empty">조건에 맞는 제품이 없어요</div>';return}
+ let h='';
+ if(S.view==='cat'){for(const c of ORDER){const g=a.filter(i=>i.cat===c);if(!g.length)continue;const pr=g.filter(i=>i.price&&i.currency==='JPY').map(i=>i.price);
+   h+=`<h2>${c}<small>${g.length}개${pr.length?` · ¥${Math.min(...pr).toLocaleString()} ~ ¥${Math.max(...pr).toLocaleString()}`:''}</small></h2><div class="grid">${g.map(card).join('')}</div>`}}
+ else{const chs=S.ch?[S.ch]:D.channels.map(c=>c.id);for(const chId of chs){const vs=D.videos.filter(v=>v.channel===chId).sort((x,y)=>(x.group===y.group?0:(x.group==='recent'?-1:1))||(x.group==='popular'?y.views-x.views:y.date.localeCompare(x.date)));
+   for(const v of vs){const g=a.filter(i=>i.vid===v.id);if(!g.length)continue;
+   h+=`<h2>${S.ch?'':esc(CH[chId].name)+' · '}${v.date} · ${esc(v.ko)}<small>${GRP[v.group]||''} · 조회수 ${(v.views/10000).toFixed(1)}만 · ${g.length}개 · <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank">영상 보기</a></small></h2><div class="grid">${g.map(card).join('')}</div>`}}}
+ m.innerHTML=h}
+fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;V=Object.fromEntries(d.videos.map(v=>[v.id,v]));CH=Object.fromEntries(d.channels.map(c=>[c.id,c]));
+ document.getElementById('log').innerHTML=[...d.log].reverse().map(l=>`<li>${l.date} · ${esc(l.text)}</li>`).join('');
+ const h=new URLSearchParams(location.hash.slice(1));if(h.get('ch'))S.ch=h.get('ch');
+ document.getElementById('chs').onclick=e=>{const c=e.target.closest('.ch');if(c){S.ch=c.dataset.ch;S.vid='';S.grp='';S.cat='전체';location.hash=S.ch?'ch='+S.ch:'';render()}};
+ document.getElementById('grp').onchange=e=>{S.grp=e.target.value;S.vid='';render()};
+ document.getElementById('vsel').onchange=e=>{S.vid=e.target.value;render()};
+ document.getElementById('sort').onchange=e=>{S.sort=e.target.value;render()};
+ document.getElementById('q').oninput=e=>{S.q=e.target.value.trim();render()};
+ document.getElementById('po').onchange=e=>{S.po=e.target.checked;render()};
+ document.getElementById('fu').onchange=e=>{S.fu=e.target.checked;if(S.fu&&!FURN.includes(S.cat))S.cat='전체';render()};
+ document.getElementById('chips').onclick=e=>{const c=e.target.closest('.chip');if(c){S.cat=c.dataset.c;render()}};
+ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');S.view=t.dataset.v;render()});
+ const lb=document.getElementById('lb');document.getElementById('main').onclick=e=>{if(e.target.tagName==='IMG'&&e.target.closest('.card')){lb.querySelector('img').src=e.target.src;lb.style.display='flex'}};lb.onclick=()=>lb.style.display='none';
+ render();});
+</script></body></html>
