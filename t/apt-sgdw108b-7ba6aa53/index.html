@@ -485,12 +485,16 @@ const span=Math.max(A.outer.w,A.outer.h)/1000;
 function fit(sz,elev){const asp=Math.max(0.3,C.aspect),f=THREE.MathUtils.degToRad(C.fov/2);return (sz/2)/Math.tan(f)/Math.min(1,asp)*1.38}
 const VIEWS=[["전체",()=>{if(EYE){EYE=false;C.fov=45;C.updateProjectionMatrix();const eb=document.getElementById("eye");if(eb)eb.classList.remove("on");buildOpenings()}const d=fit(span);C.position.set(0,d*0.8,d*0.62);O.target.set(0,-0.3,0.4);setWalls(1)}],["위에서",()=>{if(EYE){EYE=false;C.fov=45;C.updateProjectionMatrix();const eb=document.getElementById("eye");if(eb)eb.classList.remove("on");buildOpenings()}const d=fit(span);C.position.set(0,d*1.02,0.01);O.target.set(0,0,0);setWalls(1)}]];
 for(const nm of ["거실","주방","안방","공용욕실"]){const r=rooms.find(x=>x.name===nm)||rooms.find(x=>x.name.startsWith(nm)&&!/욕실/.test(x.name)||x.name===nm);if(!r)continue;VIEWS.push([nm.replace("공용",""),()=>{const cx=X(r.x+r.w/2),cz=Z(r.y+r.h/2);if(EYE){eyeAt(r);return}const d=fit(Math.hypot(r.w,r.h)/1000+(/욕실/.test(r.name)?0.6:1.0))*0.95;C.position.set(cx+d*0.12,d*0.92,cz+d*0.42);O.target.set(cx,0,cz);setWalls(1)}])}
-function eyeAt(r){const cx=X(r.x+r.w/2),cz=Z(r.y+r.h/2);let best=null;
+function eyeAt(r){const cx=X(r.x+r.w/2),cz=Z(r.y+r.h/2);const cands=[];const ins=0.45;
+ for(const [fx,fz] of [[0,0],[1,0],[0,1],[1,1],[0.5,0],[0.5,1],[0,0.5],[1,0.5]])cands.push([X(r.x)+ins+(r.w/1000-2*ins)*fx,Z(r.y)+ins+(r.h/1000-2*ins)*fz]);
  for(const o of opens){if(o.type!=="door"&&o.type!=="open")continue;const ox2=o.axis==="h"?X((o.a+o.b)/2):X(o.line),oz2=o.axis==="h"?Z(o.line):Z((o.a+o.b)/2);
-  const inR=x=>x>=r.x-60&&x<=r.x+r.w+60;const on=o.axis==="h"?(Math.abs(o.line-r.y)<60||Math.abs(o.line-r.y-r.h)<60)&&o.a<r.x+r.w&&o.b>r.x:(Math.abs(o.line-r.x)<60||Math.abs(o.line-r.x-r.w)<60)&&o.a<r.y+r.h&&o.b>r.y;
-  const mid=(o.a+o.b)/2;const inside=o.axis==="h"?mid>r.x&&mid<r.x+r.w:mid>r.y&&mid<r.y+r.h;
-  if(!on||!inside)continue;const dd=Math.hypot(ox2-cx,oz2-cz)+(o.type==="door"?0:100);if(!best||dd<best[2])best=[ox2,oz2,dd]}
- let px,pz;if(best){const vx=cx-best[0],vz=cz-best[1],l=Math.hypot(vx,vz)||1;px=best[0]+vx/l*0.35;pz=best[1]+vz/l*0.35}else{px=X(r.x+250);pz=Z(r.y+r.h-250)}
+  const vx=cx-ox2,vz=cz-oz2,l=Math.hypot(vx,vz)||1;const px=ox2+vx/l*0.5,pz=oz2+vz/l*0.5;if(px>X(r.x)&&px<X(r.x+r.w)&&pz>Z(r.y)&&pz<Z(r.y+r.h))cands.push([px,pz])}
+ const rc=new THREE.Raycaster();let best=null;root.updateMatrixWorld(true);
+ for(const [px,pz] of cands){const dx=cx-px,dz=cz-pz,dl=Math.hypot(dx,dz);if(dl<0.8)continue;let ok=true,score=dl;
+  for(const yy of [1.45,1.0]){rc.set(new THREE.Vector3(px,yy,pz),new THREE.Vector3(dx/dl,0,dz/dl));rc.far=dl;const hit=rc.intersectObject(root,true).find(h=>h.object.visible&&!(h.object.material&&h.object.material.transparent)&&h.object.type==="Mesh");if(hit&&hit.distance<dl*0.9){ok=false;break}}
+  rc.set(new THREE.Vector3(px,2.2,pz),new THREE.Vector3(0,-1,0));rc.far=2.1;const dn=rc.intersectObject(root,true).find(h=>h.object.visible&&h.object.type==="Mesh"&&h.point.y>0.3);if(dn)ok=false;
+  if(ok&&(!best||score>best[2]))best=[px,pz,score]}
+ let px,pz;if(best){px=best[0];pz=best[1]}else{px=X(r.x+400);pz=Z(r.y+r.h-400)}
  if(!eyeAt._b){eyeAt._b=1;buildOpenings();eyeAt._b=0}C.fov=68;C.updateProjectionMatrix();C.position.set(px,1.45,pz);const vx=cx-px,vz=cz-pz,l=Math.hypot(vx,vz)||1;O.target.set(px+vx/l*0.6,1.25,pz+vz/l*0.6);setWalls(1,true)}
 /* 눈높이 보기는 품질 문제로 보류 (블렌더 렌더로 대체 예정) */
 let curView=0;window.__viewsReady=true;
