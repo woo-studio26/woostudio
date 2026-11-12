@@ -376,7 +376,7 @@ buildFloors(); buildWalls(); if(A.items)furnishItems(); else furnish(); applyMat
 const span=Math.max(A.outer.w,A.outer.h)/1000;
 function fit(sz,elev){const asp=Math.max(0.3,C.aspect),f=THREE.MathUtils.degToRad(C.fov/2);return (sz/2)/Math.tan(f)/Math.min(1,asp)*1.38}
 const VIEWS=[["전체",()=>{const d=fit(span);C.position.set(0,d*0.8,d*0.62);O.target.set(0,-0.3,0.4);setWalls(1)}],["위에서",()=>{const d=fit(span);C.position.set(0,d*1.02,0.01);O.target.set(0,0,0);setWalls(1)}]];
-for(const nm of ["거실","주방","안방","공용욕실"]){const r=rooms.find(x=>x.name.startsWith(nm));if(!r)continue;VIEWS.push([nm.replace("공용",""),()=>{const cx=X(r.x+r.w/2),cz=Z(r.y+r.h/2);const d=fit(Math.hypot(r.w,r.h)/1000+1.0)*0.95;C.position.set(cx+d*0.12,d*0.82,cz+d*0.5);O.target.set(cx,0,cz);setWalls(1)}])}
+for(const nm of ["거실","주방","안방","공용욕실"]){const r=rooms.find(x=>x.name===nm)||rooms.find(x=>x.name.startsWith(nm)&&!/욕실/.test(x.name)||x.name===nm);if(!r)continue;VIEWS.push([nm.replace("공용",""),()=>{const cx=X(r.x+r.w/2),cz=Z(r.y+r.h/2);const d=fit(Math.hypot(r.w,r.h)/1000+1.0)*0.95;C.position.set(cx+d*0.12,d*0.82,cz+d*0.5);O.target.set(cx,0,cz);setWalls(1)}])}
 /* 눈높이 보기는 품질 문제로 보류 (블렌더 렌더로 대체 예정) */
 let curView=0;
 function setWalls(on,inside){if(!inside&&C.fov!==45){C.fov=45;C.updateProjectionMatrix()}const cut=inside?99:1.15;root.children.forEach(c=>{if(c.userData.label)c.visible=!inside});
@@ -427,7 +427,7 @@ function renderPrice(){$("pkgs").innerHTML=PK.map(([k,t,d])=>`<div class="pk ${p
  $("note").innerHTML=P.note}
 $("pkgs").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;pkg=b.dataset.p;renderPrice()};
 renderUI();
-window.__ready=true;
+window.__ready=true;window.__apt3d={root,setWalls,ledGroup};
 })();
 </script>
 </body>
