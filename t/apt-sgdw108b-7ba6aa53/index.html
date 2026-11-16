@@ -710,7 +710,7 @@ setInterval(poll,20000);poll();
 // 도면 클릭으로 공간 고르기 (편집 모드에서 가구가 아닌 바닥을 누르면)
 const rc=new THREE.Raycaster(),mv=new THREE.Vector2(),pl=new THREE.Plane(new THREE.Vector3(0,1,0),0),hp=new THREE.Vector3();
 cv.addEventListener("pointerup",e=>{if(!window.EDITING||box.style.display==="none")return;const b=cv.getBoundingClientRect();mv.set((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1);rc.setFromCamera(mv,C);
- const furnHit=rc.intersectObjects([...window.__editor.groups.values()],true)[0];if(furnHit)return;if(!rc.ray.intersectPlane(pl,hp))return;const x=(hp.x+ox)*1000,y=(hp.z+oz)*1000;const r=rooms.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(r)pickRoom(r.name)});
+ const furnHit=rc.intersectObjects([...window.__editor.groups.values()],true)[0];if(furnHit){let o=furnHit.object;while(o&&!o.userData.it)o=o.parent;if(o&&o.userData.it.room)pickRoom(o.userData.it.room);return}if(!rc.ray.intersectPlane(pl,hp))return;const x=(hp.x+ox)*1000,y=(hp.z+oz)*1000;const r=rooms.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(r)pickRoom(r.name)});
 const eb=document.getElementById("edit");if(eb)eb.addEventListener("click",()=>{box.style.display=window.EDITING?"block":"none";if(!window.EDITING&&hl){root.remove(hl);hl=null}render()});
 })();
 
