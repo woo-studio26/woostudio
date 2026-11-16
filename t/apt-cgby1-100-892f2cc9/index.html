@@ -684,11 +684,11 @@ window.__editor={check,groups,KEY};
 // ---------- 공간 선택 + 수정 요청 → Aside (11/15) ----------
 (function(){
 const RQ="woo3d-f1432b5c472c826b-req",ST="woo3d-f1432b5c472c826b-st",LK="apt3d_reqs_"+A.code;
-let room=null,hl=null,reqs=JSON.parse(localStorage.getItem(LK)||"[]");
+const DK="apt3d_draft_"+A.code;let room=null,hl=null,reqs=JSON.parse(localStorage.getItem(LK)||"[]");
 const box=document.createElement("div");box.id="reqp";box.style.cssText="position:absolute;left:10px;top:96px;width:300px;background:rgba(255,255,255,.97);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.18);padding:12px;font-size:12.5px;display:none;z-index:31;max-height:calc(100% - 120px);overflow:auto";
 const wrap=document.createElement("div");wrap.style.cssText="position:absolute;right:10px;top:52px;width:290px;max-height:calc(100% - 64px);overflow:auto;z-index:31;display:flex;flex-direction:column;gap:8px";view.appendChild(wrap);
 const pn0=document.getElementById("edp");box.style.position="static";box.style.width="auto";box.style.maxHeight="none";wrap.appendChild(box);if(pn0){pn0.style.position="static";pn0.style.width="auto";pn0.style.maxHeight="none";wrap.appendChild(pn0)}
-function pickRoom(name){room=name;if(hl){root.remove(hl);hl=null}const rs=rooms.filter(r=>r.name===name);if(rs.length){const g=new THREE.Group();for(const r of rs){const m=new THREE.Mesh(new THREE.PlaneGeometry(r.w/1000-0.04,r.h/1000-0.04),new THREE.MeshBasicMaterial({color:0x2f7cf6,transparent:true,opacity:0.22,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(X(r.x+r.w/2),0.03,Z(r.y+r.h/2));m.userData.noCut=1;g.add(m)}root.add(g);hl=g}render()}
+function pickRoom(name){room=name;if(hl){root.remove(hl);hl=null}const rs=rooms.filter(r=>r.name===name);if(rs.length){const g=new THREE.Group();for(const r of rs){const m=new THREE.Mesh(new THREE.PlaneGeometry(r.w/1000-0.04,r.h/1000-0.04),new THREE.MeshBasicMaterial({color:0x2f7cf6,transparent:true,opacity:0.22,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(X(r.x+r.w/2),0.03,Z(r.y+r.h/2));m.userData.noCut=1;g.add(m)}root.add(g);hl=g}const sel0=document.getElementById("rqroom");if(sel0)sel0.value=name||"";else render()}
 function stTxt(s){return s==="done"?'<span style="color:#2a8a4a">완료</span>':s==="working"?'<span style="color:#d08a00">작업 중</span>':s==="fail"?'<span style="color:#c00">못 함</span>':'<span style="color:#888">보냄 · 대기</span>'}
 function render(){const names=[...new Set(rooms.map(r=>r.name))];const pass=localStorage.getItem("apt3d_pass")||"";
  box.innerHTML=`<b style="font-size:14px">수정 요청 (Aside)</b><div style="color:#888;margin:2px 0 8px">도면에서 공간을 누르거나 목록에서 고르고, 바꿀 내용을 적어 보내세요.</div>
@@ -696,23 +696,23 @@ function render(){const names=[...new Set(rooms.map(r=>r.name))];const pass=loca
  <textarea id="rqtext" placeholder="예) 신발장을 한쪽 벽 전체로, 중문은 원슬라이딩으로" style="width:100%;height:70px;margin-top:6px"></textarea>
  ${pass?"":`<input id="rqpass" placeholder="요청 비밀번호 (처음 한 번)" style="width:100%;margin-top:4px">`}
  <button id="rqsend" style="margin-top:6px;border:0;background:#1f3a5f;color:#fff;border-radius:6px;padding:6px 12px;cursor:pointer">Aside에게 보내기</button>
- <div style="margin-top:10px;border-top:1px solid #eee;padding-top:6px">${reqs.length?reqs.slice().reverse().map(r=>`<div style="padding:5px 0;border-bottom:1px dashed #eee"><b>${r.room}</b> · ${stTxt(r.st)}<br>${r.prompt.replace(/</g,"&lt;")}${r.reply?`<div style="color:#555;margin-top:2px">↳ ${r.reply.replace(/</g,"&lt;")}</div>`:""}</div>`).join(""):'<span style="color:#888">보낸 요청 없음</span>'}</div>
- ${reqs.some(r=>r.st==="done")?`<button id="rqreload" style="margin-top:6px;border:0;background:#2a8a4a;color:#fff;border-radius:6px;padding:5px 10px;cursor:pointer">반영된 페이지 다시 불러오기</button>`:""}`}
-box.addEventListener("change",e=>{if(e.target.id==="rqroom")pickRoom(e.target.value)});
+ <div id="rqlist" style="margin-top:10px;border-top:1px solid #eee;padding-top:6px"></div>`;const ta=document.getElementById("rqtext");ta.value=localStorage.getItem(DK)||"";renderList()}
+function renderList(){const el=document.getElementById("rqlist");if(!el)return;el.innerHTML=(reqs.length?reqs.slice().reverse().map(r=>`<div style="padding:5px 0;border-bottom:1px dashed #eee"><b>${r.room}</b> · ${stTxt(r.st)}<br>${r.prompt.replace(/</g,"&lt;")}${r.reply?`<div style="color:#555;margin-top:2px">↳ ${r.reply.replace(/</g,"&lt;")}</div>`:""}</div>`).join(""):'<span style="color:#888">보낸 요청 없음</span>')+(reqs.some(r=>r.st==="done")?`<button id="rqreload" style="margin-top:6px;border:0;background:#2a8a4a;color:#fff;border-radius:6px;padding:5px 10px;cursor:pointer">반영된 페이지 다시 불러오기</button>`:"")}
+box.addEventListener("change",e=>{if(e.target.id==="rqroom")pickRoom(e.target.value)});box.addEventListener("input",e=>{if(e.target.id==="rqtext")localStorage.setItem(DK,e.target.value)});
 box.addEventListener("click",async e=>{if(e.target.id==="rqreload"){localStorage.removeItem("apt3d_edit_"+A.code);location.href=location.pathname+"?edit=1&v="+Date.now();return}
  if(e.target.id!=="rqsend")return;const t=document.getElementById("rqtext").value.trim();const pi=document.getElementById("rqpass");if(pi&&pi.value.trim())localStorage.setItem("apt3d_pass",pi.value.trim());
  const pass=localStorage.getItem("apt3d_pass");if(!room){alert("공간을 먼저 골라 주세요");return}if(!t){alert("바꿀 내용을 적어 주세요");return}if(!pass){alert("요청 비밀번호를 넣어 주세요");return}
  const r={id:A.code+"-"+Date.now().toString(36),code:A.code,room,prompt:t,pass,ts:new Date().toISOString(),url:location.origin+location.pathname};
- e.target.disabled=true;try{const res=await fetch("https://ntfy.sh/"+RQ,{method:"POST",body:JSON.stringify(r)});if(!res.ok)throw 0;delete r.pass;r.st="sent";reqs.push(r);localStorage.setItem(LK,JSON.stringify(reqs));render()}catch(_){alert("보내기 실패. 인터넷 연결을 확인해 주세요.");e.target.disabled=false}});
+ e.target.disabled=true;try{const res=await fetch("https://ntfy.sh/"+RQ,{method:"POST",body:JSON.stringify(r)});if(!res.ok)throw 0;delete r.pass;r.st="sent";reqs.push(r);localStorage.setItem(LK,JSON.stringify(reqs));localStorage.removeItem(DK);render()}catch(_){alert("보내기 실패. 인터넷 연결을 확인해 주세요.");e.target.disabled=false}});
 async function poll(){if(!reqs.some(r=>r.st!=="done"&&r.st!=="fail"))return;try{const t=await (await fetch("https://ntfy.sh/"+ST+"/json?poll=1&since=12h")).text();let ch=false;
  for(const line of t.split("\n")){if(!line.trim())continue;let m;try{m=JSON.parse(JSON.parse(line).message)}catch(_){continue}const q=reqs.find(r=>r.id===m.id);if(q&&(q.st!==m.st||q.reply!==m.reply)){q.st=m.st;q.reply=m.reply;ch=true}}
- if(ch){localStorage.setItem(LK,JSON.stringify(reqs));if(box.style.display!=="none")render()}}catch(_){}}
+ if(ch){localStorage.setItem(LK,JSON.stringify(reqs));renderList()}}catch(_){}}
 setInterval(poll,20000);poll();
 // 도면 클릭으로 공간 고르기 (편집 모드에서 가구가 아닌 바닥을 누르면)
 const rc=new THREE.Raycaster(),mv=new THREE.Vector2(),pl=new THREE.Plane(new THREE.Vector3(0,1,0),0),hp=new THREE.Vector3();
 cv.addEventListener("pointerup",e=>{if(!window.EDITING||box.style.display==="none")return;const b=cv.getBoundingClientRect();mv.set((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1);rc.setFromCamera(mv,C);
  const furnHit=rc.intersectObjects([...window.__editor.groups.values()],true)[0];if(furnHit){let o=furnHit.object;while(o&&!o.userData.it)o=o.parent;if(o&&o.userData.it.room)pickRoom(o.userData.it.room);return}if(!rc.ray.intersectPlane(pl,hp))return;const x=(hp.x+ox)*1000,y=(hp.z+oz)*1000;const r=rooms.find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);if(r)pickRoom(r.name)});
-const eb=document.getElementById("edit");if(eb)eb.addEventListener("click",()=>{box.style.display=window.EDITING?"block":"none";if(!window.EDITING&&hl){root.remove(hl);hl=null}render()});
+const eb=document.getElementById("edit");if(eb)eb.addEventListener("click",()=>{box.style.display=window.EDITING?"block":"none";if(!window.EDITING&&hl){root.remove(hl);hl=null}if(window.EDITING&&!document.getElementById("rqtext"))render()});
 })();
 
 window.__ready=true;window.__apt3d={root,setWalls,ledGroup,C,O,sel,applyMaterials,renderUI,opens,X,Z,buildOpenings};
