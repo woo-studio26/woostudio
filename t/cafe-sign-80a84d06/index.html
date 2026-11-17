@@ -88,8 +88,8 @@ body.show table.detail{display:table}
     <div class="row"><span class="lbl">패턴</span>
       <div class="seg" id="pattern"></div></div>
     <div class="row"><span class="lbl">색상</span><div class="sw" id="colors"></div></div>
-    <div class="note detail">케이패널 메탈사이딩(16T × 380 × 3000, 8장/박스) 실제 옵션 이름입니다. 화면 색은 근사치라 플로 확인하세요. 원형 간판 Ø1m 자리는 표시용입니다.</div>
-    <div class="cnote">화면 색상은 실제와 다를 수 있어 플로 최종 확인합니다.</div>
+    <div class="note detail">케이패널 메탈사이딩(16T × 380 × 3000, 8장/박스) 실제 옵션 이름입니다. 화면 색은 근사치라 실물 샘플로 확인하세요. 원형 간판 Ø1m 자리는 표시용입니다.</div>
+    <div class="cnote">화면 색상은 실제와 다를 수 있어 실물 샘플로 최종 확인합니다.</div>
     <div class="mat detail" id="mat"></div>
     <div class="detail dwg" id="dwg"><h3 style="font-size:14px;margin:16px 0 6px">시공 디테일 (자재·부자재 연결)</h3>
       <div style="overflow-x:auto;border:1px solid #eee;border-radius:10px"><svg style="width:100%;min-width:720px;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif">
@@ -551,7 +551,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.0',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.1',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
