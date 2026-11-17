@@ -55,10 +55,10 @@ body.show table.detail{display:table}
     <div class="cnote">화면 색상은 실제와 다를 수 있어 실물 샘플로 최종 확인합니다.</div>
     <table id="cmp" class="detail">
       <tr><th></th><th>가로 시공</th><th>세로 시공</th></tr>
-      <tr><td>바탕 높이</td><td>1.52m (380 × 4줄)</td><td>1.50m (3m 판 1장 = 2조각)</td></tr>
-      <tr><td>사이딩</td><td>22장 → 3박스</td><td>41조각 = 21장 → 3박스</td></tr>
-      <tr><td>부자재</td><td>스타터 6, J채널 7, 아웃코너 1, 조이너 4</td><td>J채널 12 (위·아래·끝), 아웃코너 1</td></tr>
-      <tr><td>자재비</td><td><b>약 75.7만</b></td><td><b>약 75.7만</b></td></tr>
+      <tr><td>바탕 높이</td><td>1.6m (380 × 4줄 + 위 80 띠)</td><td>1.6m (3m 판 1장에서 1조각만 나옴)</td></tr>
+      <tr><td>사이딩</td><td>25장 → 4박스</td><td>46조각 = 46장 → 6박스</td></tr>
+      <tr><td>부자재</td><td>스타터 6, J채널 8, 아웃코너 1, 조이너 4</td><td>J채널 14 (위·아래·끝), 아웃코너 1</td></tr>
+      <tr><td>자재비</td><td><b>약 102.4만</b> (대림우드)</td><td><b>약 137만</b> (대림우드)</td></tr>
       <tr><td>물 처리</td><td>제품 설계 방향, 위 판이 아래 판을 덮어 물이 밖으로 흐름</td><td>세로 이음으로 흐른 물이 하단 J채널에 모임 → 배수 구멍 필요</td></tr>
       <tr><td>절단면</td><td>판 끝 8곳(이음·끝)</td><td>41조각 위아래 82곳 → J채널로 다 덮어야 함</td></tr>
       <tr><td>보이는 선</td><td>가로선 3줄 + 3m마다 이음</td><td>380 간격 세로줄 40개, 이음 없음</td></tr>
@@ -100,13 +100,14 @@ var sun = new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(-8,12,10);
 function B(x0,y0,z0,x1,y1,z1,mat){
   var w=Math.abs(x1-x0)/1000, d=Math.abs(y1-y0)/1000, h=Math.abs(z1-z0)/1000;
   var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
-  m.position.set((x0+x1)/2000,(z0+z1)/2000,-(y0+y1)/2000); scene.add(m); return m;
+  m.position.set((x0+x1)/2000,(z0+z1)/2000,-(y0+y1)/2000); TARGET.add(m); return m;
 }
 function M(c,o){var p={color:c,roughness:.85,metalness:0}; if(o) for(var k in o)p[k]=o[k]; return new THREE.MeshStandardMaterial(p);}
 var brick=M('#a8462f'), stone=M('#c4bdb1'), glass=M('#5f8fbf',{transparent:true,opacity:.6,roughness:.2,metalness:.1});
 var awn=M('#1b5c46'), dark=M('#30353a',{roughness:.3}), frame=M('#b0b0aa',{metalness:.4,roughness:.4}), wood=M('#7a4e2d');
 var ground=M('#7d7f80'), rail=M('#1d1d1d'), block=M('#bdbdb7'), trim=M('#9a9893',{metalness:.3,roughness:.5});
 
+var BASE=new THREE.Group(); scene.add(BASE); var TARGET=BASE;
 var fw=4200, sw=11000, zb1=4400, zs=4800, zg=7800;
 // 브릭 질감
 (function(){var c=document.createElement('canvas');c.width=256;c.height=256;var g=c.getContext('2d');g.fillStyle='#e9e2d8';g.fillRect(0,0,256,256);
@@ -127,7 +128,9 @@ for(var y=0;y<=sw;y+=150) B(-1520,y,0,-1500,y+15,1050,rail);
 B(-1530,0,1030,-1490,sw,1060,rail);
 // 원형 간판
 var sign=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.15,64),[M('#8e5a6c'),M('#fbfbf9'),M('#fbfbf9')]);
-sign.rotation.x=Math.PI/2; sign.position.set(1.73,3.64,0.02+0.075); scene.add(sign);
+sign.rotation.x=Math.PI/2; sign.position.set(1.73*5000/4200,3.60,0.02+0.075); scene.add(sign);
+// 실측(전면 5m, 측면 12m): 기존 외관을 늘리고 사이딩은 실제 길이로
+BASE.scale.set(5000/fw,1,12000/sw); fw=5000; sw=12000; TARGET=scene;
 
 // ---- 사이딩 텍스처 ----
 function noise(g,w,h,base,amt,n){var c=new THREE.Color(base);for(var i=0;i<n;i++){var k=(Math.random()-.5)*amt;g.fillStyle='rgba('+(k>0?'255,255,255,':'0,0,0,')+Math.abs(k)+')';g.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*2,1+Math.random()*2);}}
@@ -152,7 +155,7 @@ function buildSiding(){
   var P=PATTERNS[state.pat], col=P.colors[state.color], hex=col[2];
   var cv=panelCanvas(state.pat,hex);
   var vert=state.orient==='v';
-  var h = vert?1500:1520, zTop=zb1-35, zBot=zTop-h;
+  var h = 1600, zTop=zb1, zBot=zTop-h;
   // 두 면: 전면(가로 길이 fw), 측면(sw)
   [['front',fw],['side',sw]].forEach(function(f){
     var len=f[1]/1000, hh=h/1000;
@@ -181,7 +184,7 @@ function buildSiding(){
     for(var x=380;x<fw;x+=380) sidingMeshes.push(B(x-5,-27,zBot,x+5,-21,zTop,jm));
     for(var yy=380;yy<sw;yy+=380) sidingMeshes.push(B(-27,yy-5,zBot,-21,yy+5,zTop,jm));
   } else {
-    for(var k=1;k<4;k++){var z=zBot+380*k; sidingMeshes.push(B(0,-27,z-5,fw,-21,z+5,jm)); sidingMeshes.push(B(-27,0,z-5,-21,sw,z+5,jm));}
+    for(var k=1;k<=4;k++){var z=zBot+380*k; sidingMeshes.push(B(0,-27,z-5,fw,-21,z+5,jm)); sidingMeshes.push(B(-27,0,z-5,-21,sw,z+5,jm));}
   }
   // 부자재: 위 J채널, 아래 (가로=스타터, 세로=J채널), 끝 J채널, 아웃코너
   var bot = vert? 35 : 30;
@@ -209,7 +212,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v4.7',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v5.0',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
