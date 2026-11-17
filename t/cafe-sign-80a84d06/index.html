@@ -31,6 +31,10 @@ th,td{border-bottom:1px solid #eee;padding:6px 4px;text-align:left;vertical-alig
 th{color:#6e6e73;font-weight:500;font-size:11.5px}
 td.on{background:#eef6ff}
 b.k{color:#0a84ff}
+.detail{display:none}
+body.show .detail{display:block}
+body.show table.detail{display:table}
+.cnote{font-size:11.5px;color:#6e6e73;margin-top:8px}
 </style>
 </head>
 <body>
@@ -47,8 +51,9 @@ b.k{color:#0a84ff}
     <div class="row"><span class="lbl">패턴</span>
       <div class="seg" id="pattern"></div></div>
     <div class="row"><span class="lbl">색상</span><div class="sw" id="colors"></div></div>
-    <div class="note">케이패널 메탈사이딩(16T × 380 × 3000, 8장/박스) 실제 옵션 이름입니다. 화면 색은 근사치라 실물 샘플로 확인하세요. 원형 간판 Ø1m 자리는 표시용입니다.</div>
-    <table id="cmp">
+    <div class="note detail">케이패널 메탈사이딩(16T × 380 × 3000, 8장/박스) 실제 옵션 이름입니다. 화면 색은 근사치라 실물 샘플로 확인하세요. 원형 간판 Ø1m 자리는 표시용입니다.</div>
+    <div class="cnote">화면 색상은 실제와 다를 수 있어 실물 샘플로 최종 확인합니다.</div>
+    <table id="cmp" class="detail">
       <tr><th></th><th>가로 시공</th><th>세로 시공</th></tr>
       <tr><td>바탕 높이</td><td>1.52m (380 × 4줄)</td><td>1.50m (3m 판 1장 = 2조각)</td></tr>
       <tr><td>사이딩</td><td>22장 → 3박스</td><td>41조각 = 21장 → 3박스</td></tr>
@@ -202,7 +207,8 @@ function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,
 window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
-window.SIGN_PAGE={version:'v4.4',patterns:Object.keys(PATTERNS).length};
+if(/detail/.test(location.hash))document.body.classList.add('show');
+window.SIGN_PAGE={version:'v4.5',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
