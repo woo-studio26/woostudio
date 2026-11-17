@@ -57,7 +57,8 @@ tr:hover .ctl,.ctl:focus-within{opacity:1}
  <button id="bAdd">＋ 항목</button>
  <button id="bUndo">되돌리기</button>
  <button id="bReset">원본으로</button>
- <button id="bSave">수정본 파일 저장</button>
+ <a id="bSave" href="#" target="_blank" rel="noopener" class="btn">수정본 저장</a>
+ <button id="bLink" style="display:none">링크 복사</button>
  <a id="bPrint" href="https://www.woostudio.co.kr/t/estimate-e393c999/" target="_blank" rel="noopener" class="btn">인쇄 / PDF</a>
 </div>
 <div class="sheet" id="sheet">
@@ -131,7 +132,7 @@ const P=s=>{const v=parseFloat(String(s).replace(/[^0-9.\-]/g,''));return isNaN(
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const o=JSON.parse(ORIG);
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1300)}
-function save(){ls.set(KEY,JSON.stringify(S))}
+function save(){ls.set(KEY,JSON.stringify(S));if(HS){try{history.replaceState(null,'','#d='+encodeURIComponent(enc({init:INIT,s:S})))}catch(e){}}}
 function push(){hist.push(JSON.stringify(S));if(hist.length>50)hist.shift()}
 function ed(i,k,v,cls=''){
  const or=S.rows[i]._o; const ch=or&&String(or[k]??'')!==String(S.rows[i][k]??'')?' chg':'';
@@ -197,7 +198,13 @@ function undo(){if(!hist.length){toast('되돌릴 게 없음');return}S=JSON.par
 document.getElementById('bUndo').onclick=undo;
 document.getElementById('bAdd').onclick=()=>{push();const idx=S.rows.findIndex(r=>r.t==='ex');const at=idx<0?S.rows.length:idx;S.rows.splice(at,0,{t:'item',n:'새 항목',u:'식',q:1,p:0,b:'',_o:{}});save();render();const el=tb.querySelector(`[data-i="${at}"][data-k="n"]`);el&&el.focus()};
 document.getElementById('bReset').onclick=()=>{push();S=JSON.parse(ORIG);S.h={};S.rows.forEach(r=>r._o=base(r));document.querySelectorAll('[data-h]').forEach(el=>{if(H0[el.dataset.h]!=null)el.innerHTML=H0[el.dataset.h]});save();render();toast('원본으로 돌림 · 되돌리기 가능')};
-document.getElementById('bSave').onclick=()=>{
+const FRAMED=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+const sv=document.getElementById('bSave');
+const setSaveHref=()=>{sv.href=PRINT_URL+'#d='+encodeURIComponent(enc(snap()))};
+sv.addEventListener('mousedown',()=>{if(FRAMED)setSaveHref()});
+sv.addEventListener('click',e=>{if(FRAMED){setSaveHref();toast('새 탭에서 열려요. 거기서 저장·인쇄하고 주소를 Aside에 붙여 주세요');return}e.preventDefault();doSave()});
+if(!FRAMED){const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
+function doSave(){
  document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);
  const clone=document.documentElement.cloneNode(true);
  const st=Object.assign({},INIT,{id:(INIT.id||'doc')+'_'+Date.now(),rate:S.rate,vat:S.vat,rows:S.rows.map(({_o,...r})=>r),h:Object.assign({},H0,S.h)});
@@ -205,8 +212,8 @@ document.getElementById('bSave').onclick=()=>{
  clone.querySelectorAll('[data-h]').forEach(el=>el.innerHTML=S.h[el.dataset.h]??el.innerHTML);
  clone.querySelector('#tb').innerHTML='';
  const html='<!doctype html>\n'+clone.outerHTML;
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='견적서_수정본.html';document.body.appendChild(a);a.click();a.remove();toast('수정본 저장');
-};
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='견적서_수정본.html';document.body.appendChild(a);a.click();a.remove();toast('수정본 파일 저장됨 (다운로드 폴더)');
+}
 function snap(){document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);return {init:INIT,s:S}}
 const pa=document.getElementById('bPrint');
 pa.addEventListener('mousedown',()=>{pa.href=PRINT_URL+'#d='+encodeURIComponent(enc(snap()))+'&p=1'});
