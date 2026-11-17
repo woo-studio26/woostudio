@@ -163,16 +163,17 @@ function render(){
   const a=r.q*r.p; direct+=a; if(r.t!=='sub')no++;
   h+=`<tr class="${r.t==='sub'?'sub':''}"><td class="c"><div class="noc">${ctl(i)}${r.t==='sub'?'':no}</div></td><td class="nm">${r.t==='sub'?'· ':''}${ed(i,'n',esc(r.n))}</td><td class="c">${ed(i,'u',esc(r.u))}</td><td class="num">${ed(i,'q',W(r.q))}</td><td class="num">${ed(i,'p',W(r.p))}</td><td class="num">${W(a)}</td><td class="c">${ed(i,'b',esc(r.b))}</td></tr>`;
  });
- const profit=S.rate==null?0:Math.round(direct*S.rate/100);
+ const T1K=x=>Math.floor(x/1000)*1000;
+ const profit=S.rate==null?0:T1K(direct*S.rate/100);
  h+=`<tr class="sum"><td></td><td>직접공사비 소계</td><td></td><td></td><td></td><td class="num">${W(direct)}</td><td></td></tr>`;
  if(S.rate!=null)no++;
- if(S.rate!=null)h+=`<tr><td class="c">${no}</td><td>${INIT.profitLabel||'기업이윤'} (직접공사비 × <span data-ed data-s="rate" contenteditable class="${S.rate!=o.rate?'chg':''}">${S.rate}</span>%)</td><td class="c">%</td><td class="num">${S.rate}</td><td></td><td class="num">${W(profit)}</td><td></td></tr>`;
+ if(S.rate!=null)h+=`<tr><td class="c">${no}</td><td>${INIT.profitLabel||'기업이윤'} (직접공사비 × <span data-ed data-s="rate" contenteditable class="${S.rate!=o.rate?'chg':''}">${S.rate}</span>%)</td><td class="c">%</td><td class="num">${S.rate}</td><td></td><td class="num">${W(profit)}</td><td class="c">천원 미만 절사</td></tr>`;
  let exSum=0;
  exs.forEach(i=>{const r=S.rows[i],a=r.q*r.p;exSum+=a;no++;
   h+=`<tr><td class="c"><div class="noc">${ctl(i)}${no}</div></td><td>${ed(i,'n',esc(r.n))}</td><td class="c">${ed(i,'u',esc(r.u))}</td><td class="num">${ed(i,'q',W(r.q))}</td><td class="num">${ed(i,'p',W(r.p))}</td><td class="num">${W(a)}</td><td class="c">${ed(i,'b',esc(r.b))}</td></tr>`});
- const supply=direct+profit+exSum, vat=S.vat==null?0:Math.round(supply*S.vat/100), total=supply+vat;
+ const supply=direct+profit+exSum, vat=S.vat==null?0:T1K(supply*S.vat/100), total=supply+vat;
  h+=`<tr class="sum"><td></td><td>공급가액</td><td></td><td></td><td></td><td class="num">${W(supply)}</td><td></td></tr>
- ${S.vat==null?'':`<tr><td></td><td>부가가치세 (<span data-ed data-s="vat" contenteditable class="${S.vat!=o.vat?'chg':''}">${S.vat}</span>%)</td><td></td><td></td><td></td><td class="num">${W(vat)}</td><td></td></tr>`}
+ ${S.vat==null?'':`<tr><td></td><td>부가가치세 (<span data-ed data-s="vat" contenteditable class="${S.vat!=o.vat?'chg':''}">${S.vat}</span>%)</td><td></td><td></td><td></td><td class="num">${W(vat)}</td><td class="c">천원 미만 절사</td></tr>`}
  <tr class="grand"><td></td><td>합 계</td><td></td><td></td><td></td><td class="num">${W(total)}</td><td></td></tr>`;
  document.getElementById('tb').innerHTML=h;
  document.getElementById('tkl').textContent=S.vat==null?'합계금액':'합계금액 (VAT 포함)';
@@ -276,7 +277,7 @@ async function exportHWP(){
  const F={};await Promise.all(names.map(async n=>{const r=await fetch(HX+n);if(!r.ok)throw new Error(n+' 못 받음');F[n]=await r.text()}));
  const sn=snap(); const h=Object.assign({},H0,sn.s.h); const rows=S.rows, rate=S.rate, vat=S.vat;
  let direct=0,ex=0;rows.forEach(r=>{if(r.t==='item'||r.t==='sub')direct+=r.q*r.p;if(r.t==='ex')ex+=r.q*r.p});
- const profit=rate==null?0:Math.round(direct*rate/100), supply=direct+profit+ex, vv=vat==null?0:Math.round(supply*vat/100), total=supply+vv;
+ const profit=rate==null?0:Math.floor(direct*rate/100/1000)*1000, supply=direct+profit+ex, vv=vat==null?0:Math.floor(supply*vat/100/1000)*1000, total=supply+vv;
  const out=[];
  const title=htable(['<hp:tr>'+hcell(0,0,TW,3400,[hpara(strip(h.doc||'견적서').replace(/\s/g,'').split('').join(' '),9,20)],7)+'</hp:tr>'],1,1,TW,3400,7);
  out.push(`<hp:p id="0" paraPrIDRef="17" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="7">${F['secpr.xml']}<hp:ctrl><hp:colPr id="" type="NEWSPAPER" layout="LEFT" colCount="1" sameSz="1" sameGap="0"/></hp:ctrl>${title}<hp:t/></hp:run></hp:p>`);
@@ -297,10 +298,10 @@ async function exportHWP(){
  rows.forEach((r,i)=>{if(r.t==='ex')return;if(r.t==='grp'){no++;trs.push(row([String(no),r.n,'','','',W(gs[i]||0),r.b||''],A7(8),al));return}
   if(r.t!=='sub')no++;trs.push(row([r.t==='sub'?'':String(no),(r.t==='sub'?'   · ':'')+r.n,r.u||'',W(r.q),W(r.p),W(r.q*r.p),r.b||''],A7(7),al))});
  trs.push(row(['','직접공사비 소계','','','',W(direct),''],A7(8),al,4));
- if(rate!=null){no++;trs.push(row([String(no),`${INIT.profitLabel||'기업이윤'} (직접공사비 × ${rate}%)`,'%',String(rate),'',W(profit),''],A7(7),al))}
+ if(rate!=null){no++;trs.push(row([String(no),`${INIT.profitLabel||'기업이윤'} (직접공사비 × ${rate}%)`,'%',String(rate),'',W(profit),'천원 미만 절사'],A7(7),al))}
  rows.filter(r=>r.t==='ex').forEach(r=>{no++;trs.push(row([String(no),r.n,r.u||'',W(r.q),W(r.p),W(r.q*r.p),r.b||''],A7(7),al))});
  trs.push(row(['','공급가액','','','',W(supply),''],A7(8),al,4));
- if(vat!=null)trs.push(row(['',`부가가치세 (${vat}%)`,'','','',W(vv),''],A7(7),al));
+ if(vat!=null)trs.push(row(['',`부가가치세 (${vat}%)`,'','','',W(vv),'천원 미만 절사'],A7(7),al));
  trs.push(row(['','합    계','','','',W(total),''],A7(8),al,5));
  out.push(tpara(htable(trs,7,trs.length,TW,rh2*trs.length)));
  const note=strip(document.querySelector('[data-h="note"]').innerHTML);
