@@ -57,8 +57,8 @@ body.show table.detail{display:table}
       <tr><th></th><th>가로 시공</th><th>세로 시공</th></tr>
       <tr><td>바탕 높이</td><td>1.52m (380 × 4줄)</td><td>1.50m (3m 판 1장 = 2조각)</td></tr>
       <tr><td>사이딩</td><td>22장 → 3박스</td><td>41조각 = 21장 → 3박스</td></tr>
-      <tr><td>부자재</td><td>스타터 6, J채널 7, 아웃코너 1, 조이너 3</td><td>J채널 12 (위·아래·끝), 아웃코너 1</td></tr>
-      <tr><td>자재비</td><td><b>약 74.2만</b></td><td><b>약 75.7만</b></td></tr>
+      <tr><td>부자재</td><td>스타터 6, J채널 7, 아웃코너 1, 조이너 4</td><td>J채널 12 (위·아래·끝), 아웃코너 1</td></tr>
+      <tr><td>자재비</td><td><b>약 75.7만</b></td><td><b>약 75.7만</b></td></tr>
       <tr><td>물 처리</td><td>제품 설계 방향, 위 판이 아래 판을 덮어 물이 밖으로 흐름</td><td>세로 이음으로 흐른 물이 하단 J채널에 모임 → 배수 구멍 필요</td></tr>
       <tr><td>절단면</td><td>판 끝 8곳(이음·끝)</td><td>41조각 위아래 82곳 → J채널로 다 덮어야 함</td></tr>
       <tr><td>보이는 선</td><td>가로선 3줄 + 3m마다 이음</td><td>380 간격 세로줄 40개, 이음 없음</td></tr>
@@ -209,7 +209,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v4.6',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v4.7',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
