@@ -67,7 +67,7 @@ var renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(M
 var lr=new THREE.CSS2DRenderer(); lr.domElement.style.position='absolute'; lr.domElement.style.top='0'; lr.domElement.style.pointerEvents='none'; view.appendChild(lr.domElement);
 var scene=new THREE.Scene(); scene.background=new THREE.Color('#e3e8ec');
 var camera=new THREE.PerspectiveCamera(38,1,0.05,100);
-var controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.target.set(1.0,0.85,-0.2);
+var controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.target.set(1.5,0.8,-0.2);
 scene.add(new THREE.HemisphereLight(0xffffff,0x888880,0.8)); var dl=new THREE.DirectionalLight(0xffffff,0.7); dl.position.set(-3,5,6); scene.add(dl);
 
 function M(c,o){var p={color:c,roughness:.8,metalness:.05};for(var k in o)p[k]=o[k];return new THREE.MeshStandardMaterial(p);}
@@ -109,7 +109,7 @@ label(gCorner,new THREE.Vector3(-0.03,0.9,0.03),'s','아웃코너','모서리 ·
 var gJoin=grp(); var jM=M(COL.s,{metalness:.4,roughness:.4});
 box(2.98,Y0-0.03,0,3.02,YT,0.003,jM,gJoin); box(2.997,Y0-0.03,0,3.003,YT,0.027,jM,gJoin); box(2.98,Y0-0.03,0.024,3.02,YT,0.027,jM,gJoin);
 screwsFront(gJoin,0.3,2.988,2.988,1); screwsFront(gJoin,1.2,2.988,2.988,1);
-label(gJoin,new THREE.Vector3(3.0,1.0,0.03),'s','아이조이너','3m 판 이음 · 27×40×3000');
+label(gJoin,new THREE.Vector3(2.85,1.0,0.03),'s','아이조이너','3m 판 이음 · 27×40×3000');
 
 // 사이딩 패널 텍스처(스타코)
 function stucco(){var c=document.createElement('canvas');c.width=512;c.height=64;var g=c.getContext('2d');g.fillStyle='#ece8de';g.fillRect(0,0,512,64);for(var i=0;i<5000;i++){var k=Math.random();g.fillStyle=k>.5?'rgba(255,255,255,.35)':'rgba(0,0,0,.07)';g.fillRect(Math.random()*512,Math.random()*64,1.5,1.5);}g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,512,3);var t=new THREE.CanvasTexture(c);t.wrapS=THREE.RepeatWrapping;return t;}
@@ -122,8 +122,8 @@ function rowSide(g,y0,h,z0,z1){var m=box(-T,y0,z1,0,y0+h,z0,panelMat(Math.abs(z1
 var gRow1=grp();
 rowFront(gRow1,Y0,0.38,0.012,2.995); rowFront(gRow1,Y0,0.38,3.005,FW); rowSide(gRow1,Y0,0.38,-0.012,-SD);
 screwsFront(gRow1,Y0+0.388,0.2,FW,0.4,0.014); screwsSide(gRow1,Y0+0.388,-0.2,-SD,0.4,0.014);
-label(gRow1,new THREE.Vector3(1.4,Y0+0.19,0.03),'m','사이딩 첫 줄','16×380×3000 · 아래 홈을 스타터 턱에 걸기');
-label(gRow1,new THREE.Vector3(0.8,Y0+0.39,0.04),'f','피스+칼블럭','위 날개에 @400');
+label(gRow1,new THREE.Vector3(1.7,Y0+0.15,0.03),'m','사이딩 첫 줄','16×380×3000 · 아래 홈을 스타터 턱에 걸기');
+label(gRow1,new THREE.Vector3(0.6,Y0+0.52,0.04),'f','피스+칼블럭','위 날개에 @400');
 
 // 5 2~4줄 (한 줄씩)
 var gRows=[];
@@ -139,7 +139,7 @@ label(gStrip,new THREE.Vector3(1.9,ys+0.04,0.03),'m','상단 80 띠','사이딩�
 var gJ=grp(); var jjM=M(COL.s,{metalness:.4,roughness:.4});
 box(0.02,YT-0.035,0,FW,YT,0.035,jjM,gJ); box(0.02,YT-0.05,0.03,FW,YT-0.03,0.035,jjM,gJ);
 box(-0.035,YT-0.035,-SD,0,YT,-0.02,jjM,gJ); box(-0.035,YT-0.05,-SD,-0.03,YT-0.03,-0.02,jjM,gJ);
-label(gJ,new THREE.Vector3(2.4,YT-0.03,0.04),'s','J채널','위·벽 끝 절단면 덮기 · 35×50×3000');
+label(gJ,new THREE.Vector3(1.5,YT-0.03,0.04),'s','J채널','위·벽 끝 절단면 덮기 · 35×50×3000');
 
 // 8 실리콘
 var gSil=grp(); var silM=M(COL.w,{roughness:.3});
@@ -150,7 +150,7 @@ label(gSil,new THREE.Vector3(1.0,YT+0.02,0.05),'w','변성실리콘','화강석 
 // 9 간판
 var gSign=grp();
 var disc=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,0.15,64),[M('#8e5a6c'),M('#fbfbf9'),M('#fbfbf9')]);disc.rotation.x=Math.PI/2;disc.position.set(2.1,Y0+0.8,T+0.075+0.01);gSign.add(disc);
-label(gSign,new THREE.Vector3(2.1,Y0+0.8,0.2),'x','원형 간판 Ø1m (간판업체)','볼트는 스페이서 끼워 벽까지');
+label(gSign,new THREE.Vector3(1.9,Y0+0.2,0.2),'x','원형 간판 Ø1m (간판업체)','볼트는 스페이서 끼워 벽까지');
 
 var STEPS=[
  {t:'바탕 벽 (철거 후)',k:'x',kt:'준비',g:[],d:'기존 파벽돌과 합판을 떼어 낸 벽입니다. 사이딩은 하지(각관) 없이 이 벽에 바로 고정하므로 크게 울퉁불퉁한 곳만 쐐기로 맞춥니다.',m:[['범위','전면 5m · 측면 12m · 높이 1.6m'],['화면','코너 부분만 확대']]},
@@ -192,13 +192,13 @@ document.getElementById('next').onclick=function(){stop();go(cur+1)};
 var timer=null;function stop(){if(timer){clearInterval(timer);timer=null;document.getElementById('play').textContent='자동 재생';}}
 document.getElementById('play').onclick=function(){if(timer){stop();return;}if(cur>=STEPS.length-1)go(0);this.textContent='멈춤';timer=setInterval(function(){if(cur>=STEPS.length-1){stop();return;}go(cur+1);},2600);};
 
-function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();var far=w<500?5.2:4.2;camera.position.set(-1.7*far/4.2,1.45,far);controls.update();}
+function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();var far=w<500?6.6:4.8;camera.position.set(-0.9,1.6,far);controls.update();}
 window.addEventListener('resize',resize);
 resize(); go(0);
 (function loop(now){requestAnimationFrame(loop);
   scene.traverse(function(g){if(g.userData&&g.userData.anim){var t=(performance.now()-g.userData.t0)/600;if(t<0){g.position.set(-0.6,0.25,0.6);}else if(t<1){var e=1-Math.pow(1-t,3);g.position.set(-0.6*(1-e),0.25*(1-e),0.6*(1-e));}else{g.position.set(0,0,0);g.userData.anim=false;}}});
   controls.update();renderer.render(scene,camera);lr.render(scene,camera);})();
-window.BUILD_PAGE={version:'b2',steps:STEPS.length};
+window.BUILD_PAGE={version:'b3',steps:STEPS.length};
 </script>
 </body>
 </html>
