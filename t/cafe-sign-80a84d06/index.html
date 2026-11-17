@@ -13,7 +13,7 @@ html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"App
 #view canvas{display:block;width:100%;height:100%;touch-action:none}
 .cams{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
 .cams button{border:0;background:rgba(255,255,255,.88);padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer}
-.tag{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:6px 10px;border-radius:8px}
+.tag{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:6px 10px;border-radius:8px}
 #panel{background:#fff;padding:12px 14px 16px;border-top:1px solid #ddd;max-height:46%;overflow:auto}
 .row{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}
 .lbl{font-size:12px;color:#6e6e73;width:56px;flex:none}
@@ -81,7 +81,7 @@ var state = {orient:'h', pat:'stucco', color:0};
 var view = document.getElementById('view');
 var renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-renderer.outputEncoding = THREE.sRGBEncoding;
+
 view.appendChild(renderer.domElement);
 var scene = new THREE.Scene(); scene.background = new THREE.Color('#dfe5ea');
 var camera = new THREE.PerspectiveCamera(40,1,0.1,200);
@@ -105,7 +105,7 @@ var fw=4200, sw=11000, zb1=4400, zs=4800, zg=7800;
 // 브릭 질감
 (function(){var c=document.createElement('canvas');c.width=256;c.height=256;var g=c.getContext('2d');g.fillStyle='#e9e2d8';g.fillRect(0,0,256,256);
  for(var r=0;r<8;r++){for(var i=-1;i<4;i++){var x=i*76+(r%2?38:0);g.fillStyle='hsl('+(10+Math.random()*6)+',55%,'+(36+Math.random()*7)+'%)';g.fillRect(x+3,r*32+3,70,26);}}
- var t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;brick.map=t;brick.color.set('#ffffff');t.repeat.set(4,4);})();
+ var t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;brick.map=t;brick.color.set('#ffffff');t.repeat.set(4,4);})();
 B(-6000,-4000,-50,fw+3000,sw+1500,0,ground);
 B(0,0,0,fw,300,zb1,brick); B(0,0,0,300,sw,zb1,brick);
 B(fw,-80,0,fw+450,300,zs,stone); B(-30,-30,zb1,fw+450,300,zs,stone); B(-30,-30,zb1,300,sw,zs,stone);
@@ -149,7 +149,7 @@ function buildSiding(){
   // 두 면: 전면(가로 길이 fw), 측면(sw)
   [['front',fw],['side',sw]].forEach(function(f){
     var len=f[1]/1000, hh=h/1000;
-    var tex=new THREE.CanvasTexture(cv); tex.encoding=THREE.sRGBEncoding; tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=8;
+    var tex=new THREE.CanvasTexture(cv); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=8;
     if(!vert){ tex.repeat.set(len/3, hh/0.38); }
     else { tex.center.set(.5,.5); tex.rotation=Math.PI/2; tex.repeat.set(len/0.38, hh/3); }
     var mat=new THREE.MeshStandardMaterial({map:tex,roughness:.7,metalness:.05});
@@ -192,7 +192,7 @@ function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,
 window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
-window.SIGN_PAGE={version:'v4',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v4.1',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
