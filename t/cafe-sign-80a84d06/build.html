@@ -67,7 +67,7 @@ var renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(M
 var lr=new THREE.CSS2DRenderer(); lr.domElement.style.position='absolute'; lr.domElement.style.top='0'; lr.domElement.style.pointerEvents='none'; view.appendChild(lr.domElement);
 var scene=new THREE.Scene(); scene.background=new THREE.Color('#e3e8ec');
 var camera=new THREE.PerspectiveCamera(38,1,0.05,100);
-var controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.target.set(0.9,0.9,-0.3);
+var controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.target.set(1.0,0.85,-0.2);
 scene.add(new THREE.HemisphereLight(0xffffff,0x888880,0.8)); var dl=new THREE.DirectionalLight(0xffffff,0.7); dl.position.set(-3,5,6); scene.add(dl);
 
 function M(c,o){var p={color:c,roughness:.8,metalness:.05};for(var k in o)p[k]=o[k];return new THREE.MeshStandardMaterial(p);}
@@ -83,7 +83,7 @@ box(-0.03,YT,-SD,0.3,YT+0.4,0.03,stoneM,base);
 box(0.2,-0.4,0,FW,-0.2,0.7,awnM,base);              // 어닝(전면)
 box(-0.7,-0.4,-SD,0,-0.2,-0.1,awnM,base);           // 어닝(측면)
 // 벽 질감 (철거 후 거친 면)
-(function(){var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d');g.fillStyle='#d4cdc1';g.fillRect(0,0,128,128);for(var i=0;i<1600;i++){g.fillStyle='rgba(0,0,0,'+Math.random()*.08+')';g.fillRect(Math.random()*128,Math.random()*128,2,2);}var t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(6,4);wallM.map=t;wallM.color.set('#fff');})();
+(function(){var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d');g.fillStyle='#9d9a95';g.fillRect(0,0,128,128);for(var i=0;i<2200;i++){g.fillStyle='rgba(0,0,0,'+Math.random()*.15+')';g.fillRect(Math.random()*128,Math.random()*128,2,2);}var t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(6,4);wallM.map=t;wallM.color.set('#fff');})();
 
 // ---- 부품 만들기 ----
 var COL={m:'#e8d79a',s:'#ff7a1a',sDone:'#f4f4f2',f:'#d63b3b',w:'#2f80ed'};
@@ -167,7 +167,7 @@ var STEPS=[
 var cur=0, anim=[];
 var stepsEl=document.getElementById('steps');
 STEPS.forEach(function(s,i){var b=document.createElement('button');b.textContent=(i)+'. '+s.t;b.onclick=function(){go(i)};stepsEl.appendChild(b);});
-function setLabels(g,show){(g.userData.labels||[]).forEach(function(o){o.element.style.display=show?'':'none';});}
+function setLabels(g,show){(g.userData.labels||[]).forEach(function(o){o.visible=show;});}
 function tint(g,on){g.traverse(function(o){if(o.isMesh){var ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(function(m){if(m.emissive){m.emissive.set(on?'#ff7a1a':'#000');m.emissiveIntensity=on?.0:0;}});}});}
 function go(i){
   cur=Math.max(0,Math.min(STEPS.length-1,i));
@@ -192,13 +192,13 @@ document.getElementById('next').onclick=function(){stop();go(cur+1)};
 var timer=null;function stop(){if(timer){clearInterval(timer);timer=null;document.getElementById('play').textContent='자동 재생';}}
 document.getElementById('play').onclick=function(){if(timer){stop();return;}if(cur>=STEPS.length-1)go(0);this.textContent='멈춤';timer=setInterval(function(){if(cur>=STEPS.length-1){stop();return;}go(cur+1);},2600);};
 
-function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();var far=w<500?6.2:4.6;camera.position.set(-1.9*far/4.6,1.5,far);controls.update();}
+function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);lr.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();var far=w<500?5.2:4.2;camera.position.set(-1.7*far/4.2,1.45,far);controls.update();}
 window.addEventListener('resize',resize);
 resize(); go(0);
 (function loop(now){requestAnimationFrame(loop);
   scene.traverse(function(g){if(g.userData&&g.userData.anim){var t=(performance.now()-g.userData.t0)/600;if(t<0){g.position.set(-0.6,0.25,0.6);}else if(t<1){var e=1-Math.pow(1-t,3);g.position.set(-0.6*(1-e),0.25*(1-e),0.6*(1-e));}else{g.position.set(0,0,0);g.userData.anim=false;}}});
   controls.update();renderer.render(scene,camera);lr.render(scene,camera);})();
-window.BUILD_PAGE={version:'b1',steps:STEPS.length};
+window.BUILD_PAGE={version:'b2',steps:STEPS.length};
 </script>
 </body>
 </html>
