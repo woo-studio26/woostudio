@@ -11,6 +11,8 @@ body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",san
 .bar button{padding:6px 11px;border:1px solid #bbb;background:#fff;color:#111;border-radius:6px;cursor:pointer;font:inherit;font-size:12px}
 .bar button:hover,.bar a.btn:hover{border-color:#333}
 .bar a.btn{padding:6px 11px;border:1px solid #bbb;background:#fff;color:#111;border-radius:6px;cursor:pointer;font-size:12px;text-decoration:none}
+.bar a.btn.main{background:#111;color:#fff;border-color:#111}
+.bar .saved{font-size:11.5px;color:#2a7}
 .bar .hint{font-size:11.5px;color:#888;margin-right:auto}
 .sheet{max-width:820px;margin:0 auto;background:#fff;color:#111;padding:28px 26px;border:1px solid #ddd;border-radius:4px}
 h1{text-align:center;letter-spacing:16px;font-size:28px;margin:0 0 6px;padding-bottom:8px;border-bottom:3px double #111}
@@ -18,16 +20,17 @@ h1{text-align:center;letter-spacing:16px;font-size:28px;margin:0 0 6px;padding-b
 .top .l{flex:1 1 260px}
 .top .l p{margin:4px 0;font-size:13px}
 .top .l .to{font-size:17px;font-weight:700;border-bottom:1px solid #111;padding-bottom:4px;margin-bottom:10px}
-table{width:100%;border-collapse:collapse}
+table{width:100%;border-collapse:separate;border-spacing:0;border-top:1px solid #000;border-left:1px solid #000}
 .sup{flex:1 1 320px}
-.sup td,.sup th{border:1px solid #111;padding:5px 6px;font-size:12px}
+.sup td,.sup th{border:0;border-right:1px solid #000;border-bottom:1px solid #000;padding:5px 6px;font-size:12px}
 .sup th{background:#f1f1f1;font-weight:600;white-space:nowrap}
 .sup .v{width:24px;text-align:center;line-height:1.6}
 .total{display:flex;border:2px solid #111;margin:8px 0 14px}
 .total div{padding:10px 12px;font-size:15px}
 .total .k{background:#f1f1f1;font-weight:700;border-right:1px solid #111;white-space:nowrap}
 .total .n{flex:1;font-weight:700}
-.items th,.items td{border:1px solid #111;padding:6px 6px;font-size:12px;position:relative}
+.items th,.items td{border:0;border-right:1px solid #000;border-bottom:1px solid #000;padding:6px 6px;font-size:12px}
+.noc{position:relative}
 .items th{background:#f1f1f1}
 .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .c{text-align:center}
@@ -42,22 +45,24 @@ table{width:100%;border-collapse:collapse}
 [data-ed]:focus,.ed:focus{background:#fff1a8;box-shadow:0 0 0 2px #f2c200}
 .ed{cursor:text;outline:0}
 .chg{background:#e8f4ff}
-.ctl{position:absolute;left:-46px;top:50%;transform:translateY(-50%);display:flex;opacity:0;gap:2px;transition:opacity .1s}
+.ctl{position:absolute;left:-52px;top:50%;transform:translateY(-50%);display:flex;opacity:0;gap:2px;transition:opacity .1s}
 tr:hover .ctl,.ctl:focus-within{opacity:1}
 .ctl b{width:20px;height:20px;line-height:18px;text-align:center;border:1px solid #bbb;border-radius:4px;background:#fff;cursor:pointer;font-weight:400;font-size:13px;color:#333}
 .ctl b:hover{border-color:#333}
 .wrap{padding-left:46px}
 .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;opacity:0;transition:.3s;pointer-events:none}
 .toast.on{opacity:1}
-@media print{html,body{margin:0}.bar,.ctl,.toast{display:none!important}.sheet{border:0;border-radius:0;padding:14mm 13mm;max-width:none;margin:0}.wrap{padding:0}[data-ed]:hover,.ed:hover,.chg{background:none}}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+@media print{html,body{margin:0}.items tr,.sup tr{break-inside:avoid}.bar,.ctl,.toast{display:none!important}.sheet{border:0;border-radius:0;padding:14mm 13mm;max-width:none;margin:0}.wrap{padding:0}[data-ed]:hover,.ed:hover,.chg{background:none}}
 </style></head><body>
 <div class="wrap">
 <div class="bar">
- <span class="hint">글자·숫자 아무 데나 눌러서 바로 수정 · Enter로 확정 · 줄에 마우스 올리면 ＋/× </span>
+ <span class="hint">눌러서 수정 · Enter 확정 · 다 고치면 검은 버튼을 눌러야 저장돼요</span>
  <button id="bAdd">＋ 항목</button>
  <button id="bUndo">되돌리기</button>
  <button id="bReset">원본으로</button>
- <a id="bSave" href="#" target="_blank" rel="noopener" class="btn">수정본 저장</a>
+ <a id="bSave" href="#" target="_blank" rel="noopener" class="btn main">새 탭에서 열기 (저장·인쇄)</a>
+ <span id="saved" class="saved"></span>
  <button id="bLink" style="display:none">링크 복사</button>
  <a id="bPrint" href="https://www.woostudio.co.kr/t/estimate-e393c999/" target="_blank" rel="noopener" class="btn">인쇄 / PDF</a>
 </div>
@@ -120,7 +125,8 @@ const KEY='est_'+(INIT.id||'doc');
 const ORIG=JSON.stringify(INIT);
 let S, hist=[];
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-if(HS&&HS.s){S=HS.s}else{try{S=JSON.parse(ls.get(KEY))}catch(e){}}
+let LS=null;try{LS=JSON.parse(ls.get(KEY))}catch(e){}
+if(HS&&HS.s){S=(LS&&LS.rows&&(LS.ts||0)>(HS.s.ts||0))?LS:HS.s}else{S=LS}
 if(!S||!S.rows) S=JSON.parse(ORIG);
 S.h=S.h||{};
 const H0=INIT.h||{};
@@ -132,7 +138,7 @@ const P=s=>{const v=parseFloat(String(s).replace(/[^0-9.\-]/g,''));return isNaN(
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const o=JSON.parse(ORIG);
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1300)}
-function save(){ls.set(KEY,JSON.stringify(S));if(HS){try{history.replaceState(null,'','#d='+encodeURIComponent(enc({init:INIT,s:S})))}catch(e){}}}
+function save(){S.ts=Date.now();ls.set(KEY,JSON.stringify(S));const st=document.getElementById('saved');if(st){const d=new Date();st.textContent='자동 저장됨 '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')};if(HS){try{history.replaceState(null,'','#d='+encodeURIComponent(enc({init:INIT,s:S})))}catch(e){}}}
 function push(){hist.push(JSON.stringify(S));if(hist.length>50)hist.shift()}
 function ed(i,k,v,cls=''){
  const or=S.rows[i]._o; const ch=or&&String(or[k]??'')!==String(S.rows[i][k]??'')?' chg':'';
@@ -144,9 +150,9 @@ function render(){
  S.rows.forEach((r,i)=>{ if(r.t==='grp'){gi=i;gsum[i]=0} else if(r.t==='sub'&&gi!==null) gsum[gi]+=r.q*r.p; else if(r.t!=='sub') gi=null; });
  S.rows.forEach((r,i)=>{
   if(r.t==='ex'){exs.push(i);return}
-  if(r.t==='grp'){no++;h+=`<tr class="grp"><td class="c">${ctl(i)}${no}</td><td>${ed(i,'n',esc(r.n))}</td><td></td><td></td><td></td><td class="num">${W(gsum[i]||0)}</td><td>${ed(i,'b',esc(r.b))}</td></tr>`;return}
+  if(r.t==='grp'){no++;h+=`<tr class="grp"><td class="c"><div class="noc">${ctl(i)}${no}</div></td><td>${ed(i,'n',esc(r.n))}</td><td></td><td></td><td></td><td class="num">${W(gsum[i]||0)}</td><td>${ed(i,'b',esc(r.b))}</td></tr>`;return}
   const a=r.q*r.p; direct+=a; if(r.t!=='sub')no++;
-  h+=`<tr class="${r.t==='sub'?'sub':''}"><td class="c">${ctl(i)}${r.t==='sub'?'':no}</td><td class="nm">${r.t==='sub'?'· ':''}${ed(i,'n',esc(r.n))}</td><td class="c">${ed(i,'u',esc(r.u))}</td><td class="num">${ed(i,'q',W(r.q))}</td><td class="num">${ed(i,'p',W(r.p))}</td><td class="num">${W(a)}</td><td class="c">${ed(i,'b',esc(r.b))}</td></tr>`;
+  h+=`<tr class="${r.t==='sub'?'sub':''}"><td class="c"><div class="noc">${ctl(i)}${r.t==='sub'?'':no}</div></td><td class="nm">${r.t==='sub'?'· ':''}${ed(i,'n',esc(r.n))}</td><td class="c">${ed(i,'u',esc(r.u))}</td><td class="num">${ed(i,'q',W(r.q))}</td><td class="num">${ed(i,'p',W(r.p))}</td><td class="num">${W(a)}</td><td class="c">${ed(i,'b',esc(r.b))}</td></tr>`;
  });
  const profit=S.rate==null?0:Math.round(direct*S.rate/100);
  h+=`<tr class="sum"><td></td><td>직접공사비 소계</td><td></td><td></td><td></td><td class="num">${W(direct)}</td><td></td></tr>`;
@@ -154,7 +160,7 @@ function render(){
  if(S.rate!=null)h+=`<tr><td class="c">${no}</td><td>${INIT.profitLabel||'기업이윤'} (직접공사비 × <span data-ed data-s="rate" contenteditable class="${S.rate!=o.rate?'chg':''}">${S.rate}</span>%)</td><td class="c">%</td><td class="num">${S.rate}</td><td></td><td class="num">${W(profit)}</td><td></td></tr>`;
  let exSum=0;
  exs.forEach(i=>{const r=S.rows[i],a=r.q*r.p;exSum+=a;no++;
-  h+=`<tr><td class="c">${ctl(i)}${no}</td><td>${ed(i,'n',esc(r.n))}</td><td class="c">${ed(i,'u',esc(r.u))}</td><td class="num">${ed(i,'q',W(r.q))}</td><td class="num">${ed(i,'p',W(r.p))}</td><td class="num">${W(a)}</td><td class="c">${ed(i,'b',esc(r.b))}</td></tr>`});
+  h+=`<tr><td class="c"><div class="noc">${ctl(i)}${no}</div></td><td>${ed(i,'n',esc(r.n))}</td><td class="c">${ed(i,'u',esc(r.u))}</td><td class="num">${ed(i,'q',W(r.q))}</td><td class="num">${ed(i,'p',W(r.p))}</td><td class="num">${W(a)}</td><td class="c">${ed(i,'b',esc(r.b))}</td></tr>`});
  const supply=direct+profit+exSum, vat=S.vat==null?0:Math.round(supply*S.vat/100), total=supply+vat;
  h+=`<tr class="sum"><td></td><td>공급가액</td><td></td><td></td><td></td><td class="num">${W(supply)}</td><td></td></tr>
  ${S.vat==null?'':`<tr><td></td><td>부가가치세 (<span data-ed data-s="vat" contenteditable class="${S.vat!=o.vat?'chg':''}">${S.vat}</span>%)</td><td></td><td></td><td></td><td class="num">${W(vat)}</td><td></td></tr>`}
@@ -203,7 +209,7 @@ const sv=document.getElementById('bSave');
 const setSaveHref=()=>{sv.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))};
 sv.addEventListener('mousedown',()=>{if(FRAMED)setSaveHref()});
 sv.addEventListener('click',e=>{if(FRAMED){setSaveHref();toast('새 탭에서 열려요. 거기서 저장·인쇄하고 주소를 Aside에 붙여 주세요');return}e.preventDefault();doSave()});
-if(!FRAMED){const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
+if(!FRAMED){sv.textContent='파일로 저장';sv.classList.remove('main');document.querySelector('.bar .hint').textContent='고치면 이 브라우저에 자동 저장돼요 · 같은 링크로 다시 열면 이어서 · 링크 복사 → Aside에 붙이면 반영';const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
 function doSave(){
  document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);
  const clone=document.documentElement.cloneNode(true);
