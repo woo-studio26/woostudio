@@ -59,6 +59,7 @@ body.show table.detail{display:table}
 .lab.m{border-color:#e0b84a}.lab.s{border-color:#ff7a1a}.lab.w{border-color:#2f80ed}.lab.x{border-color:#777}.lab b{display:block}
 .slegend{position:absolute;left:10px;top:52px;display:none;gap:6px;flex-wrap:wrap}.stepmode .slegend{display:flex}
 .slegend span{background:rgba(255,255,255,.9);border-radius:999px;padding:3px 9px;font-size:11px;display:flex;align-items:center;gap:5px}.slegend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.smeta.detail{display:none}body.show .smeta.detail{display:flex}
 .cnote{font-size:11.5px;color:#6e6e73;margin-top:8px}
 </style>
 </head>
@@ -475,6 +476,8 @@ function buildSteps(){
   clearSteps();
   var hex=PATTERNS[state.pat].colors[state.color][2], zB=2800, zT=4400;
   var g0=sgrp(), g1=sgrp(), g2=sgrp(), g3=sgrp(), g4=sgrp(), gR=[sgrp(),sgrp(),sgrp()], g6=sgrp(), g7=sgrp(), g8=sgrp(), g9=sgrp();
+  into(g0,function(){var bw=M('#9d9a95',{roughness:.95});B(0,-3,zB-40,fw,0,zT,bw);B(-3,0,zB-40,0,sw,zT,bw);});
+  lab(g0,P(1500,-5,3600),'x','철거 후 바탕 벽','파벽돌·합판 제거');
   into(g1,function(){var m=accM();B(40,-8,zB-30,fw,0,zB+5,m);B(40,-24,zB-30,fw,-8,zB-24,m);B(-8,40,zB-30,0,sw,zB+5,m);B(-24,40,zB-30,-8,sw,zB-24,m);scrF(zB-12,200,fw);scrS(zB-12,200,sw);});
   lab(g1,P(1300,-10,zB-20),'s','스타터','맨 아래 수평 받침');
   into(g2,function(){var m=accM();B(-45,-45,zB-30,40,-20,zT,m);B(-45,-45,zB-30,-20,40,zT,m);});
@@ -534,7 +537,7 @@ function setMode(m){
     if(state.orient!=='h'){state.orient='h';document.querySelectorAll('#orient button').forEach(function(x){x.className=x.dataset.v==='h'?'on':'';});}
     buildSiding(); sidingMeshes.forEach(function(o){o.visible=false;}); sign.visible=false;
     buildSteps(); sgo(SCUR||0);
-    camera.position.set(-2.2,4.4,4.6); controls.target.set(1.7,3.5,-0.6); controls.update();
+    var mob=view.clientWidth<500; camera.position.set(mob?-3.4:-2.6,4.1,mob?7.2:5.6); controls.target.set(1.9,3.55,-1.2); controls.update();
   } else {
     sstop(); clearSteps(); sidingMeshes.forEach(function(o){o.visible=true;}); sign.visible=true; buildSiding(); cam('iso');
   }
@@ -551,7 +554,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.1',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.2',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
