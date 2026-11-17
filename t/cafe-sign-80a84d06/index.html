@@ -81,6 +81,7 @@ var PATTERNS = {
     ['브라운','NLS-03BR','#6b4c38'],['블랙','NLS-03BK','#2f3033']]}
 };
 var state = {orient:'h', pat:'stucco', color:0};
+var SHOW=/detail/.test(location.hash);
 
 // ---- 장면 ----
 var view = document.getElementById('view');
@@ -189,14 +190,14 @@ function buildSiding(){
    B(fw-35,-40,zBot-bot,fw,0,zb1,trim),B(-40,sw-35,zBot-bot,0,sw,zb1,trim),
    B(-45,-45,zBot-bot,0,0,zb1,trim)].forEach(function(m){sidingMeshes.push(m);});
   // 사이딩 아래 남는 벽 (철거 후 바탕 노출 방지 표시용 = 기존 벽색)
-  document.getElementById('tag').textContent=(vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+' ('+col[1]+')';
+  document.getElementById('tag').textContent=(vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
   var cells=document.querySelectorAll('#cmp tr'); cells.forEach(function(tr){var t=tr.children; if(t.length===3){t[1].className=vert?'':'on'; t[2].className=vert?'on':'';}});
 }
 
 // ---- UI ----
 var patBox=document.getElementById('pattern');
 Object.keys(PATTERNS).forEach(function(k){var b=document.createElement('button');b.textContent=PATTERNS[k].name;b.dataset.v=k;if(k===state.pat)b.className='on';patBox.appendChild(b);});
-function drawColors(){var box=document.getElementById('colors');box.innerHTML='';PATTERNS[state.pat].colors.forEach(function(c,i){var b=document.createElement('button');if(i===state.color)b.className='on';b.innerHTML='<i style="background:'+c[2]+'"></i><span>'+c[0]+'<br>'+c[1]+'</span>';b.onclick=function(){state.color=i;drawColors();buildSiding();};box.appendChild(b);});}
+function drawColors(){var box=document.getElementById('colors');box.innerHTML='';PATTERNS[state.pat].colors.forEach(function(c,i){var b=document.createElement('button');if(i===state.color)b.className='on';b.innerHTML='<i style="background:'+c[2]+'"></i><span>'+c[0]+(SHOW?'<br>'+c[1]:'')+'</span>';b.onclick=function(){state.color=i;drawColors();buildSiding();};box.appendChild(b);});}
 function seg(id,key,after){var el=document.getElementById(id);el.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state[key]=b.dataset.v;el.querySelectorAll('button').forEach(function(x){x.className=x===b?'on':'';});if(after)after();buildSiding();});}
 seg('orient','orient'); seg('pattern','pat',function(){state.color=0;drawColors();});
 var CAMS={iso:[[-8.5,6.5,9.5],[1.5,3.2,-3.5]],front:[[2.3,3.2,12],[2.3,3.2,0]],side:[[-14,3.3,-5.5],[0,3.3,-5.5]],corner:[[-2.3,3.4,2.4],[0.4,3.6,-0.4]]};
@@ -208,7 +209,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v4.5',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v4.6',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
