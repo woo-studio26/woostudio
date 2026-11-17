@@ -168,6 +168,15 @@ function buildSiding(){
       pts.forEach(function(p){ var j = f[0]==='front'? B(p-14,-30,zBot,p+14,-20,zTop,trim) : B(-30,p-14,zBot,-20,p+14,zTop,trim); sidingMeshes.push(j); });
     }
   });
+  // 줄눈 (멀리서도 보이게 실제 선으로)
+  var cc=new THREE.Color(hex), lum=.3*cc.r+.59*cc.g+.11*cc.b;
+  var jm=M(lum<.3?'#5a5b5e':shade(hex,.55));
+  if(vert){
+    for(var x=380;x<fw;x+=380) sidingMeshes.push(B(x-5,-27,zBot,x+5,-21,zTop,jm));
+    for(var yy=380;yy<sw;yy+=380) sidingMeshes.push(B(-27,yy-5,zBot,-21,yy+5,zTop,jm));
+  } else {
+    for(var k=1;k<4;k++){var z=zBot+380*k; sidingMeshes.push(B(0,-27,z-5,fw,-21,z+5,jm)); sidingMeshes.push(B(-27,0,z-5,-21,sw,z+5,jm));}
+  }
   // 부자재: 위 J채널, 아래 (가로=스타터, 세로=J채널), 끝 J채널, 아웃코너
   var bot = vert? 35 : 30;
   [B(-40,-40,zTop,fw,0,zb1,trim),B(-40,-40,zTop,0,sw,zb1,trim),
@@ -193,7 +202,7 @@ function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,
 window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
-window.SIGN_PAGE={version:'v4.3',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v4.4',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
