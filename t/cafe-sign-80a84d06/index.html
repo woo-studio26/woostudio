@@ -479,7 +479,7 @@ function buildSteps(){
   into(g0,function(){var bw=M('#9d9a95',{roughness:.95});B(0,-3,zB-40,fw,0,zT,bw);B(-3,0,zB-40,0,sw,zT,bw);});
   lab(g0,P(1500,-5,3600),'x','철거 후 바탕 벽','파벽돌·합판 제거');
   into(g1,function(){var m=accM();B(40,-8,zB-30,fw,0,zB+5,m);B(40,-24,zB-30,fw,-8,zB-24,m);B(-8,40,zB-30,0,sw,zB+5,m);B(-24,40,zB-30,-8,sw,zB-24,m);scrF(zB-12,200,fw);scrS(zB-12,200,sw);});
-  lab(g1,P(1300,-10,zB-20),'s','스타터','맨 아래 수평 받침');
+  lab(g1,P(700,-10,zB+260),'s','스타터 ↓','맨 아래 수평 받침 (주황 선)');
   into(g2,function(){var m=accM();B(-45,-45,zB-30,40,-20,zT,m);B(-45,-45,zB-30,-20,40,zT,m);});
   lab(g2,P(-40,-40,3500),'s','아웃코너','모서리 틀');
   into(g3,function(){var m=accM();B(2980,-27,zB-30,3020,-20,zT,m);B(2997,-27,zB-30,3003,0,zT,m);[3000,6000,9000].forEach(function(y){B(-27,y-20,zB-30,-20,y+20,zT,m);B(-27,y-3,zB-30,0,y+3,zT,m);});});
@@ -554,7 +554,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.2',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.3',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
