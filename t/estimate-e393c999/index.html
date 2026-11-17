@@ -218,7 +218,7 @@ const sv=document.getElementById('bSave');
 const setSaveHref=()=>{sv.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))};
 sv.addEventListener('mousedown',()=>{if(FRAMED)setSaveHref()});
 sv.addEventListener('click',e=>{if(FRAMED){setSaveHref();toast('새 탭에서 열려요. 거기서 고치면 자동 저장돼요');return}e.preventDefault();document.getElementById('xmenu').classList.toggle('on')});
-if(!FRAMED){sv.textContent='파일로 저장 ▾';sv.classList.remove('main');document.querySelector('.bar .hint').textContent='고치면 이 브라우저에 자동 저장돼요 · 같은 링크로 다시 열면 이어서 · 링크 복사 → Aside에 붙이면 반영';const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
+if(!FRAMED){for(const el of [sv,document.getElementById('bPrint')]){el.removeAttribute('target');el.removeAttribute('href');el.setAttribute('role','button')}sv.textContent='파일로 저장 ▾';sv.classList.remove('main');document.querySelector('.bar .hint').textContent='고치면 이 브라우저에 자동 저장돼요 · 같은 링크로 다시 열면 이어서 · 링크 복사 → Aside에 붙이면 반영';const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
 function doSave(){
  document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);
  const clone=document.documentElement.cloneNode(true);
