@@ -308,10 +308,10 @@ async function exportHWP(){
  out.push(hpara('위와 같이 견적합니다.',10,19));
  const sec=F['sec_head.xml']+out.join('')+'</hs:sec>';
  const z=new JSZip();
- z.file('mimetype','application/hwp+zip',{compression:'STORE'});
- z.file('version.xml',F['version.xml']);z.file('Contents/header.xml',F['header.xml']);z.file('Contents/section0.xml',sec);
- z.file('Preview/PrvText.txt',`견적서 ${strip(h.title)} 합계 ${W(total)}원`);z.file('settings.xml',F['settings.xml']);
- z.file('META-INF/container.xml',F['container.xml']);z.file('Contents/content.hpf',F['content.hpf']);z.file('META-INF/manifest.xml',F['manifest.xml']);
+ z.file('mimetype','application/hwp+zip',{compression:'STORE',createFolders:false});
+ z.file('version.xml',F['version.xml'],{createFolders:false});z.file('Contents/header.xml',F['header.xml'],{createFolders:false});z.file('Contents/section0.xml',sec,{createFolders:false});
+ z.file('Preview/PrvText.txt',`견적서 ${strip(h.title)} 합계 ${W(total)}원`,{createFolders:false});z.file('settings.xml',F['settings.xml'],{createFolders:false});
+ z.file('META-INF/container.xml',F['container.xml'],{createFolders:false});z.file('Contents/content.hpf',F['content.hpf'],{createFolders:false});z.file('META-INF/manifest.xml',F['manifest.xml'],{createFolders:false});
  const blob=await z.generateAsync({type:'blob',compression:'DEFLATE',mimeType:'application/hwp+zip'});
  dl(blob,fname('hwpx'));
 }
