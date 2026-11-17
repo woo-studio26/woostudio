@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>견적서 - </title>
 <style>
-@page{size:A4;margin:12mm}
+@page{size:A4;margin:0}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#111;font-size:12.5px}
 .bar{max-width:820px;margin:0 auto 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -49,7 +49,7 @@ tr:hover .ctl,.ctl:focus-within{opacity:1}
 .wrap{padding-left:46px}
 .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;opacity:0;transition:.3s;pointer-events:none}
 .toast.on{opacity:1}
-@media print{.bar,.ctl,.toast{display:none!important}.sheet{border:0;padding:0;max-width:none}.wrap{padding:0}[data-ed]:hover,.ed:hover,.chg{background:none}}
+@media print{html,body{margin:0}.bar,.ctl,.toast{display:none!important}.sheet{border:0;border-radius:0;padding:14mm 13mm;max-width:none;margin:0}.wrap{padding:0}[data-ed]:hover,.ed:hover,.chg{background:none}}
 </style></head><body>
 <div class="wrap">
 <div class="bar">
