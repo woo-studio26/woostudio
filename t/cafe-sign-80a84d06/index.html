@@ -135,7 +135,7 @@ function panelCanvas(pat,hex){
   if(pat==='spandrel'){noise(g,W,H,hex,.05,8000);[H/3,2*H/3].forEach(function(y){g.fillStyle=dk?'rgba(255,255,255,.16)':shade(hex,.72);g.fillRect(0,y-3,W,5);g.fillStyle=dk?'rgba(0,0,0,.5)':shade(hex,1.12);g.fillRect(0,y+2,W,2);});}
   if(pat==='longstone'){var rows=[0,H/2,H];for(var r=0;r<2;r++){var x=-(Math.random()*200);while(x<W){var L=180+Math.random()*320;g.fillStyle=shade(hex,.9+Math.random()*.2);g.fillRect(x+2,rows[r]+2,L-4,H/2-4);x+=L;}}noise(g,W,H,hex,.08,15000);}
   // 판 이음(위 그림자, 아래 하이라이트)
-  g.fillStyle=dk?'rgba(255,255,255,.30)':'rgba(0,0,0,.45)';g.fillRect(0,0,W,4);g.fillStyle=dk?'rgba(0,0,0,.6)':'rgba(255,255,255,.25)';g.fillRect(0,H-3,W,3);
+  g.fillStyle=dk?'rgba(255,255,255,.34)':'rgba(0,0,0,.5)';g.fillRect(0,0,W,9);g.fillStyle=dk?'rgba(0,0,0,.6)':'rgba(255,255,255,.3)';g.fillRect(0,H-4,W,4);
   return c;
 }
 var sidingMeshes=[];
@@ -193,7 +193,7 @@ function resize(){var w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,
 window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
-window.SIGN_PAGE={version:'v4.2',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v4.3',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
