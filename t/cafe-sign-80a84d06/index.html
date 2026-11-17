@@ -55,10 +55,10 @@ body.show table.detail{display:table}
     <div class="cnote">화면 색상은 실제와 다를 수 있어 실물 샘플로 최종 확인합니다.</div>
     <table id="cmp" class="detail">
       <tr><th></th><th>가로 시공</th><th>세로 시공</th></tr>
-      <tr><td>바탕 높이</td><td>1.6m (380 × 4줄 + 위 80 띠)</td><td>1.6m (3m 판 1장에서 1조각만 나옴)</td></tr>
-      <tr><td>사이딩</td><td>25장 → 4박스</td><td>46조각 = 46장 → 6박스</td></tr>
-      <tr><td>부자재</td><td>스타터 6, J채널 8, 아웃코너 1, 조이너 4</td><td>J채널 14 (위·아래·끝), 아웃코너 1</td></tr>
-      <tr><td>자재비</td><td><b>약 102.4만</b> (대림우드)</td><td><b>약 137만</b> (대림우드)</td></tr>
+      <tr><td>바탕 높이</td><td>1.6m (380 × 4줄 + 위 80 띠)</td><td>1.6m = 세로 1.5m + 위 10cm 가로 띠</td></tr>
+      <tr><td>사이딩</td><td>25장 → 4박스</td><td>세로 46조각(판당 2조각) 23장 + 띠 2장 = 25장 → 4박스</td></tr>
+      <tr><td>부자재</td><td>스타터 6, J채널 8, 아웃코너 1, 조이너 4</td><td>J채널 20 (위·아래·띠 경계·끝), 아웃코너 1</td></tr>
+      <tr><td>자재비</td><td><b>약 102.4만</b> (대림우드)</td><td><b>약 117.9만</b> (대림우드)</td></tr>
       <tr><td>물 처리</td><td>제품 설계 방향, 위 판이 아래 판을 덮어 물이 밖으로 흐름</td><td>세로 이음으로 흐른 물이 하단 J채널에 모임 → 배수 구멍 필요</td></tr>
       <tr><td>절단면</td><td>판 끝 8곳(이음·끝)</td><td>41조각 위아래 82곳 → J채널로 다 덮어야 함</td></tr>
       <tr><td>보이는 선</td><td>가로선 3줄 + 3m마다 이음</td><td>380 간격 세로줄 40개, 이음 없음</td></tr>
@@ -181,8 +181,10 @@ function buildSiding(){
   var cc=new THREE.Color(hex), lum=.3*cc.r+.59*cc.g+.11*cc.b;
   var jm=M(lum<.3?'#5a5b5e':shade(hex,.55));
   if(vert){
-    for(var x=380;x<fw;x+=380) sidingMeshes.push(B(x-5,-27,zBot,x+5,-21,zTop,jm));
-    for(var yy=380;yy<sw;yy+=380) sidingMeshes.push(B(-27,yy-5,zBot,-21,yy+5,zTop,jm));
+    var zV=zTop-100;
+    for(var x=380;x<fw;x+=380) sidingMeshes.push(B(x-5,-27,zBot,x+5,-21,zV,jm));
+    for(var yy=380;yy<sw;yy+=380) sidingMeshes.push(B(-27,yy-5,zBot,-21,yy+5,zV,jm));
+    sidingMeshes.push(B(-40,-40,zV-15,fw,0,zV+15,trim)); sidingMeshes.push(B(-40,-40,zV-15,0,sw,zV+15,trim));
   } else {
     for(var k=1;k<=4;k++){var z=zBot+380*k; sidingMeshes.push(B(0,-27,z-5,fw,-21,z+5,jm)); sidingMeshes.push(B(-27,0,z-5,-21,sw,z+5,jm));}
   }
@@ -212,7 +214,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v5.2',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v5.3',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
