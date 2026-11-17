@@ -34,6 +34,14 @@ b.k{color:#0a84ff}
 .detail{display:none}
 body.show .detail{display:block}
 body.show table.detail{display:table}
+.mat{margin-top:14px}
+.mat h3{font-size:14px;margin:14px 0 6px}
+.mi{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
+.mi img{width:56px;height:56px;object-fit:cover;border-radius:8px;background:#f2f2f2}
+.mi b{font-size:13px}.mi .sp{font-size:11.5px;color:#6e6e73;line-height:1.4}
+.mi a{font-size:12px;color:#0a84ff;text-decoration:none}
+.mi .am{text-align:right;font-size:13px;font-weight:600;white-space:nowrap}.mi .am small{display:block;font-weight:400;color:#6e6e73;font-size:11px}
+.mtot{display:flex;justify-content:space-between;font-weight:700;font-size:14px;padding:10px 0}
 .cnote{font-size:11.5px;color:#6e6e73;margin-top:8px}
 </style>
 </head>
@@ -53,6 +61,7 @@ body.show table.detail{display:table}
     <div class="row"><span class="lbl">색상</span><div class="sw" id="colors"></div></div>
     <div class="note detail">케이패널 메탈사이딩(16T × 380 × 3000, 8장/박스) 실제 옵션 이름입니다. 화면 색은 근사치라 실물 샘플로 확인하세요. 원형 간판 Ø1m 자리는 표시용입니다.</div>
     <div class="cnote">화면 색상은 실제와 다를 수 있어 실물 샘플로 최종 확인합니다.</div>
+    <div class="mat detail" id="mat"></div>
     <table id="cmp" class="detail">
       <tr><th></th><th>가로 시공</th><th>세로 시공</th></tr>
       <tr><td>바탕 높이</td><td>1.6m (380 × 4줄 + 위 80 띠)</td><td>1.6m = 세로 1.5m + 위 10cm 가로 띠</td></tr>
@@ -195,10 +204,29 @@ function buildSiding(){
    B(fw-35,-40,zBot-bot,fw,0,zb1,trim),B(-40,sw-35,zBot-bot,0,sw,zb1,trim),
    B(-45,-45,zBot-bot,0,0,zb1,trim)].forEach(function(m){sidingMeshes.push(m);});
   // 사이딩 아래 남는 벽 (철거 후 바탕 노출 방지 표시용 = 기존 벽색)
+  drawMat();
   document.getElementById('tag').textContent=(vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
   var cells=document.querySelectorAll('#cmp tr'); cells.forEach(function(tr){var t=tr.children; if(t.length===3){t[1].className=vert?'':'on'; t[2].className=vert?'on':'';}});
 }
 
+
+// ---- mg용 자재 목록 (#detail) ----
+var DW='https://daelimwood.com/product/';
+var MI={
+ panel:['메탈사이딩 스타코 시리즈','16 × 380 × 3000 · 1.14㎡/장 · 8장/박스','https://daelimwood.com/web/product/big/202411/068e0fe5ec43710c087783e89da58300.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%8A%A4%ED%83%80%EC%BD%94-%EC%8B%9C%EB%A6%AC%EC%A6%88-8%EC%9E%A5box/7538/category/433/display/1/','대림우드',162000,'박스'],
+ starter:['스타터','8 × 35 × 3000 · 맨 아랫줄 받침','https://daelimwood.com/web/product/big/202610/40eca6155c988060c47ce226bc06786f.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%8A%A4%ED%83%80%ED%84%B0-8x35x3000mm-%EC%99%B8%EB%B2%BD-%ED%95%98%EB%B6%80-%EB%A7%88%EA%B0%90-%EB%B6%80%EC%9E%90%EC%9E%AC/3954/category/433/display/1/','대림우드',8000,'본'],
+ j:['J채널 (화이트)','35 × 50 × 3000 · 절단면 덮기','https://daelimwood.com/web/product/big/202610/da97a75a8f164dad852ff86d754eba0c.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EB%B6%80%EC%9E%90%EC%9E%AC-j%EC%B1%84%EB%84%90/3955/category/433/display/1/','대림우드',22000,'본'],
+ corner:['아웃코너 (화이트)','40 × 40 × 3000 · 모서리','https://daelimwood.com/web/product/big/202610/89b61bc1e939c10d32850eceae94e6ac.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EB%B6%80%EC%9E%90%EC%9E%AC-%EC%95%84%EC%9B%83%EC%BD%94%EB%84%88/3956/category/433/display/1/','대림우드',32000,'본'],
+ joiner:['아이조이너 결합형 (화이트)','27 × 40 × 3000 · 3m 판 이음','https://daelimwood.com/web/product/big/202610/2479976249820c41a1142f898285de33.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%95%84%EC%9D%B4%EC%A1%B0%EC%9D%B4%EB%84%88%EA%B2%B0%ED%95%A9%ED%98%95/3958/category/433/display/1/','대림우드',15400,'본'],
+ sil:['KCC 변성실리콘 MS1000','이음·화강석 밑·볼트 구멍 방수','https://shop-phinf.pstatic.net/20260602_40/1780385277940VhvCU_JPEG/2907307975742063_1278551654.jpg?type=o1000','https://smartstore.naver.com/kdongcnc/products/7722106267','극동씨앤씨',3900,'개'],
+ anchor:['칼블럭 + 접시피스 M6×30','Ø6 · 50개/세트 · 벽 직접 고정','https://shop-phinf.pstatic.net/20260606_40/1780714061751I9YSW_PNG/56939035620265024_1843227930.png?type=o1000','https://smartstore.naver.com/ijbort/products/13624329889','앙카팩토리',2000,'세트']
+};
+var MQ={h:[['panel',4],['starter',6],['j',8],['corner',1],['joiner',4],['sil',12],['anchor',6]],
+        v:[['panel',4],['j',20],['corner',1],['sil',12],['anchor',6]]};
+function drawMat(){var el=document.getElementById('mat'); if(!el)return; var k=state.orient,t=0,h='<h3>자재 · 구매처 ('+(k==='h'?'가로 시공':'세로 최적안')+', 전면 5m · 측면 12m · 높이 1.6m)</h3>';
+ MQ[k].forEach(function(q){var it=MI[q[0]],a=it[5]*q[1];t+=a;h+='<div class="mi"><img src="'+it[2]+'" alt=""><div><b>'+it[0]+'</b><div class="sp">'+it[1]+'</div><a href="'+it[3]+'" target="_blank" rel="noopener">'+it[4]+' 상품 보기 ↗</a></div><div class="am">'+a.toLocaleString('ko-KR')+'원<small>'+it[5].toLocaleString('ko-KR')+' × '+q[1]+it[6]+'</small></div></div>';});
+ h+='<div class="mtot"><span>합계 (VAT 포함, 배송비 별도)</span><span>'+t.toLocaleString('ko-KR')+'원</span></div><div class="note" style="display:block">대림우드 상품은 착불 화물(경기 이천 출고). 사이딩 색상 옵션 없음(흰색), 부자재는 화이트 선택. 문의 대림우드 1544-1660.</div>';
+ el.innerHTML=h;}
 // ---- UI ----
 var patBox=document.getElementById('pattern');
 Object.keys(PATTERNS).forEach(function(k){var b=document.createElement('button');b.textContent=PATTERNS[k].name;b.dataset.v=k;if(k===state.pat)b.className='on';patBox.appendChild(b);});
@@ -214,7 +242,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v5.3',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v5.4',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
