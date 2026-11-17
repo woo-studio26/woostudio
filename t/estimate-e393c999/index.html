@@ -123,6 +123,7 @@ if(HS&&HS.s){S=HS.s}else{try{S=JSON.parse(ls.get(KEY))}catch(e){}}
 if(!S||!S.rows) S=JSON.parse(ORIG);
 S.h=S.h||{};
 const H0=INIT.h||{};
+if(H0.title)document.title='견적서 - '+H0.title.replace(/<[^>]+>/g,'');
 const base=r=>({n:r.n,u:r.u,q:r.q,p:r.p,b:r.b});
 S.rows.forEach(r=>{if(!r._o)r._o=base(r)});
 const W=x=>Math.round(x).toLocaleString('ko-KR');
