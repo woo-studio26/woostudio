@@ -200,10 +200,10 @@ document.getElementById('bAdd').onclick=()=>{push();const idx=S.rows.findIndex(r
 document.getElementById('bReset').onclick=()=>{push();S=JSON.parse(ORIG);S.h={};S.rows.forEach(r=>r._o=base(r));document.querySelectorAll('[data-h]').forEach(el=>{if(H0[el.dataset.h]!=null)el.innerHTML=H0[el.dataset.h]});save();render();toast('원본으로 돌림 · 되돌리기 가능')};
 const FRAMED=(()=>{try{return window.self!==window.top}catch(e){return true}})();
 const sv=document.getElementById('bSave');
-const setSaveHref=()=>{sv.href=PRINT_URL+'#d='+encodeURIComponent(enc(snap()))};
+const setSaveHref=()=>{sv.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))};
 sv.addEventListener('mousedown',()=>{if(FRAMED)setSaveHref()});
 sv.addEventListener('click',e=>{if(FRAMED){setSaveHref();toast('새 탭에서 열려요. 거기서 저장·인쇄하고 주소를 Aside에 붙여 주세요');return}e.preventDefault();doSave()});
-if(!FRAMED){const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
+if(!FRAMED){const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
 function doSave(){
  document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);
  const clone=document.documentElement.cloneNode(true);
@@ -216,10 +216,10 @@ function doSave(){
 }
 function snap(){document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);return {init:INIT,s:S}}
 const pa=document.getElementById('bPrint');
-pa.addEventListener('mousedown',()=>{pa.href=PRINT_URL+'#d='+encodeURIComponent(enc(snap()))+'&p=1'});
+pa.addEventListener('mousedown',()=>{pa.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))+'&p=1'});
 pa.addEventListener('click',e=>{let framed=false;try{framed=window.self!==window.top}catch(x){framed=true}
  if(!framed){e.preventDefault();window.print();return}
- pa.href=PRINT_URL+'#d='+encodeURIComponent(enc(snap()))+'&p=1';toast('새 탭에서 인쇄 창이 열려요')});
+ pa.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))+'&p=1';toast('새 탭에서 인쇄 창이 열려요')});
 if(AUTOPRINT){setTimeout(()=>window.print(),600)}
 render();
 </script></body></html>
