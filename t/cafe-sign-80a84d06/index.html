@@ -242,7 +242,7 @@ body.show table.detail{display:table}
 <line x1="816" y1="772" x2="915.0" y2="772" stroke="#888" stroke-width="1"/>
 <line x1="915.0" y1="772" x2="1081" y2="786" stroke="#888" stroke-width="1" marker-end="url(#ar)"/>
 </svg></div>
-      <a href="detail.svg" target="_blank" rel="noopener" style="font-size:12px;color:#0a84ff;text-decoration:none">도면 크게 보기 ↗</a></div>
+      <a href="detail.svg" target="_blank" rel="noopener" style="font-size:12px;color:#0a84ff;text-decoration:none">도면 크게 보기 ↗</a> · <a href="build.html" target="_blank" rel="noopener" style="font-size:12px;color:#0a84ff;text-decoration:none;font-weight:600">3D 시공 순서 보기 (자재·부자재) ↗</a></div>
     <table id="cmp" class="detail">
       <tr><th></th><th>가로 시공</th><th>세로 시공</th></tr>
       <tr><td>바탕 높이</td><td>1.6m (380 × 4줄 + 위 80 띠)</td><td>1.6m = 세로 1.5m + 위 10cm 가로 띠</td></tr>
@@ -428,7 +428,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v5.6',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v5.7',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
