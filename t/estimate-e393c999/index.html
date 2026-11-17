@@ -52,6 +52,15 @@ tr:hover .ctl,.ctl:focus-within{opacity:1}
 .wrap{padding-left:46px}
 .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;opacity:0;transition:.3s;pointer-events:none}
 .toast.on{opacity:1}
+#xmenu{display:none;position:absolute;right:0;top:34px;z-index:20;background:#fff;border:1px solid #bbb;border-radius:8px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.12);flex-direction:column;min-width:150px}
+#xmenu.on{display:flex}
+#xmenu button{border:0;text-align:left;padding:8px 10px;border-radius:5px;background:#fff}
+#xmenu button:hover{background:#f2f2f2}
+.bar{position:relative}
+body.exporting .bar,body.exporting .ctl,body.exporting .toast{display:none!important}
+body.exporting .sheet{width:794px;max-width:none;border:0;border-radius:0;padding:53px 49px;margin:0}
+body.exporting .wrap{padding:0}
+body.exporting [data-ed],body.exporting .ed,body.exporting .chg{background:none!important;box-shadow:none!important}
 *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 @media print{html,body{margin:0}table{border:0}.items th,.items td,.sup td,.sup th{border:.16mm solid #000}.items tr,.sup tr{break-inside:avoid}.bar,.ctl,.toast{display:none!important}.sheet{border:0;border-radius:0;padding:14mm 13mm;max-width:none;margin:0}.wrap{padding:0}[data-ed]:hover,.ed:hover,.chg{background:none}}
 </style></head><body>
@@ -208,8 +217,8 @@ const FRAMED=(()=>{try{return window.self!==window.top}catch(e){return true}})()
 const sv=document.getElementById('bSave');
 const setSaveHref=()=>{sv.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))};
 sv.addEventListener('mousedown',()=>{if(FRAMED)setSaveHref()});
-sv.addEventListener('click',e=>{if(FRAMED){setSaveHref();toast('새 탭에서 열려요. 거기서 저장·인쇄하고 주소를 Aside에 붙여 주세요');return}e.preventDefault();doSave()});
-if(!FRAMED){sv.textContent='파일로 저장';sv.classList.remove('main');document.querySelector('.bar .hint').textContent='고치면 이 브라우저에 자동 저장돼요 · 같은 링크로 다시 열면 이어서 · 링크 복사 → Aside에 붙이면 반영';const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
+sv.addEventListener('click',e=>{if(FRAMED){setSaveHref();toast('새 탭에서 열려요. 거기서 고치면 자동 저장돼요');return}e.preventDefault();document.getElementById('xmenu').classList.toggle('on')});
+if(!FRAMED){sv.textContent='파일로 저장 ▾';sv.classList.remove('main');document.querySelector('.bar .hint').textContent='고치면 이 브라우저에 자동 저장돼요 · 같은 링크로 다시 열면 이어서 · 링크 복사 → Aside에 붙이면 반영';const bl=document.getElementById('bLink');bl.style.display='';bl.onclick=async()=>{const u=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()));try{await navigator.clipboard.writeText(u);toast('링크 복사됨 · Aside 채팅에 붙여 넣으면 그대로 반영')}catch(e){prompt('이 주소를 복사해서 Aside에 붙여 넣으세요',u)}}}
 function doSave(){
  document.querySelectorAll('[data-h]').forEach(el=>S.h[el.dataset.h]=el.innerHTML);
  const clone=document.documentElement.cloneNode(true);
@@ -226,6 +235,93 @@ pa.addEventListener('mousedown',()=>{pa.href=PRINT_URL+'?v='+Date.now()+'#d='+en
 pa.addEventListener('click',e=>{let framed=false;try{framed=window.self!==window.top}catch(x){framed=true}
  if(!framed){e.preventDefault();window.print();return}
  pa.href=PRINT_URL+'?v='+Date.now()+'#d='+encodeURIComponent(enc(snap()))+'&p=1';toast('새 탭에서 인쇄 창이 열려요')});
+// ===== 파일로 내보내기 (PDF · JPG · 한글 · HTML) =====
+const LIBS={h2c:'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',pdf:'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',zip:'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js'};
+function loadJS(u){return new Promise((ok,no)=>{if(document.querySelector(`script[src="${u}"]`)){ok();return}const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=()=>no(new Error('라이브러리 로드 실패'));document.head.appendChild(s)})}
+function fname(ext){const t=(document.querySelector('[data-h="title"]').textContent||'견적서').replace(/[\\/:*?"<>|]/g,'').trim();const d=new Date();return `견적서_${t}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.${ext}`}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+async function sheetCanvas(){
+ await loadJS(LIBS.h2c);
+ document.body.classList.add('exporting');
+ try{ if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+  return await html2canvas(document.getElementById('sheet'),{scale:2.5,backgroundColor:'#ffffff',useCORS:true});
+ } finally { document.body.classList.remove('exporting') }
+}
+async function exportJPG(){const c=await sheetCanvas();c.toBlob(b=>dl(b,fname('jpg')),'image/jpeg',0.95)}
+async function exportPDF(){
+ const c=await sheetCanvas(); await loadJS(LIBS.pdf);
+ const {jsPDF}=window.jspdf; const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+ const pw=210,ph=297; const ih=c.height*pw/c.width;
+ const img=c.toDataURL('image/jpeg',0.95);
+ if(ih<=ph){pdf.addImage(img,'JPEG',0,0,pw,ih)}
+ else{ // 여러 쪽
+  const pagePx=Math.floor(c.width*ph/pw); let y=0,first=true;
+  while(y<c.height){const h=Math.min(pagePx,c.height-y);const pc=document.createElement('canvas');pc.width=c.width;pc.height=h;const cx=pc.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,pc.width,h);cx.drawImage(c,0,y,c.width,h,0,0,c.width,h);
+   if(!first)pdf.addPage();pdf.addImage(pc.toDataURL('image/jpeg',0.95),'JPEG',0,0,pw,h*pw/c.width);first=false;y+=h}
+ }
+ dl(pdf.output('blob'),fname('pdf'));
+}
+// --- 한글(.hwpx) ---
+const HX=PRINT_URL+'hwpx/';
+const xe=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const strip=h=>{const d=document.createElement('div');d.innerHTML=String(h||'').replace(/<br\s*\/?>/gi,'\n');return d.textContent.trim()};
+const MM=283.465, TW=42520; let _hid=1000;
+function hpara(text,cpr=7,ppr=17){const parts=String(text).split('\n');const t=parts.map((p,k)=>k===0?`<hp:t>${xe(p)}</hp:t>`:`<hp:t><hp:lineBreak/>${xe(p)}</hp:t>`).join('');return `<hp:p id="0" paraPrIDRef="${ppr}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="${cpr}">${t}</hp:run></hp:p>`}
+function hcell(col,row,w,h,paras,bf=3,cs=1,rs=1,va='CENTER'){return `<hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" borderFillIDRef="${bf}"><hp:subList id="" textDirection="HORIZONTAL" lineWrap="BREAK" vertAlign="${va}" linkListIDRef="0" linkListNextIDRef="0" textWidth="0" textHeight="0" hasTextRef="0" hasNumRef="0">${paras.join('')}</hp:subList><hp:cellAddr colAddr="${col}" rowAddr="${row}"/><hp:cellSpan colSpan="${cs}" rowSpan="${rs}"/><hp:cellSz width="${w}" height="${h}"/><hp:cellMargin left="425" right="425" top="141" bottom="141"/></hp:tc>`}
+function htable(trs,nc,nr,w,h,bf=3){return `<hp:tbl id="${++_hid}" zOrder="0" numberingType="TABLE" textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" pageBreak="CELL" repeatHeader="1" rowCnt="${nr}" colCnt="${nc}" cellSpacing="0" borderFillIDRef="${bf}" noAdjust="0"><hp:sz width="${w}" widthRelTo="ABSOLUTE" height="${h}" heightRelTo="ABSOLUTE" protect="0"/><hp:pos treatAsChar="0" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/><hp:outMargin left="0" right="0" top="0" bottom="283"/><hp:inMargin left="425" right="425" top="141" bottom="141"/>${trs.join('')}</hp:tbl>`}
+const tpara=t=>`<hp:p id="0" paraPrIDRef="17" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="7">${t}<hp:t/></hp:run></hp:p>`;
+async function exportHWP(){
+ await loadJS(LIBS.zip);
+ const names=['header.xml','sec_head.xml','secpr.xml','version.xml','settings.xml','content.hpf','container.xml','manifest.xml'];
+ const F={};await Promise.all(names.map(async n=>{const r=await fetch(HX+n);if(!r.ok)throw new Error(n+' 못 받음');F[n]=await r.text()}));
+ const sn=snap(); const h=Object.assign({},H0,sn.s.h); const rows=S.rows, rate=S.rate, vat=S.vat;
+ let direct=0,ex=0;rows.forEach(r=>{if(r.t==='item'||r.t==='sub')direct+=r.q*r.p;if(r.t==='ex')ex+=r.q*r.p});
+ const profit=rate==null?0:Math.round(direct*rate/100), supply=direct+profit+ex, vv=vat==null?0:Math.round(supply*vat/100), total=supply+vv;
+ const out=[];
+ const title=htable(['<hp:tr>'+hcell(0,0,TW,3400,[hpara(strip(h.doc||'견적서').replace(/\s/g,'').split('').join(' '),9,20)],7)+'</hp:tr>'],1,1,TW,3400,7);
+ out.push(`<hp:p id="0" paraPrIDRef="17" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="7">${F['secpr.xml']}<hp:ctrl><hp:colPr id="" type="NEWSPAPER" layout="LEFT" colCount="1" sameSz="1" sameGap="0"/></hp:ctrl>${title}<hp:t/></hp:run></hp:p>`);
+ const cw=[18,54,8,18].map(x=>Math.round(x*MM));cw.push(TW-cw.reduce((a,b)=>a+b,0));const rh=Math.round(7.2*MM);
+ const dateTxt=strip(document.querySelector('[data-h="date"]').innerHTML);
+ const L=[['수 신',strip(h.to)],['견 적 일',dateTxt],['공 사 명',strip(h.title)],['공사장소',strip(h.place)],['유효기간',strip(h.valid)]];
+ const R=[['등록번호',strip(h.regno)],['상호 / 대표',`${strip(h.co)}  /  ${strip(h.ceo)}`],['주 소',strip(h.addr)],['업태 / 종목',[strip(h.biz),strip(h.item)].filter(Boolean).join(' / ')],['연 락 처',strip(h.tel)]];
+ let trs=[];for(let i=0;i<5;i++){let c=hcell(0,i,cw[0],rh,[hpara(L[i][0],8,18)],4)+hcell(1,i,cw[1],rh,[hpara(L[i][1],i===2?8:7,17)]);if(i===0)c+=hcell(2,0,cw[2],rh*5,[hpara('공\n급\n자',8,18)],4,1,5);c+=hcell(3,i,cw[3],rh,[hpara(R[i][0],8,18)],4)+hcell(4,i,cw[4],rh,[hpara(R[i][1],7,17)]);trs.push('<hp:tr>'+c+'</hp:tr>')}
+ out.push(tpara(htable(trs,5,5,TW,rh*5)));
+ const kw=Math.round(40*MM),th=Math.round(10*MM);
+ out.push(tpara(htable(['<hp:tr>'+hcell(0,0,kw,th,[hpara(vat==null?'합계금액':'합계금액 (VAT 포함)',11,18)],8)+hcell(1,0,TW-kw,th,[hpara(`일금 ${kor(total)}원정  ( ₩${W(total)} )`,11,17)],6)+'</hp:tr>'],2,1,TW,th,6)));
+ const ws=[9,55,11,12,20,22,21].map(x=>Math.round(x*MM));ws[1]+=TW-ws.reduce((a,b)=>a+b,0);const rh2=Math.round(6.6*MM);
+ trs=[];const C=18,Lf=17,Rt=19;
+ const row=(vals,cp,pp,bf=3)=>{const r=trs.length;return '<hp:tr>'+vals.map((v,k)=>hcell(k,r,ws[k],rh2,[hpara(v,cp[k],pp[k])],bf)).join('')+'</hp:tr>'};
+ const A7=a=>Array(7).fill(a), al=[C,Lf,C,Rt,Rt,Rt,C];
+ trs.push(row(['No','품명 / 내용','단위','수량','단가','금액','비고'],A7(8),A7(C),4));
+ let no=0,gi=null;const gs={};rows.forEach((r,i)=>{if(r.t==='grp'){gi=i;gs[i]=0}else if(r.t==='sub'&&gi!==null)gs[gi]+=r.q*r.p;else if(r.t!=='sub')gi=null});
+ rows.forEach((r,i)=>{if(r.t==='ex')return;if(r.t==='grp'){no++;trs.push(row([String(no),r.n,'','','',W(gs[i]||0),r.b||''],A7(8),al));return}
+  if(r.t!=='sub')no++;trs.push(row([r.t==='sub'?'':String(no),(r.t==='sub'?'   · ':'')+r.n,r.u||'',W(r.q),W(r.p),W(r.q*r.p),r.b||''],A7(7),al))});
+ trs.push(row(['','직접공사비 소계','','','',W(direct),''],A7(8),al,4));
+ if(rate!=null){no++;trs.push(row([String(no),`${INIT.profitLabel||'기업이윤'} (직접공사비 × ${rate}%)`,'%',String(rate),'',W(profit),''],A7(7),al))}
+ rows.filter(r=>r.t==='ex').forEach(r=>{no++;trs.push(row([String(no),r.n,r.u||'',W(r.q),W(r.p),W(r.q*r.p),r.b||''],A7(7),al))});
+ trs.push(row(['','공급가액','','','',W(supply),''],A7(8),al,4));
+ if(vat!=null)trs.push(row(['',`부가가치세 (${vat}%)`,'','','',W(vv),''],A7(7),al));
+ trs.push(row(['','합    계','','','',W(total),''],A7(8),al,5));
+ out.push(tpara(htable(trs,7,trs.length,TW,rh2*trs.length)));
+ const note=strip(document.querySelector('[data-h="note"]').innerHTML);
+ if(note){const ps=note.split('\n').map(l=>hpara(l,7,17));const nh=Math.round((ps.length*5+4)*MM);out.push(tpara(htable(['<hp:tr>'+hcell(0,0,TW,nh,ps,3,1,1,'TOP')+'</hp:tr>'],1,1,TW,nh)))}
+ out.push(hpara('위와 같이 견적합니다.',10,19));
+ const sec=F['sec_head.xml']+out.join('')+'</hs:sec>';
+ const z=new JSZip();
+ z.file('mimetype','application/hwp+zip',{compression:'STORE'});
+ z.file('version.xml',F['version.xml']);z.file('Contents/header.xml',F['header.xml']);z.file('Contents/section0.xml',sec);
+ z.file('Preview/PrvText.txt',`견적서 ${strip(h.title)} 합계 ${W(total)}원`);z.file('settings.xml',F['settings.xml']);
+ z.file('META-INF/container.xml',F['container.xml']);z.file('Contents/content.hpf',F['content.hpf']);z.file('META-INF/manifest.xml',F['manifest.xml']);
+ const blob=await z.generateAsync({type:'blob',compression:'DEFLATE',mimeType:'application/hwp+zip'});
+ dl(blob,fname('hwpx'));
+}
+// 메뉴
+(function(){const m=document.createElement('div');m.id='xmenu';m.innerHTML='<button data-x="pdf">PDF</button><button data-x="jpg">JPG 이미지</button><button data-x="hwp">한글 (HWPX)</button><button data-x="html">HTML</button>';document.querySelector('.bar').appendChild(m);
+ m.addEventListener('click',async e=>{const x=e.target.dataset.x;if(!x)return;m.classList.remove('on');toast('만드는 중…');
+  try{if(x==='pdf')await exportPDF();else if(x==='jpg')await exportJPG();else if(x==='hwp')await exportHWP();else doSave();toast('저장됨 (다운로드 폴더)')}catch(err){toast('실패: '+err.message)}});
+ document.addEventListener('click',e=>{if(!e.target.closest('#xmenu')&&e.target.id!=='bSave')m.classList.remove('on')});
+})();
+
 if(AUTOPRINT){setTimeout(()=>window.print(),600)}
 render();
 </script></body></html>
