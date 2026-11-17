@@ -203,7 +203,7 @@ Object.keys(PATTERNS).forEach(function(k){var b=document.createElement('button')
 function drawColors(){var box=document.getElementById('colors');box.innerHTML='';PATTERNS[state.pat].colors.forEach(function(c,i){var b=document.createElement('button');if(i===state.color)b.className='on';b.innerHTML='<i style="background:'+c[2]+'"></i><span>'+c[0]+(SHOW?'<br>'+c[1]:'')+'</span>';b.onclick=function(){state.color=i;drawColors();buildSiding();};box.appendChild(b);});}
 function seg(id,key,after){var el=document.getElementById(id);el.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state[key]=b.dataset.v;el.querySelectorAll('button').forEach(function(x){x.className=x===b?'on':'';});if(after)after();buildSiding();});}
 seg('orient','orient'); seg('pattern','pat',function(){state.color=0;drawColors();});
-var CAMS={iso:[[-8.5,6.5,9.5],[1.5,3.2,-3.5]],front:[[2.3,3.2,12],[2.3,3.2,0]],side:[[-14,3.3,-5.5],[0,3.3,-5.5]],corner:[[-2.3,3.4,2.4],[0.4,3.6,-0.4]]};
+var CAMS={iso:[[-10.5,7.2,11.5],[2.2,3.2,-4.2]],front:[[2.5,3.2,14],[2.5,3.2,0]],side:[[-16,3.3,-6],[0,3.3,-6]],corner:[[-2.3,3.4,2.4],[0.4,3.6,-0.4]]};
 function cam(k){var c=CAMS[k];camera.position.set(c[0][0],c[0][1],c[0][2]);controls.target.set(c[1][0],c[1][1],c[1][2]);controls.update();}
 document.querySelectorAll('.cams button').forEach(function(b){b.onclick=function(){cam(b.dataset.cam);};});
 
@@ -212,7 +212,7 @@ window.addEventListener('resize',resize);
 drawColors(); buildSiding(); cam('iso'); resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v5.0',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v5.1',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
