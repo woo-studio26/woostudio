@@ -31,9 +31,10 @@ function tabs(){const t=document.getElementById('tabs');t.innerHTML='';SITES.for
 function render(){tabs();const s=SITES[cur],a=st.a[s.code]||{},m=document.getElementById('m');
 m.innerHTML=`<h2>${s.code} ${s.title}</h2><div class="hint">사진 번호는 모아보기 칸 안 숫자. 사진 눌러서 크게 보기. 모르는 건 비워도 됨. 입력하면 이 폰에 자동 저장.</div><div class="imgs">${s.imgs.map(u=>`<a href="${u}" target="_blank"><img loading="lazy" src="${u}"></a>`).join('')}</div>`+
 s.qs.map((q,j)=>`<div class="q"><p><b>${j+1}.</b> ${q.replace(/</g,'&lt;')}</p><textarea data-j="${j}" placeholder="답 (받아쓰기 OK)">${(a[j]||'').replace(/</g,'&lt;')}</textarea></div>`).join('')+
-`<div class="q"><p><b>기타.</b> 더 하고 싶은 말</p><textarea data-j="etc">${(a.etc||'').replace(/</g,'&lt;')}</textarea></div><div id="msg">${st.sent[s.code]?'보냄: '+st.sent[s.code]:''}</div><div class="bar"><button class="sub" id="nx">다음 현장</button><button id="send">이 현장 답 보내기</button></div>`;
+`<div class="q"><p><b>기타.</b> 더 하고 싶은 말</p><textarea data-j="etc">${(a.etc||'').replace(/</g,'&lt;')}</textarea></div><div id="msg">${st.sent[s.code]?'보냄: '+st.sent[s.code]:''}</div><div class="bar"><button class="sub" id="nx">다음 현장</button><button class="sub" id="cp">답 복사</button><button id="send">이 현장 답 보내기</button></div>`;
 m.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{(st.a[s.code]=st.a[s.code]||{})[t.dataset.j]=t.value;save()});
 document.getElementById('nx').onclick=()=>{cur=(cur+1)%SITES.length;location.hash=SITES[cur].code;render();scrollTo(0,0)};
+document.getElementById('cp').onclick=async()=>{const a=st.a[s.code]||{};const txt=s.code+' '+s.title+'\n'+s.qs.map((q,j)=>`${j+1}. ${a[j]||''}`).join('\n')+(a.etc?`\n기타. ${a.etc}`:'');try{await navigator.clipboard.writeText(txt);document.getElementById('msg').textContent='복사됨. 슬랙에 붙여넣어도 돼'}catch(e){prompt('복사해서 붙여넣기',txt)}};
 document.getElementById('send').onclick=async e=>{const a=st.a[s.code]||{};const txt=s.qs.map((q,j)=>`${j+1}. ${a[j]||''}`).join('\n')+(a.etc?`\n기타. ${a.etc}`:'');
 if(!Object.values(a).some(v=>v&&v.trim())){alert('답이 비어 있어');return}
 e.target.disabled=true;e.target.textContent='보내는 중…';
