@@ -20,6 +20,9 @@ textarea{width:100%;box-sizing:border-box;min-height:64px;font-size:16px;padding
 .bar button{flex:1;padding:14px;font-size:16px;border:0;border-radius:8px;background:#222;color:#fff;font-weight:700}
 .bar button.sub{background:#ddd;color:#222;flex:.5}
 #msg{font-size:13px;color:#2a7;min-height:18px}
+.mic{margin-top:6px;width:100%;padding:12px;font-size:16px;border:0;border-radius:8px;background:#f5b700;color:#222;font-weight:700}
+.mic.rec{background:#d33;color:#fff;animation:p 1s infinite}@keyframes p{50%{opacity:.6}}
+.live{font-size:14px;color:#888;min-height:0;margin-top:4px}
 </style></head><body>
 <header><h1>현장 사진 질문지 (블로그·당근용)</h1><div id="tabs"></div></header>
 <main id="m"></main>
@@ -28,10 +31,23 @@ const SITES=[{"code": "c15", "title": "봉무동 주택 화장실", "qs": ["어�
 let st=JSON.parse(localStorage.getItem(KEY)||'{"a":{},"sent":{}}'), cur=0;
 const save=()=>localStorage.setItem(KEY,JSON.stringify(st));
 function tabs(){const t=document.getElementById('tabs');t.innerHTML='';SITES.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+s.title.replace(/\(.*\)/,'');if(i==cur)b.className='on';if(st.sent[s.code])b.classList.add('done');b.onclick=()=>{cur=i;location.hash=s.code;render();scrollTo(0,0)};t.appendChild(b)});t.children[cur].scrollIntoView({inline:'center',block:'nearest'})}
-function render(){tabs();const s=SITES[cur],a=st.a[s.code]||{},m=document.getElementById('m');
-m.innerHTML=`<h2>${s.code} ${s.title}</h2><div class="hint">사진 번호는 모아보기 칸 안 숫자. 사진 눌러서 크게 보기. 모르는 건 비워도 됨. 입력하면 이 폰에 자동 저장.</div><div class="imgs">${s.imgs.map(u=>`<a href="${u}" target="_blank"><img loading="lazy" src="${u}"></a>`).join('')}</div>`+
-s.qs.map((q,j)=>`<div class="q"><p><b>${j+1}.</b> ${q.replace(/</g,'&lt;')}</p><textarea data-j="${j}" placeholder="답 (받아쓰기 OK)">${(a[j]||'').replace(/</g,'&lt;')}</textarea></div>`).join('')+
-`<div class="q"><p><b>기타.</b> 더 하고 싶은 말</p><textarea data-j="etc">${(a.etc||'').replace(/</g,'&lt;')}</textarea></div><div id="msg">${st.sent[s.code]?'보냄: '+st.sent[s.code]:''}</div><div class="bar"><button class="sub" id="nx">다음 현장</button><button class="sub" id="cp">답 복사</button><button id="send">이 현장 답 보내기</button></div>`;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const MIC=j=>SR?`<button type="button" class="mic" data-j="${j}">🎤 말로 답하기</button><div class="live" data-live="${j}"></div>`:'';
+let rec=null,recBtn=null;
+function stopMic(){if(rec){try{rec.stop()}catch(e){}}}
+function toggleMic(b,s){if(recBtn===b){stopMic();return}stopMic();
+ const j=b.dataset.j,ta=document.querySelector(`textarea[data-j="${j}"]`),live=document.querySelector(`[data-live="${j}"]`);
+ const r=new SR();r.lang='ko-KR';r.continuous=true;r.interimResults=true;let base=ta.value;
+ r.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t;else tmp+=t}
+  if(fin){base=(base?base.trimEnd()+' ':'')+fin.trim();ta.value=base;(st.a[s.code]=st.a[s.code]||{})[j]=base;save()}live.textContent=tmp};
+ r.onerror=e=>{if(e.error=='not-allowed')alert('마이크 권한을 허용해줘 (설정 > Safari > 마이크)');else if(e.error!='no-speech'&&e.error!='aborted')alert('음성 인식 오류: '+e.error)};
+ r.onend=()=>{b.classList.remove('rec');b.textContent='🎤 말로 답하기';live.textContent='';if(rec===r){rec=null;recBtn=null}};
+ rec=r;recBtn=b;b.classList.add('rec');b.textContent='■ 듣는 중… 누르면 멈춤';r.start()}
+function render(){stopMic();tabs();const s=SITES[cur],a=st.a[s.code]||{},m=document.getElementById('m');
+m.innerHTML=`<h2>${s.code} ${s.title}</h2><div class="hint">사진 번호는 모아보기 칸 안 숫자. 사진 눌러서 크게 보기. 모르는 건 비워도 됨. 🎤 누르고 말하면 글자로 들어감(다시 누르면 멈춤). 입력하면 이 폰에 자동 저장.</div><div class="imgs">${s.imgs.map(u=>`<a href="${u}" target="_blank"><img loading="lazy" src="${u}"></a>`).join('')}</div>`+
+s.qs.map((q,j)=>`<div class="q"><p><b>${j+1}.</b> ${q.replace(/</g,'&lt;')}</p><textarea data-j="${j}" placeholder="답 (받아쓰기 OK)">${(a[j]||'').replace(/</g,'&lt;')}</textarea>${MIC(j)}</div>`).join('')+
+`<div class="q"><p><b>기타.</b> 더 하고 싶은 말</p><textarea data-j="etc">${(a.etc||'').replace(/</g,'&lt;')}</textarea>${MIC('etc')}</div><div id="msg">${st.sent[s.code]?'보냄: '+st.sent[s.code]:''}</div><div class="bar"><button class="sub" id="nx">다음 현장</button><button class="sub" id="cp">답 복사</button><button id="send">이 현장 답 보내기</button></div>`;
+m.querySelectorAll('.mic').forEach(b=>b.onclick=()=>toggleMic(b,s));
 m.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{(st.a[s.code]=st.a[s.code]||{})[t.dataset.j]=t.value;save()});
 document.getElementById('nx').onclick=()=>{cur=(cur+1)%SITES.length;location.hash=SITES[cur].code;render();scrollTo(0,0)};
 document.getElementById('cp').onclick=async()=>{const a=st.a[s.code]||{};const txt=s.code+' '+s.title+'\n'+s.qs.map((q,j)=>`${j+1}. ${a[j]||''}`).join('\n')+(a.etc?`\n기타. ${a.etc}`:'');try{await navigator.clipboard.writeText(txt);document.getElementById('msg').textContent='복사됨. 슬랙에 붙여넣어도 돼'}catch(e){prompt('복사해서 붙여넣기',txt)}};
