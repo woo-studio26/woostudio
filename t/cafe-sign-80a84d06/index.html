@@ -34,6 +34,7 @@ b.k{color:#0a84ff}
 .detail{display:none}
 body.show .detail{display:block}
 body.show table.detail{display:table}
+.mode.detail{display:none}body.show .mode.detail{display:flex}
 .mat{margin-top:14px}
 .mat h3{font-size:14px;margin:14px 0 6px}
 .mi{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
@@ -73,7 +74,7 @@ body.show table.detail{display:table}
     <div class="slegend"><span><i style="background:#e8d79a"></i>자재</span><span><i style="background:#ff7a1a"></i>부자재</span><span><i style="background:#d63b3b"></i>피스</span><span><i style="background:#2f80ed"></i>실리콘</span></div>
   </div>
   <div id="panel">
-    <div class="mode" id="mode"><button data-v="view" class="on">시안 보기</button><button data-v="step">시공 순서</button></div>
+    <div class="mode detail" id="mode"><button data-v="view" class="on">시안 보기</button><button data-v="step">시공 순서</button></div>
     <div class="stp">
       <div class="steps" id="steps"></div>
       <div><span class="kind" id="skind"></span><span class="sttl" id="sttl"></span></div>
@@ -440,7 +441,7 @@ function buildSiding(){
    B(-45,-45,zBot-bot,0,0,zb1,trim)].forEach(function(m){sidingMeshes.push(m);});
   // 사이딩 아래 남는 벽 (철거 후 바탕 노출 방지 표시용 = 기존 벽색)
   drawMat();
-  document.getElementById('tag').textContent=(ZN?'징크 판 455 · 40mm 띄움':vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
+  document.getElementById('tag').textContent=(ZN?(SHOW?'징크 판 455 · 40mm 띄움':'세로 판'):vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
   var cells=document.querySelectorAll('#cmp tr'); cells.forEach(function(tr){var t=tr.children; if(t.length===3){t[1].className=vert?'':'on'; t[2].className=vert?'on':'';}});
 }
 
@@ -595,7 +596,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.8',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.9',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
