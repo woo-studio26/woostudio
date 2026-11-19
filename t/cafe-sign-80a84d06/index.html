@@ -301,7 +301,7 @@ var PATTERNS = {
   stdbrick: {name:'스탠다드 브릭', price:162000, colors:[
     ['오렌지','STB-09OR','#b0623a'],['화이트','STB-09W','#e4e3e0'],['그레이','STB-09G','#666768']]},
   zinc: {name:'리얼징크', price:0, colors:[
-    ['다크그레이','HN 다크그레이','#4a4c50'],['메탈그레이','HN 메탈그레이','#7c7f83'],['라이트그레이','HN 라이트그레이','#b3b5b7'],
+    ['다크그레이','HN 다크그레이','#5a5d62'],['메탈그레이','HN 메탈그레이','#7c7f83'],['라이트그레이','HN 라이트그레이','#b3b5b7'],
     ['코르텐레드','HN 코르텐레드','#8a4a2e'],['브론즈','HN 브론즈','#6a5843'],['화이트','HN 화이트','#e8e8e6']]}
 };
 // 구매처별 사이딩 박스 가격: 대림우드 11/19 확인, 케이패널 11/17 확인
@@ -409,8 +409,12 @@ function buildSiding(){
     var back = f[0]==='front'? B(0,-20,zBot,fw,0,zTop,M(hex)) : B(-20,0,zBot,0,sw,zTop,M(hex));
     sidingMeshes.push(back);
     // 리얼징크: 455 간격 돌출 이음(입체)
-    if(ZN){ var sm=M(shade(hex,.8),{roughness:.5,metalness:.3});
-      for(var p=455;p<f[1];p+=455){ var zj = f[0]==='front'? B(p-8,-34,zBot,p+8,-20,zTop,sm) : B(-34,p-8,zBot,-20,p+8,zTop,sm); sidingMeshes.push(zj);} }
+    if(ZN){ mesh.visible=false; back.material=M('#000000',{roughness:1}); // 판 사이 20mm 띄움, 뒤는 어두운 줄눈
+      var GAP=40;
+      for(var p=0;p<f[1];p+=455){ var e=Math.min(p+455-GAP/2,f[1]), s0=p===0?0:p+GAP/2; if(e<=s0)continue;
+        var zm=M(shade(hex,.96+Math.random()*.08),{roughness:.45,metalness:.35});
+        var zj = f[0]==='front'? B(s0,-45,zBot,e,-20,zTop,zm) : B(-45,s0,zBot,-20,e,zTop,zm); sidingMeshes.push(zj);
+        if(e<f[1]){ var gm=new THREE.MeshBasicMaterial({color:0x0b0b0b}); var gj = f[0]==='front'? B(e,-30,zBot,e+GAP,-21,zTop,gm) : B(-30,e,zBot,-21,e+GAP,zTop,gm); sidingMeshes.push(gj);} } }
     // 가로 시공 3m 이음 조이너
     if(!vert){
       var pts = f[0]==='front'? [3000] : [3000,6000,9000];
@@ -436,7 +440,7 @@ function buildSiding(){
    B(-45,-45,zBot-bot,0,0,zb1,trim)].forEach(function(m){sidingMeshes.push(m);});
   // 사이딩 아래 남는 벽 (철거 후 바탕 노출 방지 표시용 = 기존 벽색)
   drawMat();
-  document.getElementById('tag').textContent=(ZN?'징크 세로 이음 (455)':vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
+  document.getElementById('tag').textContent=(ZN?'징크 판 455 · 40mm 띄움':vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
   var cells=document.querySelectorAll('#cmp tr'); cells.forEach(function(tr){var t=tr.children; if(t.length===3){t[1].className=vert?'':'on'; t[2].className=vert?'on':'';}});
 }
 
@@ -591,7 +595,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.7',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.8',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
