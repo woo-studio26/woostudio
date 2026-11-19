@@ -299,10 +299,13 @@ var PATTERNS = {
   antique: {name:'앤틱 브릭', price:178000, colors:[
     ['빈티지 레드','NTB-11VR','#a5583c'],['빈티지 베이지','NTB-11VB','#c3b8b1'],['빈티지 그레이','NTB-11VG','#939497']]},
   stdbrick: {name:'스탠다드 브릭', price:162000, colors:[
-    ['오렌지','STB-09OR','#b0623a'],['화이트','STB-09W','#e4e3e0'],['그레이','STB-09G','#666768']]}
+    ['오렌지','STB-09OR','#b0623a'],['화이트','STB-09W','#e4e3e0'],['그레이','STB-09G','#666768']]},
+  zinc: {name:'리얼징크', price:0, colors:[
+    ['다크그레이','HN 다크그레이','#4a4c50'],['메탈그레이','HN 메탈그레이','#7c7f83'],['라이트그레이','HN 라이트그레이','#b3b5b7'],
+    ['코르텐레드','HN 코르텐레드','#8a4a2e'],['브론즈','HN 브론즈','#6a5843'],['화이트','HN 화이트','#e8e8e6']]}
 };
 // 구매처별 사이딩 박스 가격: 대림우드 11/19 확인, 케이패널 11/17 확인
-var PRICE={stucco:{dw:162000,kp:140800},spandrel:{dw:162000,kp:140800},longstone:{dw:162000,kp:140800},antique:{dw:178000,kp:149600},stdbrick:{dw:162000,kp:140800}};
+var PRICE={stucco:{dw:162000,kp:140800},spandrel:{dw:162000,kp:140800},longstone:{dw:162000,kp:140800},antique:{dw:178000,kp:149600},stdbrick:{dw:162000,kp:140800},zinc:null};
 var state = {orient:'h', pat:'stucco', color:0};
 var SHOW=/detail/.test(location.hash);
 
@@ -365,6 +368,8 @@ function panelCanvas(pat,hex){
   var cc=new THREE.Color(hex), lum=.3*cc.r+.59*cc.g+.11*cc.b, dk=lum<.3;
   if(pat==='stucco'){noise(g,W,H,hex,.10,26000);}
   if(pat==='spandrel'){noise(g,W,H,hex,.05,8000);[H/3,2*H/3].forEach(function(y){g.fillStyle=dk?'rgba(255,255,255,.16)':shade(hex,.72);g.fillRect(0,y-3,W,5);g.fillStyle=dk?'rgba(0,0,0,.5)':shade(hex,1.12);g.fillRect(0,y+2,W,2);});}
+  if(pat==='zinc'){noise(g,W,H,hex,.07,22000);for(var i=0;i<40;i++){g.fillStyle='rgba(255,255,255,'+(Math.random()*.035)+')';g.fillRect(0,Math.random()*H,W,1+Math.random()*3);}
+    g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,W,4);g.fillStyle='rgba(255,255,255,.18)';g.fillRect(0,4,W,3);return c;}
   if(pat==='antique'||pat==='stdbrick'){ // 380 판 = 벽돌 5줄, 벽돌 길이 약 240mm, 회색 줄눈
     var ant=pat==='antique', rh=H/5, bl=120, mort=dk?'#3a3a3a':(lum>.8?'#b9b7b2':'#77746f');
     g.fillStyle=mort;g.fillRect(0,0,W,H);
@@ -386,14 +391,14 @@ function buildSiding(){
   clearSiding();
   var P=PATTERNS[state.pat], col=P.colors[state.color], hex=col[2];
   var cv=panelCanvas(state.pat,hex);
-  var vert=state.orient==='v';
+  var ZN=state.pat==='zinc', vert=ZN||state.orient==='v';
   var h = 1520, zTop=zb1, zBot=zTop-h;
   // 두 면: 전면(가로 길이 fw), 측면(sw)
   [['front',fw],['side',sw]].forEach(function(f){
     var len=f[1]/1000, hh=h/1000;
     var tex=new THREE.CanvasTexture(cv); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=8;
     if(!vert){ tex.repeat.set(len/3, hh/0.38); }
-    else { tex.center.set(.5,.5); tex.rotation=Math.PI/2; tex.repeat.set(len/0.38, hh/3); }
+    else { tex.center.set(.5,.5); tex.rotation=Math.PI/2; tex.repeat.set(len/(ZN?0.455:0.38), hh/3); }
     var mat=new THREE.MeshStandardMaterial({map:tex,roughness:.7,metalness:.05});
     var geo=new THREE.PlaneGeometry(len,hh);
     var mesh=new THREE.Mesh(geo,mat);
@@ -403,6 +408,9 @@ function buildSiding(){
     // 판 두께(뒤 채움)
     var back = f[0]==='front'? B(0,-20,zBot,fw,0,zTop,M(hex)) : B(-20,0,zBot,0,sw,zTop,M(hex));
     sidingMeshes.push(back);
+    // 리얼징크: 455 간격 돌출 이음(입체)
+    if(ZN){ var sm=M(shade(hex,.8),{roughness:.5,metalness:.3});
+      for(var p=455;p<f[1];p+=455){ var zj = f[0]==='front'? B(p-8,-34,zBot,p+8,-20,zTop,sm) : B(-34,p-8,zBot,-20,p+8,zTop,sm); sidingMeshes.push(zj);} }
     // 가로 시공 3m 이음 조이너
     if(!vert){
       var pts = f[0]==='front'? [3000] : [3000,6000,9000];
@@ -428,7 +436,7 @@ function buildSiding(){
    B(-45,-45,zBot-bot,0,0,zb1,trim)].forEach(function(m){sidingMeshes.push(m);});
   // 사이딩 아래 남는 벽 (철거 후 바탕 노출 방지 표시용 = 기존 벽색)
   drawMat();
-  document.getElementById('tag').textContent=(vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
+  document.getElementById('tag').textContent=(ZN?'징크 세로 이음 (455)':vert?'세로 시공':'가로 시공')+' · '+P.name+' '+col[0]+(SHOW?' ('+col[1]+')':'');
   var cells=document.querySelectorAll('#cmp tr'); cells.forEach(function(tr){var t=tr.children; if(t.length===3){t[1].className=vert?'':'on'; t[2].className=vert?'on':'';}});
 }
 
@@ -443,14 +451,27 @@ var MI={
  joiner:['아이조이너 결합형 (화이트)','27 × 40 × 3000 · 3m 판 이음','https://daelimwood.com/web/product/big/202610/2479976249820c41a1142f898285de33.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%95%84%EC%9D%B4%EC%A1%B0%EC%9D%B4%EB%84%88%EA%B2%B0%ED%95%A9%ED%98%95/3958/category/433/display/1/','대림우드',15400,'본'],
  panelA:['메탈사이딩 앤틱브릭 시리즈 (빈티지 레드·베이지·그레이)','16 × 380 × 3000 · 1.14㎡/장 · 8장/박스 · 3색 인쇄+링클 마감 · 색상 선택','https://daelimwood.com/web/product/big/202406/a809f3061ad8f1288b10f4bd78846139.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%95%A4%ED%8B%B1%EB%B8%8C%EB%A6%AD-%EC%8B%9C%EB%A6%AC%EC%A6%88-16x380x3000mm-8%EC%9E%A5box/7123/','대림우드',178000,'박스'],
  panelB:['메탈사이딩 스탠다드브릭 시리즈 (오렌지·화이트·그레이)','16 × 380 × 3000 · 1.14㎡/장 · 8장/박스 · 색상 선택','https://daelimwood.com/web/product/big/202411/a3ebfd4f6ea4fd1f451a9403e8d5b4c5.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%8A%A4%ED%83%A0%EB%8B%A4%EB%93%9C%EB%B8%8C%EB%A6%AD-%EC%8B%9C%EB%A6%AC%EC%A6%88-8%EC%9E%A5box/7541/','대림우드',162000,'박스'],
+ zn:['리얼징크 0.5T (m당, 색상 11가지)','폭 455 기준 세로 판 1.52m × 38장(전면 11 + 측면 27) · 재단길이 주문 · 유효폭은 업체 확인','https://ecimg.cafe24img.com/pg37b94756263050/hnmt77/web/product/big/20260713/42f0582e15502cbb4bbd3d48b56f4aac.jpg','https://hnmt.co.kr/product/detail.html?product_no=16','HN METALLIC',11000,'m'],
+ znStart:['스타터 3M','징크 하단 걸이 · 17m','https://ecimg.cafe24img.com/pg37b94756263050/hnmt77/web/product/big/20241213/35cb0e61a286d776eaa03779ba4a19b2.jpg','https://hnmt.co.kr/product/detail.html?product_no=66','HN METALLIC',11000,'본'],
+ znTop:['끝단끼움마감 3M','상단(화강석 띠 밑) 마감 · 17m','https://ecimg.cafe24img.com/pg37b94756263050/hnmt77/web/product/big/20240510/576321627b47af1d200ff45ba8f01a21.jpg','https://hnmt.co.kr/product/detail.html?product_no=64','HN METALLIC',12100,'본'],
+ znCorner:['끼워치기용 밖코너 3M','전면·측면 모서리 1곳','https://ecimg.cafe24img.com/pg37b94756263050/hnmt77/web/product/big/20240805/d0ffb188ff54aaf48f6e4211e0d915ec.jpg','https://hnmt.co.kr/product/detail.html?product_no=58','HN METALLIC',24200,'본'],
+ znClip:['돌출고정클립','징크판 고정 · 판당 4개 × 38장','https://ecimg.cafe24img.com/pg37b94756263050/hnmt77/web/product/big/20230324/e153f934d8c9ffb6efd24208a0be9c78.jpg','https://hnmt.co.kr/product/detail.html?product_no=67','HN METALLIC',330,'개'],
+ pipe:['아연각관 40×40 1.4T 6m (하지)','가로 3줄 51m + 세로 @600 30본×1.52m + 간판 보강 → 약 99m','https://bidnbee.com/data/item/1679623480/6rCB6rSA_1.4T_7I2464Sk7J28.jpg','https://bidnbee.com/shop/1679623480','비드앤비',16300,'본'],
  sil:['KCC 변성실리콘 MS1000','이음·화강석 밑·볼트 구멍 방수','https://shop-phinf.pstatic.net/20260602_40/1780385277940VhvCU_JPEG/2907307975742063_1278551654.jpg?type=o1000','https://smartstore.naver.com/kdongcnc/products/7722106267','극동씨앤씨',3900,'개'],
  panelK:['메탈사이딩 스타코 & 마블스톤 (네이버)','16 × 380 × 3000 · 강판 0.3T · 1.14㎡/장 · 8장/박스 · 색상 선택 가능 · 중국 OEM','https://shop-phinf.pstatic.net/20260706_60/1783312909143Ehf9m_JPEG/7685392335323070_1279181071.jpg?type=o1000','https://smartstore.naver.com/k-industry/products/8566188441','케이패널 스마트스토어',140800,'박스'],
  anchor:['칼블럭 + 접시피스 M6×30','Ø6 · 50개/세트 · 약 290개(@400)','https://shop-phinf.pstatic.net/20260606_40/1780714061751I9YSW_PNG/56939035620265024_1843227930.png?type=o1000','https://smartstore.naver.com/ijbort/products/13624329889','앙카팩토리',2000,'세트']
 };
 var SUP='dw';
+var MQZ=[['zn',58],['znStart',6],['znTop',6],['znCorner',1],['znClip',152],['pipe',17],['sil',12],['anchor',6]];
 var MQ={h:[['panel',3],['starter',6],['j',8],['corner',1],['joiner',4],['sil',12],['anchor',6]],
         v:[['panel',3],['j',14],['corner',1],['sil',12],['anchor',6]]};
-function drawMat(){var el=document.getElementById('mat'); if(!el)return; var k=state.orient,t=0,h='<h3>자재 · 구매처 ('+(k==='h'?'가로 시공':'세로 최적안')+', 전면 5m · 측면 12m · 높이 1.52m)</h3>';
+function drawMat(){var el=document.getElementById('mat'); if(!el)return; var k=state.orient,t=0,h;
+ if(state.pat==='zinc'){h='<h3>자재 · 구매처 (리얼징크 처음 안, 각관 하지 + 세로 이음, 전면 5m · 측면 12m · 높이 1.52m)</h3>';
+  MQZ.forEach(function(q){var it=MI[q[0]],a=it[5]*q[1];t+=a;h+='<div class="mi"><img src="'+it[2]+'" alt=""><div><b>'+it[0]+'</b><div class="sp">'+it[1]+'</div><a href="'+it[3]+'" target="_blank" rel="noopener">'+it[4]+' 상품 보기 ↗</a></div><div class="am">'+a.toLocaleString('ko-KR')+'원<small>'+it[5].toLocaleString('ko-KR')+' × '+q[1]+it[6]+'</small></div></div>';});
+  h+='<div class="mtot"><span>합계 (VAT 포함, 배송비 별도)</span><span>'+t.toLocaleString('ko-KR')+'원</span></div>';
+  h+='<div class="note" style="display:block">11/17 처음 안(리얼징크 절곡 + 아연각관 하지). 하지 작업 때문에 사이딩으로 바꿨던 안이라 비교용으로 다시 넣음. 같은 1.52m 기준이고, 징크는 판 길이 제약이 없어 1.6m 전체로 올려도 됨(판 +3m 정도). 판 폭 455는 징크원 기준이라 HN METALLIC 유효폭은 주문 전 확인. 각관은 용달 착불(업체별 10~20만), 하지 용접·피스 작업 인건비는 별도. HN METALLIC 가격은 부가세 포함 표기.</div>';
+  el.innerHTML=h; return;}
+ h='<h3>자재 · 구매처 ('+(k==='h'?'가로 시공':'세로 최적안')+', 전면 5m · 측면 12m · 높이 1.52m)</h3>';
  var PP=PRICE[state.pat], PN=PATTERNS[state.pat].name;
  h+='<div class="row"><span class="lbl">사이딩</span><div class="seg" id="sup"><button data-v="dw"'+(SUP==='dw'?' class="on"':'')+'>대림우드 '+PP.dw.toLocaleString('ko-KR')+'</button><button data-v="kp"'+(SUP==='kp'?' class="on"':'')+'>네이버 케이패널 '+PP.kp.toLocaleString('ko-KR')+'</button></div></div>';
  function panelItem(){if(SUP==='kp'){var b=MI.panelK.slice();b[0]='메탈사이딩 '+PN+' (네이버)';b[5]=PP.kp;return b;}
@@ -570,7 +591,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.6',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.7',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
