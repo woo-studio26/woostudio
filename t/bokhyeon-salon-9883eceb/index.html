@@ -85,6 +85,8 @@ footer{margin-top:80px;background:#3b342c;color:#efe7da;padding:46px 0}
 footer .brand{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600}
 footer a{color:#efe7da}
 footer small{opacity:.7}
+.btn3d{display:inline-block;margin-top:16px;background:#fff;color:#3b342c;text-decoration:none;font-weight:500;padding:12px 20px;border-radius:30px;font-size:15px}
+.v3d{position:relative;display:block;border-radius:14px;overflow:hidden;margin-top:18px}.v3d img{width:100%;aspect-ratio:16/10;object-fit:cover}.v3d span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#3b342c;color:#fff;padding:14px 24px;border-radius:30px;font-weight:500}
 /* lightbox */
 .lb{position:fixed;inset:0;background:rgba(20,16,12,.92);display:none;align-items:center;justify-content:center;z-index:20;cursor:zoom-out}
 .lb img{max-width:96vw;max-height:92vh;border-radius:6px}
@@ -115,11 +117,12 @@ body.show-detail .detail{display:block}
     <div class="eyebrow">INTERIOR PROPOSAL · 2026.11</div>
     <h1>SM HAIR SALON</h1>
     <p>대구 북구 복현동 · 인테리어 시안 1차</p>
+    <a class="btn3d" href="3d/">3D로 직접 둘러보기 →</a>
   </div></div>
 </header>
 
 <nav class="toc"><div class="wrap">
-  <a href="#concept">컨셉</a><a href="#plan">공간 구성</a><a href="#entry">입구·카운터</a><a href="#cut">커트석</a><a href="#shampoo">샴푸실</a><a href="#exterior">외관</a><a href="#material">마감재</a><a href="#light">조명</a><a href="#next">진행 순서</a>
+  <a href="3d/" style="color:#3b342c;font-weight:700">3D 보기</a><a href="#concept">컨셉</a><a href="#plan">공간 구성</a><a href="#entry">입구·카운터</a><a href="#cut">커트석</a><a href="#shampoo">샴푸실</a><a href="#exterior">외관</a><a href="#material">마감재</a><a href="#light">조명</a><a href="#next">진행 순서</a><a href="https://www.woostudio.co.kr/t/bokhyeon-quote-bf8aae85/">예상 견적</a>
 </div></nav>
 
 <main class="wrap">
@@ -164,6 +167,13 @@ body.show-detail .detail{display:block}
       <li><span class="n">8</span><div><b>외부 데크</b><small>입구 앞 나무 데크 + 바닥 라인 조명</small></div></li>
     </ul>
   </div>
+</section>
+
+<section id="view3d">
+  <div class="kicker">3D VIEW</div>
+  <h2>3D로 직접 둘러보기</h2>
+  <p class="lead">손가락으로 돌려 보고, 확대해서 원하는 곳을 직접 보실 수 있습니다. 아래 버튼으로 입구·카운터, 대기석, 커트석, 샴푸실, 외관을 바로 볼 수 있고, 벽 자르기·천장 보기도 됩니다.</p>
+  <a class="v3d" href="3d/"><img src="img/3d_prev.jpg" alt="3D 모델 미리보기"><span>3D 열기 (약 1.6MB)</span></a>
 </section>
 
 <section id="entry">
@@ -293,7 +303,7 @@ body.show-detail .detail{display:block}
 
 <div class="lb" id="lb"><img alt=""></div>
 <script>
-window.SALON_PAGE={version:'v1-20261119'};
+window.SALON_PAGE={version:'v2-20261119-3d'};
 if(location.hash==='#detail')document.body.classList.add('show-detail');
 const lb=document.getElementById('lb'),li=lb.querySelector('img');
 document.querySelectorAll('.shot').forEach(s=>s.addEventListener('click',()=>{li.src=s.dataset.src;lb.classList.add('on')}));
