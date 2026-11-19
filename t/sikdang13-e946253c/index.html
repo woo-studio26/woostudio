@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>식당 13호 인테리어 공사 | 3D 시안 · 자재 · 견적 | 우스튜디오</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#1a1a1a;background:#f4f2ee;font-size:14px;line-height:1.55}
+header{background:#1d1d1b;color:#fff;padding:18px 20px 14px}
+header .t{font-size:20px;font-weight:800}header .s{opacity:.75;font-size:13px;margin-top:2px}
+nav{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #ddd;display:flex;gap:4px;padding:6px 10px;overflow-x:auto}
+nav a{padding:7px 12px;border-radius:18px;color:#333;text-decoration:none;font-weight:600;white-space:nowrap;font-size:13px}
+nav a:hover{background:#f0eee9}
+section{max-width:1080px;margin:0 auto;padding:22px 16px}
+h2{font-size:18px;margin:0 0 12px}
+.card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+#v3d{position:relative;height:62vh;min-height:380px;border-radius:12px;overflow:hidden;background:#d9d6cf}
+#v3d canvas{display:block;width:100%;height:100%}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.ctl button{border:1px solid #ccc;background:#fff;border-radius:18px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.ctl button.on{background:#1d1d1b;color:#fff;border-color:#1d1d1b}
+.ctl .lab{font-size:12px;color:#777;align-self:center;margin-right:2px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+.hint{position:absolute;left:10px;bottom:8px;font-size:11.5px;color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.scope b{display:block;margin-bottom:2px}.scope div{font-size:13px;color:#444}
+table{border-collapse:collapse;width:100%}
+.est th,.est td{border:1px solid #333;padding:6px;font-size:12.5px}.est th{background:#eee}
+.est tr.grp td{background:#fafafa;font-weight:600}.est tr.sub td.nm{padding-left:18px;color:#333}
+.est tr.sum td{background:#f1f1f1;font-weight:700}.est tr.grand td{background:#e4e4e4;font-weight:800}
+.num{text-align:right;white-space:nowrap}.c{text-align:center}
+.total{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:2px solid #1d1d1b;border-radius:10px;padding:12px 14px;margin-bottom:12px;background:#fff}
+.total .big{font-size:22px;font-weight:800}.total .k{color:#555}
+.btn{display:inline-block;background:#1d1d1b;color:#fff;border-radius:8px;padding:9px 14px;text-decoration:none;font-weight:700;font-size:13px}
+.mat td,.mat th{border-bottom:1px solid #e5e5e5;padding:8px 6px;text-align:left;vertical-align:middle}
+.mat th{background:#f6f5f2;font-size:12px}.mat img{width:84px;height:84px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:6px}
+.mat tr.best{background:#fff8e1}.sm{font-size:12px;color:#666}.sc{font-weight:800}
+.mat a{color:#1a5fd0;font-weight:600;text-decoration:none}
+.detail{display:none}body.dt .detail{display:block}body.dt tr.detail{display:table-row}body.dt td.detail,body.dt th.detail{display:table-cell}
+.note{font-size:12.5px;color:#444;background:#fff;border-radius:10px;padding:12px 14px;margin-top:12px}
+footer{text-align:center;color:#777;font-size:12.5px;padding:24px}
+.badge{display:inline-block;background:#c7362b;color:#fff;border-radius:6px;padding:1px 7px;font-size:11px;margin-left:6px;vertical-align:2px}
+@media(max-width:600px){#v3d{height:52vh}.est th,.est td{font-size:11px;padding:4px}}
+@media print{nav,#s3d,#smat,.ctl,.btn,footer{display:none!important}body{background:#fff}}
+</style></head><body>
+<header><div class="t">식당 13호 인테리어 공사</div><div class="s">3D 시안 · 자재 · 견적 | 대구광역시 북구 산격동 종합유통단지 전자관 16동 지하 13호 | 62.0㎡ (6,600 × 9,400 × 천장 2,700)</div></header>
+<nav><a href="#s3d">3D 시안</a><a href="#sscope">공사 범위</a><a href="#smat">자재</a><a href="#sest">견적서</a></nav>
+
+<section id="s3d">
+ <h2>3D 시안 <span class="sm">드래그 회전 · 휠/핀치 확대 · 우클릭/두 손가락 이동</span></h2>
+ <div id="v3d"><div class="hint" id="hint">로딩 중…</div></div>
+ <div class="ctl"><span class="lab">시점</span>
+  <button data-cam="all" class="on">전체</button><button data-cam="in2">유리문(2)에서</button><button data-cam="in1">유리문(1)에서</button><button data-cam="top">평면</button>
+  <button id="bCeil">천장 보기</button></div>
+ <div class="ctl" id="cFloor"><span class="lab">바닥 데코타일</span></div>
+ <div class="ctl" id="cWall"><span class="lab">벽·천장 도장</span></div>
+ <div class="ctl" id="cSheet"><span class="lab">유리 썬팅</span></div>
+ <div class="sm">※ 색상은 화면 예시입니다. 실물 샘플을 보고 확정합니다. 탁구대·테이블·의자는 배치 참고용(공사 범위 제외)입니다.</div>
+</section>
+
+<section id="sscope"><h2>공사 범위 (시방서 기준)</h2>
+ <div class="grid scope">
+  <div class="card"><b>1. 천장·벽·기둥 도장</b><div>실내용 수성페인트, 하도 1회 + 상도 2회, 균열·곰팡이 보수 후 도장 (약 120㎡)</div></div>
+  <div class="card"><b>2. 바닥 데코타일</b><div>상업용 3.0T 450×450, 바탕 평탄·단차 정리 후 시공 (62㎡)</div></div>
+  <div class="card"><b>3. 유리 썬팅</b><div>13호실 안개 시트 6,600×2,100 2개소, 복도문 칼라 시트 7,680×2,100</div></div>
+  <div class="card"><b>4. 에어컨 설치</b><div>LG PQ0900T2SF 업소용 25평형 스탠드(냉방전용), 배관·배수·전기 포함</div></div>
+  <div class="card"><b>5. 수도 배관 철거</b><div>지정 수도 배관 및 계량기 철거</div></div>
+  <div class="card"><b>6. LED 램프 교체</b><div>1,280×320, 50W급, KC 인증 6개</div></div>
+  <div class="card"><b>7. 집수정 덮개</b><div>철판 5.0T 900×400 제작·설치, 상부 데코타일 마감</div></div>
+  <div class="card"><b>8. 유리창 설치</b><div>5.0T, 1,111×480 1개</div></div>
+ </div>
+ <div class="card" style="margin-top:10px"><b>평면 배치</b><br><img src="img/plan.jpg" alt="평면" style="width:100%;max-width:560px;display:block;margin:8px auto 0"></div>
+</section>
+
+<section id="smat"><h2>자재</h2>
+ <div class="card"><table class="mat">
+  <tr><th>항목</th><th>사양</th><th>색·옵션</th><th class="num detail">견적 단가</th></tr>
+  <tr><td><b>바닥</b></td><td>상업용 데코타일 3.0T 450×450</td><td id="mFloor"></td><td class="num detail">자재 10,000/㎡ · 시공 7,000/㎡</td></tr>
+  <tr><td><b>도장</b></td><td>실내용 수성페인트(친환경), 하도1 + 상도2</td><td id="mWall"></td><td class="num detail">12,000/㎡</td></tr>
+  <tr><td><b>썬팅</b></td><td>안개(반투명) 시트 · 복도문 칼라 시트</td><td id="mSheet"></td><td class="num detail">30,000/㎡</td></tr>
+  <tr><td><b>에어컨</b></td><td>LG 휘센 PQ0900T2SF 25평 스탠드 냉방전용 (실내기 590×1,840×300)</td><td>화이트</td><td class="num detail">삼백냉동 견적 1,700,000 + 배관 23m</td></tr>
+  <tr><td><b>LED</b></td><td>LED 평판등 1,280×320 50W, KC/KS 인증, 5700K</td><td>주광색</td><td class="num detail">55,000/개</td></tr>
+ </table></div>
+
+ <div class="detail" style="margin-top:14px">
+  <h2>LED 평판등 후보 (6개 기준) <span class="badge">내부용</span></h2>
+  <div class="card"><table class="mat">
+   <tr><th></th><th>제품</th><th class="num">개당</th><th class="num">6개+배송</th><th>배송</th><th class="num">점수</th></tr>
+   <tr><td><img src='img/led_a.jpg' alt=''></td><td><a href='https://m.giniled.com/product/%EC%8A%AC%EB%A6%BC-led%EC%97%A3%EC%A7%80%EB%93%B1-50w-%EC%82%AC%EB%AC%B4%EC%8B%A4-%EC%A3%BC%EB%B0%A9-%EA%B1%B0%EC%8B%A4-%EC%A1%B0%EB%AA%85-ks-%ED%8F%89%ED%8C%90%EB%93%B1-1280x320/5367' target='_blank' rel='noopener'>지니조명 슬림 엣지 평판등 GN-5367</a><div class='sm'>KS · 삼성 LED · 엣지(직부)</div></td><td class='num'>54,900</td><td class='num'><b>329,400</b></td><td class='sm'>10만 원 이상 무료배송</td><td class='num sc'>78</td></tr>
+<tr><td><img src='img/led_b.jpg' alt=''></td><td><a href='https://m.giniled.com/product/detail.html?product_no=5204' target='_blank' rel='noopener'>지니조명 고효율 M바 평판등 GN-5204</a><div class='sm'>KS · 고효율 · M바 천장 매입형 · <b>천장이 M바면 1순위</b></div></td><td class='num'>45,000</td><td class='num'><b>300,000</b></td><td class='sm'>배송 5~6개 30,000</td><td class='num sc'>84</td></tr>
+<tr class=best><td><img src='img/led_c.jpg' alt=''></td><td><a href='https://ezlight.co.kr/product/%EA%B5%AD%EC%82%B0-led-%ED%8F%89%ED%8C%90-%EC%97%A3%EC%A7%80-1280x320-50w-5700k-ks/6914' target='_blank' rel='noopener'>이지라이트 국산 평판 엣지 1280×320</a><div class='sm'>국산 · KS · 5700K · <b>최저 총액</b></div></td><td class='num'>44,000</td><td class='num'><b>272,800</b></td><td class='sm'>배송 8,800 · 최소 2개</td><td class='num sc'>88</td></tr>
+<tr><td><img src='img/led_d.jpg' alt=''></td><td><a href='http://skin-mobile3.dkled.cafe24.com/product/detail.html?cate_no=0&display_group=0&product_no=5772' target='_blank' rel='noopener'>대경엘이디 고효율 엣지 평판 DK-5772</a><div class='sm'>KS · 고효율 · 플리커프리</div></td><td class='num'>59,400</td><td class='num'><b>356,400</b></td><td class='sm'>10만 원 이상 무료배송</td><td class='num sc'>72</td></tr>
+<tr><td><img src='img/led_e.jpg' alt=''></td><td><a href='https://intelrior.com/product/%EA%B5%AD%EC%82%B0-led-%EC%A1%B0%EB%AA%85-%EA%B1%B0%EC%8B%A4%EB%93%B1-%EB%B0%A9%EB%93%B1-%EC%A3%BC%EB%B0%A9%EB%93%B1-%EC%97%A3%EC%A7%80-%ED%8F%89%ED%8C%90%EB%93%B1-%EB%A9%B4%EC%A1%B0%EB%AA%85-%EC%B9%9C%ED%99%98%EA%B2%BD-%EA%B3%A0%ED%9A%A8%EC%9C%A8-1280%C3%97320-50w-%EC%A3%BC%EA%B4%91%EC%83%89-%ED%8C%8C%EC%9D%B8%ED%85%8C%ED%81%AC%EB%8B%89%EC%8A%A4/14555' target='_blank' rel='noopener'>파인테크닉스 국산 엣지 평판 EGF50CM7</a><div class='sm'>국산 · 서울반도체 칩 · A/S 3년</div></td><td class='num'>64,800</td><td class='num'><b>391,800</b></td><td class='sm'>배송 3,000</td><td class='num sc'>70</td></tr>
+  </table>
+  <div class="sm" style="margin-top:6px">점수(100): 6개 실부담가 50 · 인증·국산 30 · A/S·사양 20. 가격은 2026-11-19 각 상품 페이지 기준. 지금 등이 천장 매입형이라 천장이 M바면 GN-5204, 직부면 이지라이트.</div></div>
+  <div class="card" style="margin-top:10px"><b>에어컨 하도급 (삼백냉동 11/19)</b><div class="sm">PQ0900T2SF 1,700,000 · 추가배관 23m×30,000 690,000 · 거치대 120,000 · 인부 추가 1인 180,000 = 항목 합 2,690,000 / 적힌 합계 2,790,000 (10만 차이 확인 필요)</div></div>
+ </div>
+</section>
+
+<section id="sest"><h2>견적서</h2>
+ <div class="total"><span class="k">합계 (VAT 포함)</span><span class="big">₩10,480,000</span><span class="sm">일금 일천사십팔만원정 · 공급가 9,528,000 + 부가세 952,000</span>
+  <a class="btn detail" style="margin-left:auto" href="https://www.woostudio.co.kr/t/estimate-e393c999/?v=1795075644#d=eyJpbml0IjogeyJpZCI6ICJyZXN0YXVyYW50MTNfMjAyNi0xMSIsICJwcm9maXRMYWJlbCI6ICLquLDsl4XsnbTsnKQiLCAicmF0ZSI6IG51bGwsICJ2YXQiOiAxMCwgImgiOiB7ImRvYyI6ICLqsqwg7KCBIOyEnCIsICJ0byI6ICLrsJzso7zsspgg6reA7ZWYIiwgInRpdGxlIjogIuyLneuLuSAxM%2B2YuCDsnbjthYzrpqzslrQg6rO17IKsIiwgInBsYWNlIjogIuuMgOq1rOq0keyXreyLnCDrtoHqtawg7IKw6rKp64%2BZIOyihe2VqeycoO2GteuLqOyngCDsoITsnpDqtIAgMTbrj5kg7KeA7ZWYIDEz7Zi4IiwgInZhbGlkIjogIuqyrOyggeydvOuhnOu2gO2EsCAzMOydvCIsICJyZWdubyI6ICI4NDgtNDctMDEwNDYiLCAiY28iOiAi7Jqw7Iqk7Yqc65SU7JikIiwgImNlbyI6ICLsmrDsp4Dtm4ggKOyduCkiLCAiYWRkciI6ICLrjIDqtazqtJHsl63si5wg67aB6rWsIOyXsOyVlOuhnCA1Miwg7KeA7ZWYMey4tSAy7Zi4IiwgImJpeiI6ICLqsbTshKTsl4UiLCAiaXRlbSI6ICLrj4TsnqUsIOuPhOuwsCwg7Iuk64K0IOyepeyLnSDrsI8g64K07J6lIOuqqeqztSIsICJ0ZWwiOiAiMDEwLTg5MjUtNzU1OCIsICJub3RlIjogIuKAuyDtirnquLDsgqztla08YnI%2BMS4g67O4IOqyrOyggeydgCDsi5zrsKnshJwo66m07KCBIDYyLjAxN%2BOOoSwg6rCA66GcIDYsNjAwIMOXIOyEuOuhnCA5LDQwMCDDlyDrhpLsnbQgMiw3MDBtbSkg6riw7KSA7J6F64uI64ukLjxicj4yLiDsl5DslrTsu6goTEcgUFEwOTAwVDJTRinsnYAg64OJ67Cp7KCE7JqpIOuqqOuNuOydtOupsCwg7LaU6rCAIOuwsOq0gCAyM23Ct%2ByLpOyZuOq4sCDqsbDsuZjrjIAg7Y%2Bs7ZWoIOq4iOyVoeyeheuLiOuLpC48YnI%2BMy4g7Jyg66asIOyNrO2MhSDsg4nsg4HCt%2ByLnOqztSDrspTsnITripQg7Iuc6rO1IOyghCDrsJzso7zsnpAg7ZmV7J24IO2bhCDsp4Ttlontlanri4jri6QuPGJyPjQuIOqwgOyKpCDrsLDqtIDCt%2BqzhOufieq4sOuKlCDqs7Xsgqwg67KU7JyEIOuwluydtOupsCDrs7TslpEg7ZuEIOyekeyXhe2VqeuLiOuLpC48YnI%2BNS4g7ZWp6rOE6riI7JWh7J2AIOu2gOqwgOqwgOy5mOyEuCAxMCUg7Y%2Bs7ZWoIOq4iOyVoeyeheuLiOuLpC4ifSwgInJvd3MiOiBbeyJ0IjogImdycCIsICJuIjogIjEuIOyynOyepcK367K966m0KOyijCzsmrApwrfquLDrkaUg64%2BE7J6l6rO17IKsIiwgImIiOiAi7Iuk64K07JqpIOyImOyEse2OmOyduO2KuCJ9LCB7InQiOiAic3ViIiwgIm4iOiAi67O07JaRIOuwjyDrsJTtg5XsoJXrpqwgKOuovOyngMK37Jik7Je866y8wrfrk6TrnKwg67aA67aEIOygnOqxsCkiLCAidSI6ICLsi50iLCAicSI6IDEsICJwIjogMTUwMDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuq3oOyXtMK37IaQ7IOBIOu2gOychCDtjbzti7Ag67O07IiYIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDIwMDAwMCwgImIiOiAiIn0sIHsidCI6ICJzdWIiLCAibiI6ICLrsr0g7ZWY67aAIOqzsO2MoeydtMK37Jik7Je8IOygnOqxsCDrsI8g67Cp6reg7KCcIOyymOumrCIsICJ1IjogIuyLnSIsICJxIjogMSwgInAiOiAyMDAwMDAsICJiIjogIuyCrOynhCDtmZXsnbgifSwgeyJ0IjogInN1YiIsICJuIjogIu2VmOuPhCAx7ZqMICsg7IOB64%2BEIDLtmowgKOyynOyepSA2Mi4wICsg7KKM7Jqw67K9IDkuNG3DlzIuN23DlzIgNTAuOCArIOq4sOuRpSA3LjDjjqEpIiwgInUiOiAi446hIiwgInEiOiAxMjAsICJwIjogMTIwMDAsICJiIjogIuq4sOuRpSA4MDDDlzUwMCJ9LCB7InQiOiAiZ3JwIiwgIm4iOiAiMi4g67CU64ulIOuNsOy9lO2DgOydvCDqs7XsgqwiLCAiYiI6ICIzLjBUIDQ1MMOXNDUwIn0sIHsidCI6ICJzdWIiLCAibiI6ICLquLDsobQg67CU64ulIOyYpOyXvMK37J6U7J6sIOygnOqxsCAo7Iqk7YGs656Y7ZWRKSIsICJ1IjogIuOOoSIsICJxIjogNjIsICJwIjogMzAwMCwgImIiOiAi7IKs7KeEIO2ZleyduCJ9LCB7InQiOiAic3ViIiwgIm4iOiAi67CU64ulIOuwlO2DleygleumrCAo7Y%2BJ7YOEwrfri6jssKjCt%2BydtOydjOu2gCkiLCAidSI6ICLjjqEiLCAicSI6IDYyLCAicCI6IDQwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi7IOB7JeF7JqpIOuNsOy9lO2DgOydvCDsnpDsnqwgKOuhnOyKpCA1JSkiLCAidSI6ICLjjqEiLCAicSI6IDY1LCAicCI6IDEwMDAwLCAiYiI6ICLsg4nsg4Eg67Cc7KO87J6QIOyKueyduCJ9LCB7InQiOiAic3ViIiwgIm4iOiAi642w7L2U7YOA7J28IOyLnOqzteu5hCIsICJ1IjogIuOOoSIsICJxIjogNjIsICJwIjogNzAwMCwgImIiOiAiIn0sIHsidCI6ICJncnAiLCAibiI6ICIzLiDsnKDrpqwg7I2s7YyFIiwgImIiOiAiIn0sIHsidCI6ICJzdWIiLCAibiI6ICLquLDsobQg7Iuc7Yq4wrfquIDsnpDCt%2ByKpO2LsOy7pCDsoJzqsbAiLCAidSI6ICLsi50iLCAicSI6IDEsICJwIjogMjUwMDAwLCAiYiI6ICLsgqzsp4Qg7ZmV7J24In0sIHsidCI6ICJzdWIiLCAibiI6ICIxM%2B2YuOyLpCDslYjqsJwg7Iuc7Yq4ICg2LDYwMMOXMiwxMDAgw5cgMuqwnOyGjCkiLCAidSI6ICLjjqEiLCAicSI6IDI4LCAicCI6IDMwMDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuuzteuPhOusuCDsubzrnbwg7Iuc7Yq4ICg3LDY4MMOXMiwxMDAgw5cgMeqwnOyGjCkiLCAidSI6ICLjjqEiLCAicSI6IDE2LCAicCI6IDMwMDAwLCAiYiI6ICIifSwgeyJ0IjogImdycCIsICJuIjogIjQuIOyXkOyWtOy7qCDshKTsuZjqs7XsgqwiLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIkxHIFBRMDkwMFQyU0Yg7JeF7IaM7JqpIDI17Y%2BJ7ZiVIOyKpO2DoOuTnCAo6riw67O467Cw6rSAIOyEpOy5mCDtj6ztlagpIiwgInUiOiAi64yAIiwgInEiOiAxLCAicCI6IDE3MDAwMDAsICJiIjogIuuDieuwqeyghOyaqSJ9LCB7InQiOiAic3ViIiwgIm4iOiAi7LaU6rCAIOuwsOq0gCIsICJ1IjogIm0iLCAicSI6IDIzLCAicCI6IDMwMDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuyLpOyZuOq4sCDqsbDsuZjrjIAiLCAidSI6ICLsobAiLCAicSI6IDEsICJwIjogMTIwMDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuyEpOy5mCDsnbjrtoAg7LaU6rCAIiwgInUiOiAi7J24IiwgInEiOiAxLCAicCI6IDE4MDAwMCwgImIiOiAiIn0sIHsidCI6ICJzdWIiLCAibiI6ICLsl5DslrTsu6gg7KCE7JqpIOywqOuLqOq4sCAoRUxCIDIwQSkg7LaU6rCAIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDYwMDAwLCAiYiI6ICLquLDsobQg67aE7KCE67CYIn0sIHsidCI6ICJpdGVtIiwgIm4iOiAiNS4g7IiY64%2BEIOuwsOq0gCDrsI8g6rOE65%2BJ6riwIOyyoOqxsCIsICJ1IjogIuyLnSIsICJxIjogMSwgInAiOiAzMDAwMDAsICJiIjogIiJ9LCB7InQiOiAiZ3JwIiwgIm4iOiAiNi4gTEVEIOueqO2UhCDqtZDssrQiLCAiYiI6ICIxLDI4MMOXMzIwIDUwVyBLQyJ9LCB7InQiOiAic3ViIiwgIm4iOiAiTEVEIOueqO2UhCAoMSwyODDDlzMyMCwgNTBX6riJLCBLQyDsnbjspp0pIiwgInUiOiAi6rCcIiwgInEiOiA2LCAicCI6IDU1MDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuq4sOyhtCDrk7Eg7LKg6rGwIOuwjyDshKTsuZgiLCAidSI6ICLqsJwiLCAicSI6IDYsICJwIjogMjAwMDAsICJiIjogIiJ9LCB7InQiOiAiZ3JwIiwgIm4iOiAiNy4g7KeR7IiY7KCVIOuNruqwnCDsoJzsnpHCt%2ByEpOy5mCIsICJiIjogIuyyoO2MkCA1LjBUIDkwMMOXNDAwIn0sIHsidCI6ICJzdWIiLCAibiI6ICLssqDtjJAg642u6rCcIOygnOyekSAo7Iuk7LihwrfsoIjri6jrqbQg66eI6rCQwrfrsLDsiJjqtIAg6rWs66mNKSIsICJ1IjogIuqwnCIsICJxIjogMSwgInAiOiAyNTAwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi7ISk7LmYwrfsi6TrpqzsvZgg66eI6rCQwrfsg4HrtoAg642w7L2U7YOA7J28IOu2gOywqSIsICJ1IjogIuyLnSIsICJxIjogMSwgInAiOiAxMDAwMDAsICJiIjogIiJ9LCB7InQiOiAiaXRlbSIsICJuIjogIjguIOycoOumrOywvSDshKTsuZggKDUuMFQsIDEsMTExw5c0ODApIiwgInUiOiAi6rCcIiwgInEiOiAxLCAicCI6IDE1MDAwMCwgImIiOiAiIn0sIHsidCI6ICJpdGVtIiwgIm4iOiAi7Y%2BQ6riw66y8IOyymOumrCDrsI8g7ZiE7J6lIOygleumrCIsICJ1IjogIuyLnSIsICJxIjogMSwgInAiOiAyNTAwMDAsICJiIjogIiJ9LCB7InQiOiAiaXRlbSIsICJuIjogIuyatOuwmOu5hCDrsI8g67aA64yA6rK967mEIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDIwMDAwMCwgImIiOiAiIn1dfSwgInMiOiB7ImlkIjogInJlc3RhdXJhbnQxM18yMDI2LTExIiwgInByb2ZpdExhYmVsIjogIuq4sOyXheydtOycpCIsICJyYXRlIjogbnVsbCwgInZhdCI6IDEwLCAiaCI6IHsiZG9jIjogIuqyrCDsoIEg7IScIiwgInRvIjogIuuwnOyjvOyymCDqt4DtlZgiLCAidGl0bGUiOiAi7Iud64u5IDEz7Zi4IOyduO2FjOumrOyWtCDqs7XsgqwiLCAicGxhY2UiOiAi64yA6rWs6rSR7Jet7IucIOu2geq1rCDsgrDqsqnrj5kg7KKF7ZWp7Jyg7Ya164uo7KeAIOyghOyekOq0gCAxNuuPmSDsp4DtlZggMTPtmLgiLCAidmFsaWQiOiAi6rKs7KCB7J2866Gc67aA7YSwIDMw7J28IiwgInJlZ25vIjogIjg0OC00Ny0wMTA0NiIsICJjbyI6ICLsmrDsiqTtipzrlJTsmKQiLCAiY2VvIjogIuyasOyngO2biCAo7J24KSIsICJhZGRyIjogIuuMgOq1rOq0keyXreyLnCDrtoHqtawg7Jew7JWU66GcIDUyLCDsp4DtlZgx7Li1IDLtmLgiLCAiYml6IjogIuqxtOyEpOyXhSIsICJpdGVtIjogIuuPhOyepSwg64%2BE67CwLCDsi6TrgrQg7J6l7IudIOuwjyDrgrTsnqUg66qp6rO1IiwgInRlbCI6ICIwMTAtODkyNS03NTU4IiwgIm5vdGUiOiAi4oC7IO2Kueq4sOyCrO2VrTxicj4xLiDrs7gg6rKs7KCB7J2AIOyLnOuwqeyEnCjrqbTsoIEgNjIuMDE3446hLCDqsIDroZwgNiw2MDAgw5cg7IS466GcIDksNDAwIMOXIOuGkuydtCAyLDcwMG1tKSDquLDspIDsnoXri4jri6QuPGJyPjIuIOyXkOyWtOy7qChMRyBQUTA5MDBUMlNGKeydgCDrg4nrsKnsoITsmqkg66qo64247J2066mwLCDstpTqsIAg67Cw6rSAIDIzbcK37Iuk7Jm46riwIOqxsOy5mOuMgCDtj6ztlagg6riI7JWh7J6F64uI64ukLjxicj4zLiDsnKDrpqwg7I2s7YyFIOyDieyDgcK37Iuc6rO1IOuylOychOuKlCDsi5zqs7Ug7KCEIOuwnOyjvOyekCDtmZXsnbgg7ZuEIOynhO2Wie2VqeuLiOuLpC48YnI%2BNC4g6rCA7IqkIOuwsOq0gMK36rOE65%2BJ6riw64qUIOqzteyCrCDrspTsnIQg67CW7J2066mwIOuztOyWkSDtm4Qg7J6R7JeF7ZWp64uI64ukLjxicj41LiDtlanqs4TquIjslaHsnYAg67aA6rCA6rCA7LmY7IS4IDEwJSDtj6ztlagg6riI7JWh7J6F64uI64ukLiJ9LCAicm93cyI6IFt7InQiOiAiZ3JwIiwgIm4iOiAiMS4g7LKc7J6lwrfrsr3rqbQo7KKMLOyasCnCt%2Bq4sOuRpSDrj4TsnqXqs7XsgqwiLCAiYiI6ICLsi6TrgrTsmqkg7IiY7ISx7Y6Y7J247Yq4In0sIHsidCI6ICJzdWIiLCAibiI6ICLrs7TslpEg67CPIOuwlO2DleygleumrCAo66i87KeAwrfsmKTsl7zrrLzCt%2BuTpOucrCDrtoDrtoQg7KCc6rGwKSIsICJ1IjogIuyLnSIsICJxIjogMSwgInAiOiAxNTAwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi6reg7Je0wrfshpDsg4Eg67aA7JyEIO2NvO2LsCDrs7TsiJgiLCAidSI6ICLsi50iLCAicSI6IDEsICJwIjogMjAwMDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuuyvSDtlZjrtoAg6rOw7Yyh7J20wrfsmKTsl7wg7KCc6rGwIOuwjyDrsKnqt6DsoJwg7LKY66asIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDIwMDAwMCwgImIiOiAi7IKs7KeEIO2ZleyduCJ9LCB7InQiOiAic3ViIiwgIm4iOiAi7ZWY64%2BEIDHtmowgKyDsg4Hrj4QgMu2ajCAo7LKc7J6lIDYyLjAgKyDsoozsmrDrsr0gOS40bcOXMi43bcOXMiA1MC44ICsg6riw65GlIDcuMOOOoSkiLCAidSI6ICLjjqEiLCAicSI6IDEyMCwgInAiOiAxMjAwMCwgImIiOiAi6riw65GlIDgwMMOXNTAwIn0sIHsidCI6ICJncnAiLCAibiI6ICIyLiDrsJTri6Ug642w7L2U7YOA7J28IOqzteyCrCIsICJiIjogIjMuMFQgNDUww5c0NTAifSwgeyJ0IjogInN1YiIsICJuIjogIuq4sOyhtCDrsJTri6Ug7Jik7Je8wrfsnpTsnqwg7KCc6rGwICjsiqTtgazrnpjtlZEpIiwgInUiOiAi446hIiwgInEiOiA2MiwgInAiOiAzMDAwLCAiYiI6ICLsgqzsp4Qg7ZmV7J24In0sIHsidCI6ICJzdWIiLCAibiI6ICLrsJTri6Ug67CU7YOV7KCV66asICjtj4ntg4TCt%2BuLqOywqMK37J207J2M67aAKSIsICJ1IjogIuOOoSIsICJxIjogNjIsICJwIjogNDAwMCwgImIiOiAiIn0sIHsidCI6ICJzdWIiLCAibiI6ICLsg4Hsl4Xsmqkg642w7L2U7YOA7J28IOyekOyerCAo66Gc7IqkIDUlKSIsICJ1IjogIuOOoSIsICJxIjogNjUsICJwIjogMTAwMDAsICJiIjogIuyDieyDgSDrsJzso7zsnpAg7Iq57J24In0sIHsidCI6ICJzdWIiLCAibiI6ICLrjbDsvZTtg4Dsnbwg7Iuc6rO167mEIiwgInUiOiAi446hIiwgInEiOiA2MiwgInAiOiA3MDAwLCAiYiI6ICIifSwgeyJ0IjogImdycCIsICJuIjogIjMuIOycoOumrCDsjaztjIUiLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuq4sOyhtCDsi5ztirjCt%2Bq4gOyekMK37Iqk7Yuw7LukIOygnOqxsCIsICJ1IjogIuyLnSIsICJxIjogMSwgInAiOiAyNTAwMDAsICJiIjogIuyCrOynhCDtmZXsnbgifSwgeyJ0IjogInN1YiIsICJuIjogIjEz7Zi47IukIOyViOqwnCDsi5ztirggKDYsNjAww5cyLDEwMCDDlyAy6rCc7IaMKSIsICJ1IjogIuOOoSIsICJxIjogMjgsICJwIjogMzAwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi67O164%2BE66y4IOy5vOudvCDsi5ztirggKDcsNjgww5cyLDEwMCDDlyAx6rCc7IaMKSIsICJ1IjogIuOOoSIsICJxIjogMTYsICJwIjogMzAwMDAsICJiIjogIiJ9LCB7InQiOiAiZ3JwIiwgIm4iOiAiNC4g7JeQ7Ja07LuoIOyEpOy5mOqzteyCrCIsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAiTEcgUFEwOTAwVDJTRiDsl4XshozsmqkgMjXtj4ntmJUg7Iqk7YOg65OcICjquLDrs7jrsLDqtIAg7ISk7LmYIO2PrO2VqCkiLCAidSI6ICLrjIAiLCAicSI6IDEsICJwIjogMTcwMDAwMCwgImIiOiAi64OJ67Cp7KCE7JqpIn0sIHsidCI6ICJzdWIiLCAibiI6ICLstpTqsIAg67Cw6rSAIiwgInUiOiAibSIsICJxIjogMjMsICJwIjogMzAwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi7Iuk7Jm46riwIOqxsOy5mOuMgCIsICJ1IjogIuyhsCIsICJxIjogMSwgInAiOiAxMjAwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi7ISk7LmYIOyduOu2gCDstpTqsIAiLCAidSI6ICLsnbgiLCAicSI6IDEsICJwIjogMTgwMDAwLCAiYiI6ICIifSwgeyJ0IjogInN1YiIsICJuIjogIuyXkOyWtOy7qCDsoITsmqkg7LCo64uo6riwIChFTEIgMjBBKSDstpTqsIAiLCAidSI6ICLsi50iLCAicSI6IDEsICJwIjogNjAwMDAsICJiIjogIuq4sOyhtCDrtoTsoITrsJgifSwgeyJ0IjogIml0ZW0iLCAibiI6ICI1LiDsiJjrj4Qg67Cw6rSAIOuwjyDqs4Trn4nquLAg7LKg6rGwIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDMwMDAwMCwgImIiOiAiIn0sIHsidCI6ICJncnAiLCAibiI6ICI2LiBMRUQg656o7ZSEIOq1kOyytCIsICJiIjogIjEsMjgww5czMjAgNTBXIEtDIn0sIHsidCI6ICJzdWIiLCAibiI6ICJMRUQg656o7ZSEICgxLDI4MMOXMzIwLCA1MFfquIksIEtDIOyduOymnSkiLCAidSI6ICLqsJwiLCAicSI6IDYsICJwIjogNTUwMDAsICJiIjogIiJ9LCB7InQiOiAic3ViIiwgIm4iOiAi6riw7KG0IOuTsSDssqDqsbAg67CPIOyEpOy5mCIsICJ1IjogIuqwnCIsICJxIjogNiwgInAiOiAyMDAwMCwgImIiOiAiIn0sIHsidCI6ICJncnAiLCAibiI6ICI3LiDsp5HsiJjsoJUg642u6rCcIOygnOyekcK37ISk7LmYIiwgImIiOiAi7LKg7YyQIDUuMFQgOTAww5c0MDAifSwgeyJ0IjogInN1YiIsICJuIjogIuyyoO2MkCDrja7qsJwg7KCc7J6RICjsi6TsuKHCt%2BygiOuLqOuptCDrp4jqsJDCt%2BuwsOyImOq0gCDqtazrqY0pIiwgInUiOiAi6rCcIiwgInEiOiAxLCAicCI6IDI1MDAwMCwgImIiOiAiIn0sIHsidCI6ICJzdWIiLCAibiI6ICLshKTsuZjCt%2ByLpOumrOy9mCDrp4jqsJDCt%2ByDgeu2gCDrjbDsvZTtg4Dsnbwg67aA7LCpIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDEwMDAwMCwgImIiOiAiIn0sIHsidCI6ICJpdGVtIiwgIm4iOiAiOC4g7Jyg66as7LC9IOyEpOy5mCAoNS4wVCwgMSwxMTHDlzQ4MCkiLCAidSI6ICLqsJwiLCAicSI6IDEsICJwIjogMTUwMDAwLCAiYiI6ICIifSwgeyJ0IjogIml0ZW0iLCAibiI6ICLtj5DquLDrrLwg7LKY66asIOuwjyDtmITsnqUg7KCV66asIiwgInUiOiAi7IudIiwgInEiOiAxLCAicCI6IDI1MDAwMCwgImIiOiAiIn0sIHsidCI6ICJpdGVtIiwgIm4iOiAi7Jq067CY67mEIOuwjyDrtoDrjIDqsr3ruYQiLCAidSI6ICLsi50iLCAicSI6IDEsICJwIjogMjAwMDAwLCAiYiI6ICIifV19fQ%3D%3D" target="_blank" rel="noopener">견적서 수정 · 인쇄 · PDF</a></div>
+ <div class="card" style="overflow-x:auto"><table class="est">
+  <thead><tr><th style="width:34px">No</th><th>품명 / 내용</th><th>단위</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead>
+  <tbody><tr class='grp'><td class='c'>1</td><td>1. 천장·벽면(좌,우)·기둥 도장공사</td><td></td><td></td><td></td><td class='num'>1,990,000</td><td class='c'>실내용 수성페인트</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 보양 및 바탕정리 (먼지·오염물·들뜬 부분 제거)</td><td class='c'>식</td><td class='num'>1</td><td class='num'>150,000</td><td class='num'>150,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 균열·손상 부위 퍼티 보수</td><td class='c'>식</td><td class='num'>1</td><td class='num'>200,000</td><td class='num'>200,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 벽 하부 곰팡이·오염 제거 및 방균제 처리</td><td class='c'>식</td><td class='num'>1</td><td class='num'>200,000</td><td class='num'>200,000</td><td class='c'>사진 확인</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 하도 1회 + 상도 2회 (천장 62.0 + 좌우벽 9.4m×2.7m×2 50.8 + 기둥 7.0㎡)</td><td class='c'>㎡</td><td class='num'>120</td><td class='num'>12,000</td><td class='num'>1,440,000</td><td class='c'>기둥 800×500</td></tr>
+<tr class='grp'><td class='c'>2</td><td>2. 바닥 데코타일 공사</td><td></td><td></td><td></td><td class='num'>1,518,000</td><td class='c'>3.0T 450×450</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 기존 바닥 오염·잔재 제거 (스크래핑)</td><td class='c'>㎡</td><td class='num'>62</td><td class='num'>3,000</td><td class='num'>186,000</td><td class='c'>사진 확인</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 바닥 바탕정리 (평탄·단차·이음부)</td><td class='c'>㎡</td><td class='num'>62</td><td class='num'>4,000</td><td class='num'>248,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 상업용 데코타일 자재 (로스 5%)</td><td class='c'>㎡</td><td class='num'>65</td><td class='num'>10,000</td><td class='num'>650,000</td><td class='c'>색상 발주자 승인</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 데코타일 시공비</td><td class='c'>㎡</td><td class='num'>62</td><td class='num'>7,000</td><td class='num'>434,000</td><td class='c'></td></tr>
+<tr class='grp'><td class='c'>3</td><td>3. 유리 썬팅</td><td></td><td></td><td></td><td class='num'>1,570,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 기존 시트·글자·스티커 제거</td><td class='c'>식</td><td class='num'>1</td><td class='num'>250,000</td><td class='num'>250,000</td><td class='c'>사진 확인</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 13호실 안개 시트 (6,600×2,100 × 2개소)</td><td class='c'>㎡</td><td class='num'>28</td><td class='num'>30,000</td><td class='num'>840,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 복도문 칼라 시트 (7,680×2,100 × 1개소)</td><td class='c'>㎡</td><td class='num'>16</td><td class='num'>30,000</td><td class='num'>480,000</td><td class='c'></td></tr>
+<tr class='grp'><td class='c'>4</td><td>4. 에어컨 설치공사</td><td></td><td></td><td></td><td class='num'>2,750,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· LG PQ0900T2SF 업소용 25평형 스탠드 (기본배관 설치 포함)</td><td class='c'>대</td><td class='num'>1</td><td class='num'>1,700,000</td><td class='num'>1,700,000</td><td class='c'>냉방전용</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 추가 배관</td><td class='c'>m</td><td class='num'>23</td><td class='num'>30,000</td><td class='num'>690,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 실외기 거치대</td><td class='c'>조</td><td class='num'>1</td><td class='num'>120,000</td><td class='num'>120,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 설치 인부 추가</td><td class='c'>인</td><td class='num'>1</td><td class='num'>180,000</td><td class='num'>180,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 에어컨 전용 차단기 (ELB 20A) 추가</td><td class='c'>식</td><td class='num'>1</td><td class='num'>60,000</td><td class='num'>60,000</td><td class='c'>기존 분전반</td></tr>
+<tr class=''><td class='c'>5</td><td class='nm'>5. 수도 배관 및 계량기 철거</td><td class='c'>식</td><td class='num'>1</td><td class='num'>300,000</td><td class='num'>300,000</td><td class='c'></td></tr>
+<tr class='grp'><td class='c'>6</td><td>6. LED 램프 교체</td><td></td><td></td><td></td><td class='num'>450,000</td><td class='c'>1,280×320 50W KC</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· LED 램프 (1,280×320, 50W급, KC 인증)</td><td class='c'>개</td><td class='num'>6</td><td class='num'>55,000</td><td class='num'>330,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 기존 등 철거 및 설치</td><td class='c'>개</td><td class='num'>6</td><td class='num'>20,000</td><td class='num'>120,000</td><td class='c'></td></tr>
+<tr class='grp'><td class='c'>7</td><td>7. 집수정 덮개 제작·설치</td><td></td><td></td><td></td><td class='num'>350,000</td><td class='c'>철판 5.0T 900×400</td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 철판 덮개 제작 (실측·절단면 마감·배수관 구멍)</td><td class='c'>개</td><td class='num'>1</td><td class='num'>250,000</td><td class='num'>250,000</td><td class='c'></td></tr>
+<tr class='sub'><td class='c'></td><td class='nm'>· 설치·실리콘 마감·상부 데코타일 부착</td><td class='c'>식</td><td class='num'>1</td><td class='num'>100,000</td><td class='num'>100,000</td><td class='c'></td></tr>
+<tr class=''><td class='c'>8</td><td class='nm'>8. 유리창 설치 (5.0T, 1,111×480)</td><td class='c'>개</td><td class='num'>1</td><td class='num'>150,000</td><td class='num'>150,000</td><td class='c'></td></tr>
+<tr class=''><td class='c'>9</td><td class='nm'>폐기물 처리 및 현장 정리</td><td class='c'>식</td><td class='num'>1</td><td class='num'>250,000</td><td class='num'>250,000</td><td class='c'></td></tr>
+<tr class=''><td class='c'>10</td><td class='nm'>운반비 및 부대경비</td><td class='c'>식</td><td class='num'>1</td><td class='num'>200,000</td><td class='num'>200,000</td><td class='c'></td></tr>
+<tr class='sum'><td></td><td>공급가액</td><td></td><td></td><td></td><td class='num'>9,528,000</td><td></td></tr>
+<tr><td></td><td>부가가치세 (10%)</td><td></td><td></td><td></td><td class='num'>952,000</td><td class='c'>천원 미만 절사</td></tr>
+<tr class='grand'><td></td><td>합 계</td><td></td><td></td><td></td><td class='num'>10,480,000</td><td></td></tr></tbody></table></div>
+ <div class="note">※ 특기사항<br>1. 본 견적은 시방서(면적 62.017㎡, 가로 6,600 × 세로 9,400 × 높이 2,700mm) 기준입니다.<br>2. 에어컨(LG PQ0900T2SF)은 냉방전용 모델이며, 추가 배관 23m·실외기 거치대 포함 금액입니다.<br>3. 유리 썬팅 색상·시공 범위는 시공 전 발주자 확인 후 진행합니다.<br>4. 가스 배관·계량기는 공사 범위 밖이며 보양 후 작업합니다.<br>5. 합계금액은 부가가치세 10% 포함 금액입니다.</div>
+</section>
+<footer>우스튜디오 · 문의 0507-1417-7558</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+window.SIK13={version:'v1-202611191707'};
+if(/detail/.test(location.hash))document.body.classList.add('dt');
+window.addEventListener('hashchange',()=>document.body.classList.toggle('dt',/detail/.test(location.hash)));
+const FLOORS=[['그레이 베이지','#c4baa8'],['라이트 그레이','#c9c9c6'],['내추럴 우드','#b98d62'],['차콜','#5d5d5b']];
+const WALLS=[['화이트','#f1efe9'],['웜 그레이','#d9d4cb'],['아이보리','#ece3cf']];
+const SHEETS=[['안개(반투명)',0.62],['투명(시트 없음)',0.18]];
+(function(){
+const el=document.getElementById('v3d');
+if(!window.THREE){document.getElementById('hint').textContent='3D를 불러오지 못했어요. 새로고침해 주세요.';return}
+const R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));el.appendChild(R.domElement);
+R.shadowMap.enabled=true;
+const S=new THREE.Scene();S.background=new THREE.Color('#d9d6cf');
+const C=new THREE.PerspectiveCamera(50,1,0.05,200);
+const O=new THREE.OrbitControls(C,R.domElement);O.enableDamping=true;O.dampingFactor=0.08;O.screenSpacePanning=true;
+S.add(new THREE.HemisphereLight(0xffffff,0xb0aca4,0.95));
+const sun=new THREE.DirectionalLight(0xffffff,0.55);sun.position.set(4,9,6);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-8,right:8,top:8,bottom:-8});S.add(sun);
+const W=6.6,D=9.4,H=2.7;
+// SketchUp mm(x,y,z) → three m (x-W/2, z, -(y-D/2))
+function box(x0,y0,z0,x1,y1,z1,mat,cast=true){const g=new THREE.BoxGeometry((x1-x0)/1000,(z1-z0)/1000,(y1-y0)/1000);const m=new THREE.Mesh(g,mat);
+ m.position.set((x0+x1)/2000-W/2,(z0+z1)/2000,-((y0+y1)/2000-D/2));m.castShadow=cast;m.receiveShadow=true;S.add(m);return m}
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o));
+// floor texture 450 tiles
+function tileTex(hex){const cv=document.createElement('canvas');cv.width=cv.height=256;const x=cv.getContext('2d');x.fillStyle=hex;x.fillRect(0,0,256,256);
+ for(let i=0;i<2500;i++){const v=Math.random()*24-12;x.fillStyle=`rgba(${v>0?255:0},${v>0?255:0},${v>0?255:0},${Math.abs(v)/160})`;x.fillRect(Math.random()*256,Math.random()*256,2,2)}
+ x.strokeStyle='rgba(0,0,0,.28)';x.lineWidth=3;x.strokeRect(0,0,256,256);const t=new THREE.CanvasTexture(cv);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(W/.45,D/.45);t.anisotropy=8;return t}
+const floorM=M('#ffffff',{map:tileTex(FLOORS[0][1]),roughness:.6});
+const fl=new THREE.Mesh(new THREE.PlaneGeometry(W,D),floorM);fl.rotation.x=-Math.PI/2;fl.receiveShadow=true;S.add(fl);
+const wallM=M(WALLS[0][1]);const colM=M(WALLS[0][1]);
+box(-200,-150,0,0,9550,2700,wallM);box(6600,-150,0,6800,9550,2700,wallM);
+box(3050,4300,0,3550,5100,2700,colM);
+// glass fronts
+const glM=new THREE.MeshStandardMaterial({color:'#e8f0ef',transparent:true,opacity:SHEETS[0][1],roughness:.25,metalness:0,side:THREE.DoubleSide,depthWrite:false});
+const upM=new THREE.MeshStandardMaterial({color:'#dfeaea',transparent:true,opacity:.2,roughness:.1,side:THREE.DoubleSide,depthWrite:false});
+const fr=M('#a6a7ab',{metalness:.6,roughness:.35});
+function front(yy,cuts){const xs=[0,...cuts.flat(),6600];for(let i=0;i<xs.length;i+=2){if(xs[i+1]-xs[i]>1)box(xs[i],yy-6,0,xs[i+1],yy+6,2100,glM,false)}
+ box(0,yy-6,2140,6600,yy+6,2700,upM,false);box(0,yy-35,2100,6600,yy+35,2140,fr);
+ [0,6600,...cuts.flat()].forEach(x=>box(Math.max(x-20,0),yy-35,0,Math.min(x+20,6600),yy+35,2700,fr))}
+front(9475,[[2850,3750]]);front(-75,[[2600,4000]]);
+// doors (slightly open)
+const dg=new THREE.Group();S.add(dg);
+function door(x0,x1,yy,ang,hx){const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry((x1-x0)/1000,2.1,.012),glM);m.position.set((x1-x0)/2000*(hx<x0+1?1:-1),1.05,0);g.add(m);
+ const hd=new THREE.Mesh(new THREE.BoxGeometry(.02,.3,.04),fr);hd.position.set((x1-x0)/1000*.85*(hx<x0+1?1:-1),1.05,.03);g.add(hd);
+ g.position.set(hx/1000-W/2,0,-(yy/1000-D/2));g.rotation.y=ang;dg.add(g)}
+door(2850,3750,9475,-0.5,3750);door(2600,3300,-75,0.35,2600);door(3300,4000,-75,-0.35,4000);
+// ceiling + LEDs
+const cg=new THREE.Group();S.add(cg);
+const cl=new THREE.Mesh(new THREE.PlaneGeometry(W,D),M(WALLS[0][1],{side:THREE.DoubleSide}));cl.rotation.x=Math.PI/2;cl.position.y=H;cg.add(cl);
+const ledM=new THREE.MeshStandardMaterial({color:'#ffffff',emissive:'#fffbe8',emissiveIntensity:1});
+[1650,4950].forEach(cx=>[1700,4700,7700].forEach(cy=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.32,.02,1.28),ledM);m.position.set(cx/1000-W/2,H-.015,-(cy/1000-D/2));cg.add(m);
+ const pl=new THREE.PointLight(0xfff8ea,0.18,6);pl.position.set(cx/1000-W/2,H-.3,-(cy/1000-D/2));cg.add(pl)}));
+// furniture (reference)
+const blue=M('#1f55b0',{roughness:.5}),blk=M('#222'),wood=M('#b9844f',{roughness:.6}),wht=M('#f7f7f7',{roughness:.4});
+[1750,4850].forEach(cx=>{const cy=6100;box(cx-762,cy-1370,730,cx+762,cy+1370,760,blue);box(cx-840,cy-5,760,cx+840,cy+5,912,blk);
+ box(cx-5,cy-1370,760.5,cx+5,cy+1370,761,wht,false);
+ [[-600,-1150],[600,-1150],[-600,1150],[600,1150]].forEach(([dx,dy])=>box(cx+dx-30,cy+dy-30,0,cx+dx+30,cy+dy+30,730,blk))});
+const rt=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.03,40),wood);rt.position.set(4.95-W/2,.735,-(1.75-D/2));rt.castShadow=true;S.add(rt);
+const rp=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.72,16),blk);rp.position.set(4.95-W/2,.36,-(1.75-D/2));S.add(rp);
+[[0,-750],[0,750],[-750,0],[750,0]].forEach(([dx,dy])=>{box(4950+dx-210,1750+dy-210,420,4950+dx+210,1750+dy+210,460,blk);
+ const cx=4950+dx,cy=1750+dy;let bx0=cx-210,bx1=cx+210,by0=cy-210,by1=cy+210;
+ if(dx>0){bx0=cx+170}else if(dx<0){bx1=cx-170}else if(dy>0){by0=cy+170}else{by1=cy-170}
+ box(bx0,by0,460,bx1,by1,850,blk);
+ [[-170,-170],[170,-170],[-170,170],[170,170]].forEach(([a,b])=>box(4950+dx+a-15,1750+dy+b-15,0,4950+dx+a+15,1750+dy+b+15,420,blk))});
+// AC
+box(6300,1305,0,6600,1895,1840,wht);box(6290,1360,1450,6300,1840,1750,M('#cfd3d6'));
+// cameras
+const CAM={all:[[-7.5,8.5,8.5],[0,0.6,0],false],in2:[[0.6,1.55,D/2-.45],[0,1.2,-2],true],in1:[[-0.3,1.55,-D/2+.2],[0,1.1,2],true],top:[[0,15,0.01],[0,0,0],false]};
+let ceilOn=false;function setCeil(v){ceilOn=v;cg.visible=v;document.getElementById('bCeil').classList.toggle('on',v)}
+function cam(k){const [p,t,c]=CAM[k];C.position.set(...p);O.target.set(...t);O.update();setCeil(c);
+ document.querySelectorAll('[data-cam]').forEach(b=>b.classList.toggle('on',b.dataset.cam===k))}
+document.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>cam(b.dataset.cam));
+document.getElementById('bCeil').onclick=()=>setCeil(!ceilOn);
+// options
+function opts(id,list,fn,sw=true){const box=document.getElementById(id);list.forEach((it,i)=>{const b=document.createElement('button');
+ b.innerHTML=(sw&&typeof it[1]==='string'?`<span class="sw" style="background:${it[1]}"></span>`:'')+it[0];if(!i)b.classList.add('on');
+ b.onclick=()=>{box.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');fn(it)};box.appendChild(b)})}
+const mF=document.getElementById('mFloor'),mW=document.getElementById('mWall'),mS=document.getElementById('mSheet');
+opts('cFloor',FLOORS,it=>{floorM.map=tileTex(it[1]);floorM.needsUpdate=true;mF.textContent=it[0]});
+opts('cWall',WALLS,it=>{wallM.color.set(it[1]);colM.color.set(it[1]);cl.material.color.set(it[1]);mW.textContent=it[0]});
+opts('cSheet',SHEETS,it=>{glM.opacity=it[1];mS.textContent=it[0]},false);
+mF.textContent=FLOORS[0][0];mW.textContent=WALLS[0][0];mS.textContent=SHEETS[0][0];
+function size(){const w=el.clientWidth,h=el.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}
+window.addEventListener('resize',size);size();cam('all');
+document.getElementById('hint').textContent='돌려 보세요';
+(function loop(){requestAnimationFrame(loop);O.update();R.render(S,C)})();
+})();
+</script></body></html>
