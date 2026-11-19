@@ -295,8 +295,14 @@ var PATTERNS = {
     ['레드브라운','SPD-04RB','#7a3c2c'],['내츄럴','SPD-04NT','#c7b18c'],['다크브라운','SPD-04DB','#4a3628']]},
   longstone: {name:'모던 롱스톤', price:140800, colors:[
     ['화이트','NLS-03W','#e9e7e1'],['그레이','NLS-03G','#8f9092'],['아이보리','NLS-03V','#ddd2bb'],
-    ['브라운','NLS-03BR','#6b4c38'],['블랙','NLS-03BK','#2f3033']]}
+    ['브라운','NLS-03BR','#6b4c38'],['블랙','NLS-03BK','#2f3033']]},
+  antique: {name:'앤틱 브릭', price:178000, colors:[
+    ['빈티지 레드','NTB-11VR','#a5583c'],['빈티지 베이지','NTB-11VB','#c3b8b1'],['빈티지 그레이','NTB-11VG','#939497']]},
+  stdbrick: {name:'스탠다드 브릭', price:162000, colors:[
+    ['오렌지','STB-09OR','#b0623a'],['화이트','STB-09W','#e4e3e0'],['그레이','STB-09G','#666768']]}
 };
+// 구매처별 사이딩 박스 가격: 대림우드 11/19 확인, 케이패널 11/17 확인
+var PRICE={stucco:{dw:162000,kp:140800},spandrel:{dw:162000,kp:140800},longstone:{dw:162000,kp:140800},antique:{dw:178000,kp:149600},stdbrick:{dw:162000,kp:140800}};
 var state = {orient:'h', pat:'stucco', color:0};
 var SHOW=/detail/.test(location.hash);
 
@@ -359,8 +365,17 @@ function panelCanvas(pat,hex){
   var cc=new THREE.Color(hex), lum=.3*cc.r+.59*cc.g+.11*cc.b, dk=lum<.3;
   if(pat==='stucco'){noise(g,W,H,hex,.10,26000);}
   if(pat==='spandrel'){noise(g,W,H,hex,.05,8000);[H/3,2*H/3].forEach(function(y){g.fillStyle=dk?'rgba(255,255,255,.16)':shade(hex,.72);g.fillRect(0,y-3,W,5);g.fillStyle=dk?'rgba(0,0,0,.5)':shade(hex,1.12);g.fillRect(0,y+2,W,2);});}
+  if(pat==='antique'||pat==='stdbrick'){ // 380 판 = 벽돌 5줄, 벽돌 길이 약 240mm, 회색 줄눈
+    var ant=pat==='antique', rh=H/5, bl=120, mort=dk?'#3a3a3a':(lum>.8?'#b9b7b2':'#77746f');
+    g.fillStyle=mort;g.fillRect(0,0,W,H);
+    for(var r=0;r<5;r++){var x=(r%2?-bl/2:0)-Math.random()*20;while(x<W){var L=bl*(.85+Math.random()*.3);
+      var f=ant?(.78+Math.random()*.4):(.93+Math.random()*.12);g.fillStyle=shade(hex,f);g.fillRect(x+3,r*rh+3,L-3,rh-4);
+      if(ant){for(var q=0;q<3;q++){if(Math.random()<.45){g.fillStyle='rgba(235,220,205,'+(.15+Math.random()*.25)+')';g.fillRect(x+3+Math.random()*L*.7,r*rh+3+Math.random()*rh*.5,8+Math.random()*30,3+Math.random()*12);}}}
+      x+=L;}}
+    noise(g,W,H,hex,ant?.18:.10,ant?30000:20000);}
   if(pat==='longstone'){var rows=[0,H/2,H];for(var r=0;r<2;r++){var x=-(Math.random()*200);while(x<W){var L=180+Math.random()*320;g.fillStyle=shade(hex,.9+Math.random()*.2);g.fillRect(x+2,rows[r]+2,L-4,H/2-4);x+=L;}}noise(g,W,H,hex,.08,15000);}
   // 판 이음(위 그림자, 아래 하이라이트)
+  if(pat==='antique'||pat==='stdbrick'){g.fillStyle='rgba(0,0,0,.25)';g.fillRect(0,0,W,3);return c;}
   g.fillStyle=dk?'rgba(255,255,255,.34)':'rgba(0,0,0,.5)';g.fillRect(0,0,W,9);g.fillStyle=dk?'rgba(0,0,0,.6)':'rgba(255,255,255,.3)';g.fillRect(0,H-4,W,4);
   return c;
 }
@@ -426,6 +441,8 @@ var MI={
  j:['J채널 (화이트)','35 × 50 × 3000 · 절단면 덮기','https://daelimwood.com/web/product/big/202610/da97a75a8f164dad852ff86d754eba0c.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EB%B6%80%EC%9E%90%EC%9E%AC-j%EC%B1%84%EB%84%90/3955/category/433/display/1/','대림우드',22000,'본'],
  corner:['아웃코너 (화이트)','40 × 40 × 3000 · 모서리','https://daelimwood.com/web/product/big/202610/89b61bc1e939c10d32850eceae94e6ac.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EB%B6%80%EC%9E%90%EC%9E%AC-%EC%95%84%EC%9B%83%EC%BD%94%EB%84%88/3956/category/433/display/1/','대림우드',32000,'본'],
  joiner:['아이조이너 결합형 (화이트)','27 × 40 × 3000 · 3m 판 이음','https://daelimwood.com/web/product/big/202610/2479976249820c41a1142f898285de33.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%95%84%EC%9D%B4%EC%A1%B0%EC%9D%B4%EB%84%88%EA%B2%B0%ED%95%A9%ED%98%95/3958/category/433/display/1/','대림우드',15400,'본'],
+ panelA:['메탈사이딩 앤틱브릭 시리즈 (빈티지 레드·베이지·그레이)','16 × 380 × 3000 · 1.14㎡/장 · 8장/박스 · 3색 인쇄+링클 마감 · 색상 선택','https://daelimwood.com/web/product/big/202406/a809f3061ad8f1288b10f4bd78846139.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%95%A4%ED%8B%B1%EB%B8%8C%EB%A6%AD-%EC%8B%9C%EB%A6%AC%EC%A6%88-16x380x3000mm-8%EC%9E%A5box/7123/','대림우드',178000,'박스'],
+ panelB:['메탈사이딩 스탠다드브릭 시리즈 (오렌지·화이트·그레이)','16 × 380 × 3000 · 1.14㎡/장 · 8장/박스 · 색상 선택','https://daelimwood.com/web/product/big/202411/a3ebfd4f6ea4fd1f451a9403e8d5b4c5.jpg',DW+'%EB%A9%94%ED%83%88%EC%82%AC%EC%9D%B4%EB%94%A9-%EC%8A%A4%ED%83%A0%EB%8B%A4%EB%93%9C%EB%B8%8C%EB%A6%AD-%EC%8B%9C%EB%A6%AC%EC%A6%88-8%EC%9E%A5box/7541/','대림우드',162000,'박스'],
  sil:['KCC 변성실리콘 MS1000','이음·화강석 밑·볼트 구멍 방수','https://shop-phinf.pstatic.net/20260602_40/1780385277940VhvCU_JPEG/2907307975742063_1278551654.jpg?type=o1000','https://smartstore.naver.com/kdongcnc/products/7722106267','극동씨앤씨',3900,'개'],
  panelK:['메탈사이딩 스타코 & 마블스톤 (네이버)','16 × 380 × 3000 · 강판 0.3T · 1.14㎡/장 · 8장/박스 · 색상 선택 가능 · 중국 OEM','https://shop-phinf.pstatic.net/20260706_60/1783312909143Ehf9m_JPEG/7685392335323070_1279181071.jpg?type=o1000','https://smartstore.naver.com/k-industry/products/8566188441','케이패널 스마트스토어',140800,'박스'],
  anchor:['칼블럭 + 접시피스 M6×30','Ø6 · 50개/세트 · 약 290개(@400)','https://shop-phinf.pstatic.net/20260606_40/1780714061751I9YSW_PNG/56939035620265024_1843227930.png?type=o1000','https://smartstore.naver.com/ijbort/products/13624329889','앙카팩토리',2000,'세트']
@@ -434,10 +451,13 @@ var SUP='dw';
 var MQ={h:[['panel',3],['starter',6],['j',8],['corner',1],['joiner',4],['sil',12],['anchor',6]],
         v:[['panel',3],['j',14],['corner',1],['sil',12],['anchor',6]]};
 function drawMat(){var el=document.getElementById('mat'); if(!el)return; var k=state.orient,t=0,h='<h3>자재 · 구매처 ('+(k==='h'?'가로 시공':'세로 최적안')+', 전면 5m · 측면 12m · 높이 1.52m)</h3>';
- h+='<div class="row"><span class="lbl">사이딩</span><div class="seg" id="sup"><button data-v="dw"'+(SUP==='dw'?' class="on"':'')+'>대림우드 162,000</button><button data-v="kp"'+(SUP==='kp'?' class="on"':'')+'>네이버 케이패널 140,800</button></div></div>';
- MQ[k].forEach(function(q){var it=MI[(q[0]==='panel'&&SUP==='kp')?'panelK':q[0]],a=it[5]*q[1];t+=a;h+='<div class="mi"><img src="'+it[2]+'" alt=""><div><b>'+it[0]+'</b><div class="sp">'+it[1]+'</div><a href="'+it[3]+'" target="_blank" rel="noopener">'+it[4]+' 상품 보기 ↗</a></div><div class="am">'+a.toLocaleString('ko-KR')+'원<small>'+it[5].toLocaleString('ko-KR')+' × '+q[1]+it[6]+'</small></div></div>';});
- h+='<div class="mtot"><span>합계 (VAT 포함, 배송비 별도)</span><span>'+t.toLocaleString('ko-KR')+'원</span></div><div class="note" style="display:block">대림우드 상품은 착불 화물(경기 이천 출고). 사이딩 색상 옵션 없음(흰색), 부자재는 화이트 선택. 문의 대림우드 1544-1660.</div>';
- h+='<div class="note" style="display:block">사이딩 구매처 비교: 대림우드 3박스 486,000 / 네이버 케이패널 3박스 422,400 (차이 63,600). 판 24장 = 4줄 × 6장, 3박스에 여유 0장(파손 대비 1장 여유 원하면 4박스). 케이패널은 색상 옵션이 있고(화면 색상 버튼과 같은 이름), 부자재 단가는 미공개(010-6460-1994). 구매처를 나누면 착불 화물비가 두 번 나올 수 있음.</div>';
+ var PP=PRICE[state.pat], PN=PATTERNS[state.pat].name;
+ h+='<div class="row"><span class="lbl">사이딩</span><div class="seg" id="sup"><button data-v="dw"'+(SUP==='dw'?' class="on"':'')+'>대림우드 '+PP.dw.toLocaleString('ko-KR')+'</button><button data-v="kp"'+(SUP==='kp'?' class="on"':'')+'>네이버 케이패널 '+PP.kp.toLocaleString('ko-KR')+'</button></div></div>';
+ function panelItem(){if(SUP==='kp'){var b=MI.panelK.slice();b[0]='메탈사이딩 '+PN+' (네이버)';b[5]=PP.kp;return b;}
+   if(state.pat==='antique')return MI.panelA; if(state.pat==='stdbrick')return MI.panelB; return MI.panel;}
+ MQ[k].forEach(function(q){var it=q[0]==='panel'?panelItem():MI[q[0]],a=it[5]*q[1];t+=a;h+='<div class="mi"><img src="'+it[2]+'" alt=""><div><b>'+it[0]+'</b><div class="sp">'+it[1]+'</div><a href="'+it[3]+'" target="_blank" rel="noopener">'+it[4]+' 상품 보기 ↗</a></div><div class="am">'+a.toLocaleString('ko-KR')+'원<small>'+it[5].toLocaleString('ko-KR')+' × '+q[1]+it[6]+'</small></div></div>';});
+ h+='<div class="mtot"><span>합계 (VAT 포함, 배송비 별도)</span><span>'+t.toLocaleString('ko-KR')+'원</span></div><div class="note" style="display:block">대림우드 상품은 착불 화물(경기 이천 출고). 스타코는 색상 옵션 없음(흰색), 앤틱 브릭·스탠다드 브릭은 색상 선택 가능. 부자재는 화이트 선택(브릭이면 그레이·블랙도 검토). 문의 대림우드 1544-1660.</div>';
+ h+='<div class="note" style="display:block">사이딩 구매처 비교('+PN+'): 대림우드 3박스 '+(PP.dw*3).toLocaleString('ko-KR')+' / 네이버 케이패널 3박스 '+(PP.kp*3).toLocaleString('ko-KR')+' (차이 '+((PP.dw-PP.kp)*3).toLocaleString('ko-KR')+'). 케이패널 엔틱브릭은 기본가 +8,800 옵션. 판 24장 = 4줄 × 6장, 3박스에 여유 0장(파손 대비 1장 여유 원하면 4박스). 케이패널은 색상 옵션이 있고(화면 색상 버튼과 같은 이름), 부자재 단가는 미공개(010-6460-1994). 구매처를 나누면 착불 화물비가 두 번 나올 수 있음.</div>';
  el.innerHTML=h;
  el.querySelectorAll('#sup button').forEach(function(b){b.onclick=function(){SUP=b.dataset.v;drawMat();};});}
 // ---- UI ----
@@ -445,7 +465,7 @@ var patBox=document.getElementById('pattern');
 Object.keys(PATTERNS).forEach(function(k){var b=document.createElement('button');b.textContent=PATTERNS[k].name;b.dataset.v=k;if(k===state.pat)b.className='on';patBox.appendChild(b);});
 function drawColors(){var box=document.getElementById('colors');box.innerHTML='';PATTERNS[state.pat].colors.forEach(function(c,i){var b=document.createElement('button');if(i===state.color)b.className='on';b.innerHTML='<i style="background:'+c[2]+'"></i><span>'+c[0]+(SHOW?'<br>'+c[1]:'')+'</span>';b.onclick=function(){state.color=i;drawColors();buildSiding();};box.appendChild(b);});}
 function seg(id,key,after){var el=document.getElementById(id);el.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state[key]=b.dataset.v;el.querySelectorAll('button').forEach(function(x){x.className=x===b?'on':'';});if(after)after();buildSiding();});}
-seg('orient','orient'); seg('pattern','pat',function(){state.color=0;drawColors();});
+seg('orient','orient'); seg('pattern','pat',function(){state.color=0;drawColors();drawMat();});
 var CAMS={iso:[[-17,9.5,16],[2.2,3,-5]],front:[[2.5,3,18],[2.5,3,0]],side:[[-30,3.3,-6],[0,3.3,-6]],corner:[[-2.3,3.4,2.4],[0.4,3.6,-0.4]]};
 function cam(k){var c=CAMS[k];camera.position.set(c[0][0],c[0][1],c[0][2]);controls.target.set(c[1][0],c[1][1],c[1][2]);controls.update();}
 document.querySelectorAll('.cams button').forEach(function(b){b.onclick=function(){cam(b.dataset.cam);};});
@@ -550,7 +570,7 @@ if(/steps/.test(location.hash)) setMode('step');
 resize();
 
 if(/detail/.test(location.hash))document.body.classList.add('show');
-window.SIGN_PAGE={version:'v6.5',patterns:Object.keys(PATTERNS).length};
+window.SIGN_PAGE={version:'v6.6',patterns:Object.keys(PATTERNS).length};
 </script>
 </body>
 </html>
