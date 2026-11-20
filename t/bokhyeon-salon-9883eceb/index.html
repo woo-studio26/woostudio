@@ -301,7 +301,7 @@ body.show-detail .detail{display:block}
   <p class="note">이 이미지는 실측 데이터를 바탕으로 만든 미팅용 3D 시안입니다. 세부 사항은 현장 미팅·실측에 따라 달라질 수 있습니다.</p>
 
   <div class="detail" id="mgdetail">
-    <b>mg용 메모 (#detail)</b><br>견적(우스튜디오 v6 20,802,000 / 가온 v1 동일)은 고객 페이지에서 뺌 — 미팅 때 종이로. 고객 견적 페이지 https://www.woostudio.co.kr/t/bokhyeon-quote-bf8aae85/ 는 링크만 끊음.<br>
+    <b>mg용 메모 (#detail)</b><br>견적은 고객 페이지에서 뺌(미팅 때 견적서 따로 전달).<br>
     모델: /Users/mg/skpwork/복현동미용실/복현동미용실_실측평면_v18.skp · 렌더: blender/salon_render_v4.blend (render_v4/*_b,c,d.png)<br>
     카운터 U자 1100×628 H1050(직원쪽 파임 650×230) · 대기 벤치 1100×400 H380 · 샴푸 상부장 650×350 H1450~2150, 하부장 H850 · 아치 통로 800 · 거울 700×1600×3<br>
     남은 확인: 유리문 폭·캐노피 돌출·검정 패널 실측, 샴푸대 전동 배선, 커트 의자·샴푸대 실제 제품 선정(뷰체 185/275F 검토)
@@ -320,7 +320,7 @@ body.show-detail .detail{display:block}
 
 <div class="lb" id="lb"><img alt=""></div>
 <script>
-window.SALON_PAGE={version:'v7-meeting'};
+window.SALON_PAGE={version:'v7b-meeting'};
 if(location.hash==='#detail')document.body.classList.add('show-detail');
 const lb=document.getElementById('lb'),li=lb.querySelector('img');
 document.querySelectorAll('.shot').forEach(s=>s.addEventListener('click',()=>{li.src=s.dataset.src;lb.classList.add('on')}));
