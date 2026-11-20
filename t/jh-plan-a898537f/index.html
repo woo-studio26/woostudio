@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>JH패브릭 공사대금 대응 시나리오</title>
+<style>
+:root{--ink:#16181d;--sub:#5b6270;--line:#e3e6eb;--bg:#f6f7f9;--ok:#1f8a4c;--warn:#c4410c;--no:#b42318;--blue:#1d4ed8}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:15px}
+.wrap{max-width:860px;margin:0 auto;padding:18px 14px 60px}
+h1{font-size:22px;margin:4px 0 2px}.meta{color:var(--sub);font-size:13px;margin-bottom:16px}
+h2{font-size:17px;margin:26px 0 10px;padding-left:9px;border-left:4px solid var(--ink)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.kpi b{display:block;font-size:19px}.kpi span{color:var(--sub);font-size:12.5px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f0f2f5;font-weight:600;font-size:13px}tr:last-child td{border-bottom:0}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;white-space:nowrap}
+.done{background:#e6f4ec;color:var(--ok)}.wait{background:#fff3e8;color:var(--warn)}.next{background:#e8efff;color:var(--blue)}
+.say{background:#16181d;color:#fff;border-radius:10px;padding:10px 13px;margin:6px 0;font-weight:500}
+.say small{display:block;color:#aab;font-weight:400;font-size:12px;margin-bottom:2px}
+.scen{border-left:5px solid var(--blue)}.scen.a{border-color:var(--ok)}.scen.b{border-color:#a16207}.scen.c{border-color:var(--warn)}.scen.d{border-color:var(--no)}
+.scen h3{margin:0 0 4px;font-size:16px}.scen .when{color:var(--sub);font-size:13px;margin-bottom:6px}
+ul,ol{margin:4px 0;padding-left:20px}li{margin:2px 0}
+.no li::marker{content:"✕  ";color:var(--no)}.yes li::marker{content:"✓  ";color:var(--ok)}
+.foot{color:var(--sub);font-size:12.5px;margin-top:24px}
+</style></head><body><div class="wrap">
+
+<h1>JH패브릭 공사대금 대응 시나리오</h1>
+<div class="meta">가온인테리어(우찬정) → ㈜제이에이치패브릭(대표 한정욱) · 2026-11-20 기준 · 법률 판단은 근거 있는 의견이며 확정 판단 아님</div>
+
+<div class="kpis">
+<div class="kpi"><span>청구금액</span><b>35,673,000원</b><span>공급가 32,430,000 + 부가세</span></div>
+<div class="kpi"><span>가압류 2026카단6053</span><b>인용 11/18</b><span>은행 4곳 + 임대보증금</span></div>
+<div class="kpi"><span>지급명령 2026차전19012</span><b>접수 11/18</b><span>보정 11/20 제출</span></div>
+<div class="kpi"><span>담보</span><b>1,500만</b><span>현금 500 (돌려받음) + 보증보험 1,000</span></div>
+</div>
+
+<h2>지금 어디까지 왔나</h2>
+<table>
+<tr><th>날짜</th><th>내용</th><th>상태</th></tr>
+<tr><td>11/17~18</td><td>담보 1,500만 제공 (보증보험 + 현금 공탁 2026금2564)</td><td><span class="tag done">완료</span></td></tr>
+<tr><td>11/18</td><td>가압류 결정. 결정문이 은행 4곳·건물주에게 발송됨</td><td><span class="tag done">완료</span></td></tr>
+<tr><td>11/18</td><td>지급명령 신청 (35,673,000원 + 송달 다음날부터 연 12%)</td><td><span class="tag done">접수</span></td></tr>
+<tr><td>11/20</td><td>지급명령 보정 (법인등기 말소사항 포함) 제출 11:29</td><td><span class="tag done">완료</span></td></tr>
+<tr><td>11/20</td><td>한정욱이 연락하기 시작 (통장 막힌 것으로 추정)</td><td><span class="tag wait">대응 중</span></td></tr>
+<tr><td>~11/27</td><td>은행·건물주 진술서 도착 → 실제로 묶인 금액 확인</td><td><span class="tag next">예정</span></td></tr>
+<tr><td>11월 말~12월 초</td><td>지급명령 발령 → 한정욱 회사로 송달</td><td><span class="tag next">예정</span></td></tr>
+<tr><td>송달 + 2주</td><td>이의 없으면 확정 → 압류·추심명령 신청</td><td><span class="tag next">예정</span></td></tr>
+<tr><td>12월 말~1월 초</td><td>은행에서 실제 추심 (가장 빠른 경우)</td><td><span class="tag next">예정</span></td></tr>
+</table>
+
+<h2>통화 대본</h2>
+<div class="card">
+<div class="say"><small>시작</small>가온인테리어 우지훈입니다. 이번 공사대금 건은 우찬정 대표님께 위임받아 제가 맡고 있습니다.</div>
+<b>먼저 듣기 (최대한 말하게)</b>
+<ul><li>어떻게 정리하실 생각이세요?</li><li>어느 통장이 막히셨어요? <span style="color:var(--sub)">→ 돈 있는 은행 파악</span></li><li>언제, 얼마까지 가능하세요?</li></ul>
+<div class="say"><small>우리 조건 (이것만 반복)</small>3,567만 원 다 주시면 바로 풀어 드립니다. 나눠서 하시려면 공증이나, 지급명령에 이의 안 하시는 조건으로 합의서를 쓰셔야 합니다. 다 갚으실 때까지 가압류는 유지됩니다.</div>
+<div class="say"><small>끝맺기 (그 자리에서 확정하지 않기)</small>말씀하신 조건 정리해서 대표님께 확인받고 문자로 다시 드리겠습니다.</div>
+</div>
+
+<h2>상대 반응별 답</h2>
+<table>
+<tr><th style="width:38%">한정욱이 이렇게 말하면</th><th>답</th></tr>
+<tr><td>가압류부터 풀어 달라</td><td>돈 들어오면 바로 풀어 드립니다. 순서는 바꿀 수 없습니다.</td></tr>
+<tr><td>개인적으로 한 공사다 / 회사랑 상관없다</td><td>법원이 회사 채무로 보고 결정 낸 겁니다. 이견 있으시면 법원에서 말씀하시면 됩니다. <i>(길게 다투지 않기)</i></td></tr>
+<tr><td>금액 깎아 달라</td><td>금액은 대표님 결정 사항이라 제가 말씀드릴 수 없습니다.</td></tr>
+<tr><td>천천히 / 형편 될 때 주겠다</td><td>날짜랑 금액을 정해 주셔야 하고, 공증이나 합의서가 있어야 합니다.</td></tr>
+<tr><td>공증은 못 한다</td><td>그럼 지급명령에 이의만 안 하시면 됩니다. 그것도 어려우시면 분할은 어렵고, 일시불이나 법원 절차대로 가겠습니다.</td></tr>
+<tr><td>아들 아니냐</td><td>네, 그런데 이 건은 회사 일로 제가 맡았습니다. <i>(부정하지 않기)</i></td></tr>
+<tr><td>삼촌한테 얘기하겠다</td><td>그건 따로 하셔도 됩니다. 이 건은 저랑 정리하시면 됩니다.</td></tr>
+<tr><td>화내거나 위협</td><td>녹음되고 있습니다. 차분히 말씀해 주세요.</td></tr>
+</table>
+
+<h2>시나리오별 행동</h2>
+<div class="card scen a"><h3>A. 일시불로 갚겠다</h3><div class="when">가장 좋은 경우</div>
+<ol><li>입금 확인 (아버지 계좌)</li><li>입금 확인 후 7일 안에 가압류 집행해제·취하, 지급명령 취하</li><li>담보취소 동의서·항고권 포기서 받아서 공탁금 500만 회수</li></ol></div>
+
+<div class="card scen b"><h3>B. 나눠서 갚겠다</h3><div class="when">가능성 가장 큼</div>
+<ol><li>조건: 선지급 크게(절반 이상 목표), 기간 짧게(3~6개월), 한 번 밀리면 남은 돈 전액 즉시</li>
+<li>방법 ① 공증사무소에서 <b>금전채무 공정증서(강제집행 승낙)</b> ② 공증 거부 시 <b>지급명령 이의 안 함</b> + 합의서 도장</li>
+<li>한정욱 개인 연대보증, 서명하는 날 담보취소 동의서 미리 받기</li>
+<li>가압류는 완납 때까지 유지, 지급명령은 취하하지 않음</li>
+<li>합의서 초안: X31 jh패브릭_사건자료/합의_2026/01_분할변제합의서_초안_v1.md (서명은 아버지 본인)</li></ol></div>
+
+<div class="card scen c"><h3>C. 버틴다 / 이의 낸다</h3><div class="when">변호사 붙였을 때</div>
+<ul><li><b>가압류 이의</b>: 바로 취소 안 됨. 심문 거치는 동안 통장은 계속 묶임. 근거: 2/27 사과 문자(대표 취임 2일 뒤), 공사 중 본점 이전, 견적서 수신 ㈜JH, 11/5 녹취</li>
+<li><b>지급명령 이의</b>: 일반 소송으로 넘어감. 1억 이하 단독사건이라 법원 허가 받으면 가족이 소송대리 가능</li>
+<li><b>해방공탁</b> 35,673,000원: 통장 풀리지만 공탁금에 가압류가 옮겨붙음 → 오히려 돈 확보</li>
+<li>회사 책임이 부정되면 한정욱 개인 책임(무권대리인)으로 청구</li></ul></div>
+
+<div class="card scen d"><h3>D. 연락 끊고 잠수 / 재산 빼돌림</h3><div class="when">최악의 경우</div>
+<ul><li>지급명령 확정 즉시 묶인 은행 본압류·추심</li><li>재산명시·재산조회로 다른 계좌·거래처 찾기</li><li>거래처 매출채권 압류 (공장 출고 업체 파악) — 압박 효과 가장 큼</li><li>사기 고소 검토 (12월 말 기준으로 결정)</li></ul></div>
+
+<h2>절대 하지 말 것</h2>
+<div class="card"><ul class="no">
+<li>입금 전에 가압류 해제 약속</li><li>말로만 한 분할 약속 받아 주기</li><li>지급명령 취하</li><li>통화 중 금액·날짜 확정</li><li>고소로 협박 (공갈 시비 위험)</li><li>"법률대리인", "법무팀" 같은 표현</li></ul></div>
+
+<h2>꼭 챙길 것</h2>
+<div class="card"><ul class="yes">
+<li>모든 통화 녹음 (에이닷)</li><li>통화 끝나면 조건을 문자로 남기기</li><li>어느 은행 통장이 막혔는지 메모</li><li>위임장 출력·서명 (artifacts/위임장_가온인테리어_JH공사대금.pdf)</li><li>~11/27 진술서 확인 → 협상 조건 최종 결정</li></ul></div>
+
+<div class="foot">근거: 민사집행법 237조(제3채무자 진술 1주), 287조(제소명령), 288조(사정변경 취소), 변호사법 109·112조, 민사소송규칙 15조. 일정은 추정이며 법원 처리 속도에 따라 달라짐.</div>
+</div></body></html>
