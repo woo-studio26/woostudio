@@ -315,13 +315,13 @@ body.show-detail .detail{display:block}
   <div class="wrap">
     <div class="brand">우스튜디오</div>
     <p style="margin:8px 0 2px">문의 010-8925-7558 · woo_studio26@naver.com</p>
-    <small>대구 북구 연암로 52 · 이 페이지는 고객님께만 공유되는 비공개 시안이며, 2026년 11월 22일(일) 오전 10시까지 열람할 수 있습니다.</small>
+    <small>대구 북구 연암로 52 · 이 페이지는 고객님께만 공유되는 비공개 시안입니다.</small>
   </div>
 </footer>
 
 <div class="lb" id="lb"><img alt=""></div>
 <script>
-window.SALON_PAGE={version:'v8-expire1122'};
+window.SALON_PAGE={version:'v9-nodeadline'};
 if(location.hash==='#detail')document.body.classList.add('show-detail');
 const lb=document.getElementById('lb'),li=lb.querySelector('img');
 document.querySelectorAll('.shot').forEach(s=>s.addEventListener('click',()=>{li.src=s.dataset.src;lb.classList.add('on')}));
