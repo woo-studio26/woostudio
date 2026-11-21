@@ -121,7 +121,8 @@ const LAY={rail:true,jobs:true,hosp:true,news:true,n3:false,subs:true};
 const pinL={},lineL=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
-fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window.RADAR=d;init()});
+let HIST=null,hSize='p59',hPer=0,hApt=-1;
+fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window.RADAR=d;init();fetch('history.json?v='+Date.now()).then(r=>r.json()).then(h=>{HIST=h;render()}).catch(()=>{})});
 
 // ---------- 점수 엔진 ----------
 function gangT(o,y){let T=o.t.gangnam;for(const r of M.rail){const yy=r.year+(SC.has('gtxDelay')&&r.line==='gtxa_ext'?2:0);if(r.ids[o.id]!=null&&y>=yy)T=Math.min(T,r.ids[o.id])}
@@ -235,7 +236,7 @@ function dongList(){
  const key={score:x=>-x.s,up:x=>-x.d,price:x=>x.p??99,gap:x=>-(x.gap??-9)}[sortKey];rows.sort((a,b)=>key(a)-key(b));
  return `<div class="sortbar">정렬 <select id="sk">${[['score','점수'],['up','2026 대비 상승폭'],['price','가격 낮은 순'],['gap','모델 대비 저평가']].map(([k,n])=>`<option value="${k}" ${k===sortKey?'selected':''}>${n}</option>`).join('')}</select>
  평형 <select id="zk"><option value="p59" ${sizeKey==='p59'?'selected':''}>59㎡</option><option value="p84" ${sizeKey==='p84'?'selected':''}>84㎡</option></select> <span>${Y}년 기준</span></div>`+
- rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.sig} · ${o.flags.includes('P')&&x.p==null?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div></div></div>`}).join('')+
+ rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.sig} · ${o.flags.includes('P')&&x.p==null?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${(()=>{const st=histStats(o.id,sizeKey==='p59'?59:84);return st&&st.yoy!=null?`<span class="tag">1년 ${st.yoy>0?'+':''}${Math.round(st.yoy*100)}%</span>`:''})()}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div></div></div>`}).join('')+
  `<div class="note" style="padding:12px 14px">점수 = 강남 25 · 일자리 20 · 병원 15 · 개발호재 15 · 학군 10 · 공급 10 · 쾌적 5. 2026 점수와 84㎡ 시세 상관 0.83(38곳). '모델 대비'는 점수로 계산한 예상가 대비 실제가 차이(+면 점수보다 싸다). 강남·병원·일자리 시간은 차 기준(막힘 미반영), 학군은 임시 추정치. 투자 권유 아님.</div>`}
 function newsHtml(n,pop){return `<div><span class="tag" style="background:${catCol(n.cat)}22;color:${catCol(n.cat)}">${catName(n.cat)}</span><span class="rs">${n.date} · ${n.siteName||''}</span></div><div class="nt">${n.title}</div><div class="ns">${n.summary}</div><a href="${n.url}" target="_blank" rel="noopener">${n.src} ↗</a>`}
 let ncat='all';
@@ -259,8 +260,50 @@ function cmpHtml(){if(!cmp.length)return `<div class="det note">동네를 열고
  let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">${[50,60,70,80,90].map(s=>`<line x1="20" x2="${W-10}" y1="${yy(s)}" y2="${yy(s)}" stroke="#eee"/><text x="2" y="${yy(s)+3}" font-size="9" fill="#999">${s}</text>`).join('')}${[2026,2028,2030,2032,2034,2036].map(y=>`<text x="${x(y)}" y="${H-4}" font-size="9" fill="#999" text-anchor="middle">${y}</text>`).join('')}`;
  cmp.forEach((id,i)=>{const o=D.dongs.find(d=>d.id===id);svg+=`<polyline fill="none" stroke="${cs[i]}" stroke-width="2.5" points="${ys.map(y=>x(y)+','+yy(score(o,y).s)).join(' ')}"/><text x="${W-8}" y="${yy(score(o,2036).s)-4}" font-size="10" fill="${cs[i]}" text-anchor="end">${o.name}</text>`});svg+='</svg>';
  const lab=['강남','일자리','병원','개발','학군','공급','쾌적'];
- return `<div class="det">${svg}<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:8px"><tr><td></td>${cmp.map((id,i)=>`<td style="color:${cs[i]};font-weight:700">${D.dongs.find(d=>d.id===id).name}</td>`).join('')}</tr>
+ const cmpH=cmpHist(cs);return `<div class="det">${svg}${cmpH}<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:8px"><tr><td></td>${cmp.map((id,i)=>`<td style="color:${cs[i]};font-weight:700">${D.dongs.find(d=>d.id===id).name}</td>`).join('')}</tr>
  ${[['59㎡',o=>fmt(o.p59)],['84㎡',o=>fmt(o.p84)],[Y+' 점수',o=>Math.round(score(o,Y).s)],['강남(분)',o=>score(o,Y).T],...lab.map((l,k)=>[l,o=>score(o,Y).parts[k].toFixed(1)])].map(([n,f])=>`<tr style="border-top:1px solid #eee"><td class="rs">${n}</td>${cmp.map(id=>`<td>${f(D.dongs.find(d=>d.id===id))}</td>`).join('')}</tr>`).join('')}</table><div class="btn" id="cclr">비우기</div></div>`}
+
+// ---------- 가격 추이 (호갱노노식) ----------
+const mIdx=m=>Math.floor(m/100)*12+(m%100)-1, mLab=m=>String(m).slice(2,4)+'.'+String(m).slice(4);
+function histStats(id,cls){if(!HIST||!HIST[id])return null;const d=HIST[id].d.filter(x=>x[1]===cls);if(d.length<3)return null;
+ const last=Math.max(...d.map(x=>mIdx(x[0])));const med=a=>{a=a.slice().sort((x,y)=>x-y);const n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):null};
+ const rec=med(d.filter(x=>mIdx(x[0])>last-4).map(x=>x[2])),ya=med(d.filter(x=>mIdx(x[0])>=last-15&&mIdx(x[0])<=last-9).map(x=>x[2]));
+ const hy={};d.forEach(x=>{const k=Math.floor(x[0]/100)+(x[0]%100>6?'하':'상');(hy[k]=hy[k]||[]).push(x[2])});
+ let pk=null;Object.entries(hy).forEach(([k,a])=>{if(a.length>=3){const v=med(a);if(!pk||v>pk.v)pk={k,v}}});
+ return {rec,ya,yoy:rec&&ya?rec/ya-1:null,pk,fromPk:rec&&pk?rec/pk.v-1:null,hy:Object.entries(hy).filter(([k,a])=>a.length>=2).map(([k,a])=>[k,med(a),a.length]).sort()}}
+function histSvg(o){const H=HIST&&HIST[o.id];if(!H)return `<div class="note">${HIST?'거래 기록 없음 (분양 예정지)':'가격 추이 불러오는 중…'}</div>`;
+ const cls=hSize==='p59'?59:84;let d=H.d.filter(x=>x[1]===cls&&(hApt<0||x[3]===hApt));
+ const lastM=Math.max(...H.d.map(x=>mIdx(x[0])));if(hPer)d=d.filter(x=>mIdx(x[0])>lastM-hPer*12);
+ if(d.length<2)return `<div class="note">이 조건의 거래가 부족해요.</div>`;
+ const W=360,Hh=180,pl=34,pr=8,pt=10,pb=22;const xs=d.map(x=>mIdx(x[0])),x0=Math.min(...xs),x1=Math.max(...xs,x0+1);
+ const ps=d.map(x=>x[2]);let y0=Math.min(...ps),y1=Math.max(...ps);const pad=(y1-y0)*.08||.5;y0=Math.max(0,y0-pad);y1+=pad;
+ const X=m=>pl+(m-x0)/(x1-x0)*(W-pl-pr),Yy=v=>Hh-pb-(v-y0)/(y1-y0)*(Hh-pt-pb);
+ const step=(y1-y0)>8?2:(y1-y0)>3?1:.5;let g='';for(let v=Math.ceil(y0/step)*step;v<=y1;v+=step)g+=`<line x1="${pl}" x2="${W-pr}" y1="${Yy(v)}" y2="${Yy(v)}" stroke="#f0f0f3"/><text x="${pl-4}" y="${Yy(v)+3}" font-size="9" fill="#999" text-anchor="end">${+v.toFixed(1)}억</text>`;
+ const yrs=[];for(let y=Math.ceil(x0/12);y*12<=x1;y++)yrs.push(y);const ys=yrs.length>6?yrs.filter((y,i)=>i%2===0):yrs;
+ ys.forEach(y=>g+=`<text x="${X(y*12)}" y="${Hh-6}" font-size="9" fill="#999" text-anchor="middle">${String(y).slice(2)}년</text>`);
+ const bym={};d.forEach(x=>(bym[x[0]]=bym[x[0]]||[]).push(x[2]));const med=a=>{a=a.slice().sort((p,q)=>p-q);const n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2};
+ const line=Object.keys(bym).map(Number).sort().filter(m=>bym[m].length>=(hApt<0?2:1)).map(m=>[X(mIdx(m)+.5),Yy(med(bym[m])),m,med(bym[m]),bym[m].length]);
+ let dots=d.map((x,i)=>`<circle cx="${X(mIdx(x[0])+((i*37)%10)/10)}" cy="${Yy(x[2])}" r="2.2" fill="#5b3fd6" opacity=".28"><title>${mLab(x[0])} ${H.apts[x[3]]} ${x[4]??''}층 ${x[2]}억</title></circle>`).join('');
+ const path=line.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join('');
+ const lp=line[line.length-1];
+ return `<svg viewBox="0 0 ${W} ${Hh}" style="width:100%;display:block">${g}${dots}<path d="${path}" fill="none" stroke="#5b3fd6" stroke-width="2"/>${line.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="#fff" stroke="#5b3fd6" stroke-width="1.5"><title>${mLab(p[2])} 중앙값 ${p[3]}억 (${p[4]}건)</title></circle>`).join('')}${lp?`<text x="${Math.min(lp[0],W-40)}" y="${lp[1]-7}" font-size="10.5" font-weight="700" fill="#5b3fd6">${lp[3]}억</text>`:''}</svg>`}
+function histBlock(o){const H=HIST&&HIST[o.id];const cls=hSize==='p59'?59:84;const st=histStats(o.id,cls);
+ const pct=v=>v==null?'-':`<span class="${v>0?'up':'dn'}">${v>0?'+':''}${Math.round(v*100)}%</span>`;
+ const apts=H?H.apts.map((a,i)=>[a,i,H.d.filter(x=>x[3]===i&&x[1]===cls).length]).filter(x=>x[2]>0).sort((a,b)=>b[2]-a[2]).slice(0,12):[];
+ return `<div class="sec" style="margin-top:6px"><h4>실거래 가격 추이</h4>
+ <div class="chips" style="margin:0 0 6px">${[['p59','59㎡'],['p84','84㎡']].map(([k,n])=>`<span class="chip ${hSize===k?'on':''}" data-hs="${k}">${n}</span>`).join('')}${[[3,'3년'],[5,'5년'],[0,'전체']].map(([k,n])=>`<span class="chip ${hPer===k?'on':''}" data-hp="${k}">${n}</span>`).join('')}
+ ${apts.length?`<select id="hapt" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:3px;max-width:150px"><option value="-1">전체 단지</option>${apts.map(([a,i,n])=>`<option value="${i}" ${hApt===i?'selected':''}>${a} (${n})</option>`).join('')}</select>`:''}</div>
+ ${histSvg(o)}
+ ${st?`<div class="kv" style="margin-top:6px"><div>최근 시세</div><div><b>${fmt(st.rec)}</b> (최근 4개월 중앙)</div><div>1년 전 대비</div><div>${pct(st.yoy)}</div><div>최고점 대비</div><div>${st.pk?`${pct(st.fromPk)} <span class="rs">(고점 ${st.pk.k.replace('상',' 상반기').replace('하',' 하반기')} ${fmt(st.pk.v)})</span>`:'-'}</div></div>`:''}
+ <div class="note">점 = 실거래 1건, 선 = 표본 달의 중앙값. 2016~2025는 1·4·7·10월 표본(매일 조금씩 채우는 중), 최근 2년은 매월.</div></div>`}
+
+function cmpHist(cs){if(!HIST)return '';const cls=sizeKey==='p59'?59:84;const S=cmp.map(id=>histStats(id,cls));if(!S.some(x=>x&&x.hy.length))return '';
+ const all=S.flatMap(x=>x?x.hy:[]);const ks=[...new Set(all.map(h=>h[0]))].sort();const vs=all.map(h=>h[1]);const y0=Math.min(...vs)*.9,y1=Math.max(...vs)*1.05;
+ const W=360,H=170,X=k=>24+ks.indexOf(k)/(Math.max(1,ks.length-1))*(W-34),Yv=v=>H-20-(v-y0)/(y1-y0)*(H-30);
+ let g=`<div class="rs" style="margin-top:10px">${cls}㎡ 반기 중앙값 추이</div><svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+ ks.forEach((k,i)=>{if(k.endsWith('상')&&(+k.slice(0,4))%2===0)g+=`<text x="${X(k)}" y="${H-5}" font-size="9" fill="#999" text-anchor="middle">${k.slice(2,4)}</text>`});
+ S.forEach((st,i)=>{if(!st)return;g+=`<polyline fill="none" stroke="${cs[i]}" stroke-width="2" points="${st.hy.map(h=>X(h[0])+','+Yv(h[1])).join(' ')}"/>`;const l=st.hy[st.hy.length-1];if(l)g+=`<text x="${X(l[0])-2}" y="${Yv(l[1])-5}" font-size="10" fill="${cs[i]}" text-anchor="end">${fmt(l[1])}</text>`});
+ return g+'</svg>'}
 function stageTxt(o){const s=score(o,2026).s,s36=score(o,2036).s,d=s36-s;
  if(o.id==='pangyo'||o.id==='sunae')return '기준 지역(이미 완성)';
  if(d>=15)return '2036까지 +'+Math.round(d)+'점: 앞으로 오를 요인 많음 (판교 2006~09 같은 단계)';if(d>=8)return '2036까지 +'+Math.round(d)+'점: 호재 진행 중 (판교 2011~15 같은 단계)';return '2036까지 +'+Math.round(d)+'점: 추가 호재 적음, 지금 입지로 평가'}
@@ -277,6 +320,7 @@ function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강�
  <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:19px;font-weight:800">${o.name}</div><div class="rs">${o.sig} · ${o.region}${M.regulated.includes(o.id)?' · <span class="tag r">규제지역·토허(2년 실거주)</span>':' · <span class="tag g">비규제</span>'}</div></div><div class="btn" id="addc">비교에 추가</div></div>
  <div class="gauge"><svg viewBox="0 0 120 70" style="width:120px"><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="#eee" stroke-width="12"/><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="${col(r.s)}" stroke-width="12" stroke-dasharray="${157*r.s/100} 157"/><text x="60" y="56" font-size="22" font-weight="800" text-anchor="middle" fill="#111">${Math.round(r.s)}</text></svg>
  <div><div class="rs">${Y}년 입지 점수 ${Y>2026?`<span class="d up">▲${Math.round(r.s-r0.s)} vs 2026</span>`:''}</div>${spark}<div class="note">${stageTxt(o)}</div></div></div>
+${histBlock(o)}
  <div class="bars">${lab.map(([n,w],k)=>`<div class="b"><span>${n}</span><div class="trk"><div class="fil" style="width:${r.parts[k]/w*100}%"></div></div><span class="rs">${r.parts[k].toFixed(1)}/${w}</span></div>`).join('')}</div>
  <div class="sec"><h4>시세 (국토부 실거래 2026.7~10 중앙값)</h4><div class="kv"><div>59㎡</div><div>${fmt(o.p59)} <span class="rs">(${o.n59}건)</span></div><div>84㎡</div><div>${fmt(o.p84)} <span class="rs">(${o.n84}건)</span></div><div>거래 많은 단지</div><div>${o.top.join(', ')||'-'}</div>${o.proxy?'<div>주의</div><div>3기 지구 안은 아직 시세 없음 → 바로 옆 기존 단지 시세</div>':''}
  ${o.p84?`<div>점수 모델가</div><div>${fmt(imp)} (2026) → ${fmt(imp2)} (${Y}) <span class="rs">· 실제 대비 ${Math.round((imp/o.p84-1)*100)}%</span></div>`:''}</div></div>
@@ -287,7 +331,7 @@ function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강�
  ${ss.length?`<div class="sec"><h4>청약</h4>${ss.map(s=>`<div class="ns">· ${s.name} (${s.start||''}, ${s.n}가구${s.url?`, <a href="${s.url}" target="_blank">링크</a>`:''})</div>`).join('')}</div>`:''}
  <div class="sec"><h4>근처 소식</h4>${nn.length?nn.map(n=>`<div class="news" style="padding:8px 0">${newsHtml(n)}</div>`).join(''):'<div class="note">아직 없음</div>'}</div>
  <div class="note" style="margin-top:10px">점수는 공개 자료 기반 모델 추정이에요. 학군은 임시 추정치이고, 시간은 차 기준(막힘 미반영)이에요. 투자 권유가 아니에요.</div></div>`}
-function openDong(id){sel=id;const o=D.dongs.find(d=>d.id===id);location.hash=id;render();if(window.innerWidth>860)map.panTo([o.lat,o.lng])}
+function openDong(id){if(sel!==id)hApt=-1;sel=id;const o=D.dongs.find(d=>d.id===id);location.hash=id;render();if(window.innerWidth>860)map.panTo([o.lat,o.lng])}
 function bindList(){document.querySelectorAll('[data-d]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const o=D.dongs.find(d=>d.id===e.dataset.d);map.flyTo([o.lat,o.lng],12.5,{duration:.6});openDong(o.id)});
  document.querySelectorAll('[data-n]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const m=newsL.find(m=>m._d.id===e.dataset.n);if(m){if(!LAY.news){LAY.news=true;render()}map.flyTo(m.getLatLng(),12,{duration:.6});setTimeout(()=>m.openPopup(),650)}});
  document.querySelectorAll('[data-nc]').forEach(e=>e.onclick=()=>{ncat=e.dataset.nc;render()});
@@ -295,7 +339,8 @@ function bindList(){document.querySelectorAll('[data-d]').forEach(e=>e.onclick=e
  const zk=document.getElementById('zk');if(zk)zk.onchange=()=>{sizeKey=zk.value;render()};
  [['mc','cash'],['mi','income'],['mr','rate'],['ms','stress']].forEach(([i,k])=>{const e=document.getElementById(i);if(e)e.onchange=()=>{D.me[k]=+e.value;render()}});
  const cc=document.getElementById('cclr');if(cc)cc.onclick=()=>{cmp=[];render()}}
-function bindDet(){document.getElementById('bk').onclick=()=>{sel=null;location.hash='';render()};
+function bindDet(){document.querySelectorAll('[data-hs]').forEach(e=>e.onclick=()=>{hSize=e.dataset.hs;hApt=-1;render()});document.querySelectorAll('[data-hp]').forEach(e=>e.onclick=()=>{hPer=+e.dataset.hp;render()});const ha=document.getElementById('hapt');if(ha)ha.onchange=()=>{hApt=+ha.value;render()};
+document.getElementById('bk').onclick=()=>{sel=null;location.hash='';render()};
  document.getElementById('addc').onclick=()=>{if(!cmp.includes(sel)){cmp.push(sel);if(cmp.length>3)cmp.shift()}tab='cmp';sel=null;render()};
  document.querySelectorAll('.det [data-n],.det a').forEach(()=>{})}
 </script>
