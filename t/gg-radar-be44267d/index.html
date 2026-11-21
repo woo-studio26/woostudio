@@ -67,7 +67,9 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 .pin .box{background:var(--c);color:#fff;border-radius:7px;padding:3px 6px 3px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.25);line-height:1.15}
 .pin .pt{font-size:10px;opacity:.9}.pin .pp{font-size:13px;font-weight:800}.pin .ps{font-size:10.5px;background:rgba(255,255,255,.22);border-radius:4px;margin-top:2px;padding:0 4px}
 .pin:after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:var(--c);border-bottom:0}
-.pin.dim{opacity:.25}.pin.sel .box{outline:3px solid #111}
+.pin.dim{opacity:.25}
+.dot{transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:var(--c);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+.dot.dim{opacity:.25}.dot.sel{outline:3px solid #111}.pin.sel .box{outline:3px solid #111}
 .pin .nm{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:7px;font-size:10.5px;font-weight:700;color:#111;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
 .lt{background:#fff;border:1px solid #ddd;border-radius:4px;padding:1px 5px;font-size:10.5px;font-weight:700;box-shadow:none}
 .lt:before{display:none}
@@ -143,11 +145,11 @@ function cap(){const me=D.me,f=r=>{const m=r/1200,n=360;return m/(1-Math.pow(1+m
 function price(o){return o[sizeKey]??null}
 function visible(o){if(preset!=='all'&&o.region!==preset&&!(preset==='반도체벨트'&&o.region==='기준'))return false;
  if(q&&!(o.name+o.sig).includes(q))return false;return true}
-function passF(o){if(F.has('budget')){const p=o.p59;if(o.flags.includes('P'))return true;if(p==null||p>cap())return false}
+function passF(o){if(F.has('budget')){const p=o.p59;if(o.flags.includes('P')&&p==null)return true;if(p==null||p>cap())return false}
  if(F.has('noreg')&&M.regulated.includes(o.id))return false;
  if(F.has('subs')&&!D.subs.some(s=>s.dong===o.id&&isUpcoming(s)))return false;return true}
 function isUpcoming(s){return !s.start||s.start>='2026-11-21'||s.start==='예정'||/^2026-12$/.test(s.start)}
-const col=s=>{const t=cl((s-50)/40);const h=255,l=72-t*34,sat=25+t*55;return `hsl(${h} ${sat}% ${l}%)`};
+const col=s=>{const t=cl((s-50)/40);if(t<.25)return `hsl(220 10% ${66-t*20}%)`;const h=265-t*25,l=66-t*36,sat=40+t*50;return `hsl(${h} ${sat}% ${l}%)`};
 
 // ---------- 지도 ----------
 function init(){
@@ -158,7 +160,7 @@ function init(){
  const osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'});
  const T={base:VKEY.length>10?vw('Base','png'):osm,sat:L.layerGroup([vw('Satellite','jpeg'),vw('Hybrid','png')])};
  T.base.on('tileerror',()=>{if(!window._f){window._f=1;map.removeLayer(T.base);T.base=osm;osm.addTo(map)}});
- T.base.addTo(map);window._T=T;
+ T.base.addTo(map);window._T=T;map.on('zoomend',()=>render());
  // 노선
  D.lines.forEach(l=>{const plan=!l.open||l.status==='건의';const pl=L.polyline(l.pts,{color:l.color,weight:3,opacity:.85,dashArray:plan?'6 6':null}).bindTooltip(l.name,{sticky:true});pl._d=l;lineL.push(pl)});
  D.hosp.forEach(h=>{const m=L.marker([h.lat,h.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#dc2626">+</div>`,iconSize:[18,18]})});m._d=h;m.bindPopup(()=>`<b>${h.name}</b><br>${h.memo}${h.open?'<br>개원 목표 '+h.open:''}`);hospL.push(m)});
@@ -207,7 +209,8 @@ function render(){
  D.dongs.forEach(o=>{const v=visible(o),r=score(o,Y),r0=score(o,2026),p=price(o),ok=passF(o);const m=pinL[o.id];
   if(!v){map.removeLayer(m);return}m.addTo(map);
   const sub=LAY.subs&&D.subs.some(s=>s.dong===o.id&&isUpcoming(s));
-  m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:`<div class="pin ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${col(r.s)}"><div class="box"><div class="pt">${o.flags.includes('P')?'분양 예정':(sizeKey==='p59'?'59㎡':'84㎡')+(o.proxy?' 주변':'')}</div><div class="pp">${o.flags.includes('P')?'청약':fmt(p)}</div><div class="ps">${Math.round(r.s)}점${Y>2026?` ▲${Math.round(r.s-r0.s)}`:''}</div></div><div class="nm">${sub?'● ':''}${o.name.replace(' (기준)','')}</div></div>`}));
+  const small=map.getZoom()<11.5;const pv=o.flags.includes('P')&&p==null;
+  m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:small?`<div class="dot ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${col(r.s)}" title="${o.name}">${Math.round(r.s)}</div>`:`<div class="pin ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${col(r.s)}"><div class="box"><div class="pt">${pv?'분양 예정':(sizeKey==='p59'?'59㎡':'84㎡')+(o.proxy?' 주변':'')}</div><div class="pp">${pv?'청약':fmt(p)}</div><div class="ps">${Math.round(r.s)}점${Y>2026?` ▲${Math.round(r.s-r0.s)}`:''}</div></div><div class="nm">${sub?'● ':''}${o.name.replace(' (기준)','')}</div></div>`}));
   m.setZIndexOffset(Math.round(r.s*10)+(sel===o.id?10000:0))});
  // 헤더
  const vis=D.dongs.filter(o=>visible(o)&&passF(o)).map(o=>[o,score(o,Y).s]).sort((a,b)=>b[1]-a[1]);
@@ -231,7 +234,7 @@ function dongList(){
  const key={score:x=>-x.s,up:x=>-x.d,price:x=>x.p??99,gap:x=>-(x.gap??-9)}[sortKey];rows.sort((a,b)=>key(a)-key(b));
  return `<div class="sortbar">정렬 <select id="sk">${[['score','점수'],['up','2026 대비 상승폭'],['price','가격 낮은 순'],['gap','모델 대비 저평가']].map(([k,n])=>`<option value="${k}" ${k===sortKey?'selected':''}>${n}</option>`).join('')}</select>
  평형 <select id="zk"><option value="p59" ${sizeKey==='p59'?'selected':''}>59㎡</option><option value="p84" ${sizeKey==='p84'?'selected':''}>84㎡</option></select> <span>${Y}년 기준</span></div>`+
- rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.sig} · ${o.flags.includes('P')?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div></div></div>`}).join('')+
+ rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.sig} · ${o.flags.includes('P')&&x.p==null?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div></div></div>`}).join('')+
  `<div class="note" style="padding:12px 14px">점수 = 강남 25 · 일자리 20 · 병원 15 · 개발호재 15 · 학군 10 · 공급 10 · 쾌적 5. 2026 점수와 84㎡ 시세 상관 0.83(38곳). '모델 대비'는 점수로 계산한 예상가 대비 실제가 차이(+면 점수보다 싸다). 강남·병원·일자리 시간은 차 기준(막힘 미반영), 학군은 임시 추정치. 투자 권유 아님.</div>`}
 function newsHtml(n,pop){return `<div><span class="tag" style="background:${catCol(n.cat)}22;color:${catCol(n.cat)}">${catName(n.cat)}</span><span class="rs">${n.date} · ${n.siteName||''}</span></div><div class="nt">${n.title}</div><div class="ns">${n.summary}</div><a href="${n.url}" target="_blank" rel="noopener">${n.src} ↗</a>`}
 let ncat='all';
