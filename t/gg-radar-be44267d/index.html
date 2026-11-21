@@ -287,8 +287,8 @@ function histSvg(o){const H=HIST&&HIST[o.id];if(!H)return `<div class="note">${H
  const yrs=[];for(let y=Math.ceil(x0/12);y*12<=x1;y++)yrs.push(y);const ys=yrs.length>6?yrs.filter((y,i)=>i%2===0):yrs;
  ys.forEach(y=>g+=`<text x="${X(y*12)}" y="${Hh-6}" font-size="9" fill="#999" text-anchor="middle">${String(y).slice(2)}년</text>`);
  
- const line=Object.keys(bym).map(Number).sort().filter(m=>bym[m].length>=(hApt<0?3:1)).map(m=>[X(mIdx(m)+.5),Yy(med(bym[m])),m,med(bym[m]),bym[m].length]);
  const bym={};d.forEach(x=>(bym[x[0]]=bym[x[0]]||[]).push(x[2]));const med=a=>{a=a.slice().sort((p,q)=>p-q);const n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2};
+ const line=Object.keys(bym).map(Number).sort().filter(m=>bym[m].length>=(hApt<0?3:1)).map(m=>[X(mIdx(m)+.5),Yy(med(bym[m])),m,med(bym[m]),bym[m].length]);
  if(hApt===-2){let out='';T3.forEach((ai,k)=>{if(ai<0)return;const dd=d.filter(x=>x[3]===ai);const bm={};dd.forEach(x=>(bm[x[0]]=bm[x[0]]||[]).push(x[2]));const pts=Object.keys(bm).map(Number).sort().map(m=>[X(mIdx(m)+.5),Yy(med(bm[m])),m,med(bm[m])]);
   out+=dd.map((x,i)=>`<circle cx="${X(mIdx(x[0])+((i*37)%10)/10)}" cy="${Yy(x[2])}" r="2.2" fill="${RC[k]}" opacity=".3"><title>${mLab(x[0])} ${H.apts[x[3]]} ${x[4]??''}층 ${x[2]}억</title></circle>`).join('')+`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join('')}" fill="none" stroke="${RC[k]}" stroke-width="2"/>`;const lp=pts[pts.length-1];if(lp)out+=`<text x="${Math.min(lp[0],W-40)}" y="${lp[1]-6}" font-size="10" font-weight="700" fill="${RC[k]}">${lp[3]}억</text>`});
   return `<svg viewBox="0 0 ${W} ${Hh}" style="width:100%;display:block">${g}${out}</svg>`}
