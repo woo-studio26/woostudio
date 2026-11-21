@@ -263,7 +263,7 @@ function cmpHtml(){if(!cmp.length)return `<div class="det note">동네를 열고
  ${[['59㎡',o=>fmt(o.p59)],['84㎡',o=>fmt(o.p84)],[Y+' 점수',o=>Math.round(score(o,Y).s)],['강남(분)',o=>score(o,Y).T],...lab.map((l,k)=>[l,o=>score(o,Y).parts[k].toFixed(1)])].map(([n,f])=>`<tr style="border-top:1px solid #eee"><td class="rs">${n}</td>${cmp.map(id=>`<td>${f(D.dongs.find(d=>d.id===id))}</td>`).join('')}</tr>`).join('')}</table><div class="btn" id="cclr">비우기</div></div>`}
 function stageTxt(o){const s=score(o,2026).s,s36=score(o,2036).s,d=s36-s;
  if(o.id==='pangyo'||o.id==='sunae')return '기준 지역(이미 완성)';
- if(d>=15)return '판교 2006~2009 단계: 아직 오르기 전, 앞으로 남은 게 많음';if(d>=8)return '판교 2011~2015 단계: 일부 반영, 호재 진행 중';return '판교 2016 이후 단계: 이미 반영된 편'}
+ if(d>=15)return '2036까지 +'+Math.round(d)+'점: 앞으로 오를 요인 많음 (판교 2006~09 같은 단계)';if(d>=8)return '2036까지 +'+Math.round(d)+'점: 호재 진행 중 (판교 2011~15 같은 단계)';return '2036까지 +'+Math.round(d)+'점: 추가 호재 적음, 지금 입지로 평가'}
 function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강남 접근',W.gangnam],['일자리',W.jobs],['대형병원',W.hosp],['개발호재',W.dev],['학군(추정)',W.school],['공급 부담',W.supply],['쾌적(신축)',W.comfort]];
  const ys=[];for(let y=2026;y<=2036;y++)ys.push(score(o,y).s);const mn=Math.min(...ys)-3,mx=Math.max(...ys)+3;
  const spark=`<svg viewBox="0 0 200 50" style="width:200px;height:50px"><polyline fill="none" stroke="#5b3fd6" stroke-width="2" points="${ys.map((s,i)=>(i*19+5)+','+(45-(s-mn)/(mx-mn)*40)).join(' ')}"/><circle cx="${(Y-2026)*19+5}" cy="${45-(r.s-mn)/(mx-mn)*40}" r="3.5" fill="#5b3fd6"/><text x="2" y="10" font-size="8" fill="#999">2026</text><text x="198" y="10" font-size="8" fill="#999" text-anchor="end">2036</text></svg>`;
