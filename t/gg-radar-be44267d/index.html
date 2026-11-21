@@ -231,7 +231,7 @@ function render(){
  newsL.forEach(m=>LAY.news?m.addTo(map):map.removeLayer(m));
  n3L.forEach(m=>LAY.n3?m.addTo(map):map.removeLayer(m));
  zupL.forEach(m=>LAY.zup?m.addTo(map):map.removeLayer(m));
- {const zb=map.getZoom()>=11.5;aucL.forEach(m=>{if(LAY.auc&&aucPass(m._d)){if(m._big!==zb){m.setIcon(aucIcon(m._d,zb));m._big=zb}m.addTo(map)}else map.removeLayer(m)})}
+ {const zb=map.getZoom()>=13.5;aucL.forEach(m=>{if(LAY.auc&&aucPass(m._d)){if(m._big!==zb){m.setIcon(aucIcon(m._d,zb));m._big=zb}m.addTo(map)}else map.removeLayer(m)})}
  const zopen=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);document.getElementById('s6').textContent=zopen.length+'건 · 가능 '+zopen.filter(z=>zJudge(z)[0]==='o').length;
  // 핀
  const c=cap();const zz=map.getZoom(),big=zz>=13;
