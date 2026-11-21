@@ -128,7 +128,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
 let hiLine=null,legOpen=true;
 let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
-const LAY={rail:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true};const zupL=[];const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+const LAY={rail:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true,auc:true};const zupL=[],aucL=[];let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
 const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
@@ -182,6 +182,7 @@ function init(){
  const seen={};D.news.forEach(n=>{if(n.lat==null)return;const k=n.lat.toFixed(3)+n.lng.toFixed(3);seen[k]=(seen[k]||0)+1;const a=seen[k]*0.9,r=0.004*Math.sqrt(seen[k]);
   const m=L.circleMarker([n.lat+r*Math.sin(a),n.lng+r*Math.cos(a)],{radius:5,color:'#fff',weight:1.5,fillColor:catCol(n.cat),fillOpacity:.95});m._d=n;m.bindPopup(()=>newsHtml(n,true));newsL.push(m)});
  (D.zup||[]).forEach(z=>{if(!z.ll||(z.end&&z.end<TODAY))return;const m=L.marker(z.ll,{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div style="transform:translate(-50%,-50%);display:inline-block;background:#f59e0b;color:#fff;font-weight:800;font-size:11px;border-radius:999px;padding:2px 7px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);white-space:nowrap">줍 ${z.end?z.end.slice(5).replace('-','/'):''}</div>`})});m.bindPopup(()=>zupHtml(z));zupL.push(m)});
+ ((D.auc&&D.auc.rows)||[]).forEach(a=>{if(!a.ll||a.date<TODAY)return;const m=L.marker(a.ll,{icon:aucIcon(a,false)});m._d=a;m.bindPopup(()=>aucHtml(a),{maxWidth:320});aucL.push(m)});
  D.sites.filter(s=>s.src==='n3').forEach(s=>{const m=L.circle([s.lat,s.lng],{radius:1300,color:'#475569',weight:1,dashArray:'4 4',fillOpacity:.05}).bindTooltip(s.name+' · '+s.stage,{className:'lt'});m.bindPopup(`<b>${s.name}</b><br>${s.key}`);n3L.push(m)});
  D.dongs.forEach(o=>{const m=L.marker([o.lat,o.lng],{icon:L.divIcon({className:'',html:'',iconSize:[0,0]})});m.on('click',()=>openDong(o.id));pinL[o.id]=m;m.addTo(map);
   (o.lead||[]).forEach((a,k)=>{if(a.lat==null)return;const am=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="apin" style="--c:${RC[k]}"><div class="rk">${k+1}</div><div class="box"><div class="pt">${short(o)} ${k?(k+1)+'위':'대장'} · ${a.p84?'84㎡':'59㎡'}</div><div class="pp">${fmt(a.p84??a.p59)}</div></div><div class="nm">${a.name}</div></div>`})});am.on('click',()=>{openDong(o.id);pickApt(o.id,a.name)});am._o=o;aptL.push(am)})});
@@ -190,9 +191,9 @@ function init(){
  document.querySelectorAll('[data-p]').forEach(c=>c.onclick=()=>{preset=c.dataset.p;fitPreset();render()});
  document.getElementById('flt').innerHTML=[['budget','내 예산 안 (59㎡)'],['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
- document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
+ document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['auc','경매'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{tab=c.dataset.t;sel=null;render()});
- document.getElementById('layers').innerHTML=[['rail','철도'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['zup','줍줍'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
+ document.getElementById('layers').innerHTML=[['rail','철도'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['zup','줍줍'],['auc','경매'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-l]').forEach(c=>c.onclick=()=>{const k=c.dataset.l;if(k==='sat'){base=base==='sat'?'base':'sat';map.removeLayer(base==='sat'?_T.base:_T.sat);(base==='sat'?_T.sat:_T.base).addTo(map)}else LAY[k]=!LAY[k];render()});
  document.getElementById('sce').innerHTML=Object.entries(M.scenarios).map(([k,s])=>`<span class="chip" data-s="${k}">${s.name}</span>`).join('');
  document.querySelectorAll('[data-s]').forEach(c=>c.onclick=()=>{const k=c.dataset.s;SC.has(k)?SC.delete(k):SC.add(k);render()});
@@ -230,6 +231,7 @@ function render(){
  newsL.forEach(m=>LAY.news?m.addTo(map):map.removeLayer(m));
  n3L.forEach(m=>LAY.n3?m.addTo(map):map.removeLayer(m));
  zupL.forEach(m=>LAY.zup?m.addTo(map):map.removeLayer(m));
+ {const zb=map.getZoom()>=11.5;aucL.forEach(m=>{if(LAY.auc&&aucPass(m._d)){if(m._big!==zb){m.setIcon(aucIcon(m._d,zb));m._big=zb}m.addTo(map)}else map.removeLayer(m)})}
  const zopen=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);document.getElementById('s6').textContent=zopen.length+'건 · 가능 '+zopen.filter(z=>zJudge(z)[0]==='o').length;
  // 핀
  const c=cap();const zz=map.getZoom(),big=zz>=13;
@@ -254,6 +256,7 @@ function render(){
  if(tab==='dong')el.innerHTML=dongList();
  if(tab==='news')el.innerHTML=newsList();
  if(tab==='subs')el.innerHTML=subsList();
+ if(tab==='auc')el.innerHTML=aucList();
  if(tab==='money')el.innerHTML=moneyHtml();
  if(tab==='cmp')el.innerHTML=cmpHtml();
  bindList();
@@ -292,6 +295,29 @@ function zupHtml(z){const [v,ck]=zJudge(z),d=z.det||{},e=EV[v];const pr=(d.price
  <div class="rs">${zIsReg(z)?'규제지역':'비규제'}${d.resale?' · 전매 '+d.resale.slice(0,30):''}${d.livein&&d.livein!=='없음'?' · 거주의무 '+d.livein:''}${d.deposit?' · 계약금 '+d.deposit:''}${pmax?' · 최고 '+(pmax/10000).toFixed(2)+'억':''}</div>
  <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">${z.hg?`<a href="https://hogangnono.com/apt/${z.hg}" target="_blank" rel="noopener" style="background:#6d28d9;color:#fff;font-weight:700;border-radius:6px;padding:3px 9px;text-decoration:none">호갱노노에서 보기 ↗</a>`:`<span class="rs" style="color:#9ca3af">호갱노노 단지 없음</span>`}${z.url?`<a href="${z.url}" target="_blank" rel="noopener">공고 보기 ↗</a>`:''} ${d.pdf?`<a href="${d.pdf}" target="_blank" rel="noopener">공고문 PDF ↗</a>`:''}</div>`}
 let zupAll=false;
+const eok=v=>v?(v/1e8>=10?(v/1e8).toFixed(1):(v/1e8).toFixed(2)).replace(/\.?0+$/,'')+'억':'-';
+const UC=u=>u===0?'#64748b':u===1?'#2563eb':u===2?'#7c3aed':'#dc2626';
+const RISK=['선순위임차인','임차권등기','선순위전세권','유치권','법정지상권','재매각','대지권미등기','건물만매각','토지별도등기','위반건축물','특별매각조건'];
+function aucRisk(a){return (a.sr||[]).filter(x=>RISK.includes(x))}
+function aucNear(a){if(!a.ll)return false;return D.dongs.some(o=>Math.hypot((o.lat-a.ll[0])*111,(o.lng-a.ll[1])*88)<3.5)}
+function aucPass(a){if(a.date<TODAY)return false;if(aucF.budget&&(a.est||a.low)>cap()*1e8)return false;if(aucF.clean&&aucRisk(a).length)return false;if(aucF.ok1&&a.uchal<1)return false;if(aucF.near&&!aucNear(a))return false;if(aucF.sgg!=='all'&&!(a.sgg||'').startsWith(aucF.sgg))return false;return true}
+function aucIcon(a,big){return L.divIcon({className:'',iconSize:[0,0],html:big?`<div style="transform:translate(-50%,-100%);display:inline-block;background:#0f172a;color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:2px 6px;border:2px solid ${UC(a.uchal)};white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.35)">경 ${eok(a.low)}<span style="font-weight:600;color:#cbd5e1"> ${a.date.slice(5).replace('-','/')}</span>${aucRisk(a).length?' <span style="color:#fca5a5">!</span>':''}</div>`:`<div style="transform:translate(-50%,-50%);width:9px;height:9px;border-radius:2px;background:${UC(a.uchal)};border:1.5px solid #fff;box-shadow:0 0 2px rgba(0,0,0,.5)"></div>`})}
+function aucHtml(a){const rk=aucRisk(a),other=(a.sr||[]).filter(x=>!rk.includes(x));const hs=a.hist||[];
+ return `<div><span class="tag" style="background:#0f172a;color:#fff;font-weight:700">경매</span><span class="tag" style="background:${UC(a.uchal)}22;color:${UC(a.uchal)};font-weight:700">${a.uchal?a.uchal+'회 유찰':'신건'}</span><span class="tag">${a.court||''}</span><span class="rs">매각 ${a.date} <b style="color:#b45309">${dday(a.date).replace('오늘 마감','오늘').replace('마감','지남')}</b></span></div>
+ <div class="nt">${a.name||a.addr.split(',')[0]}${a.area?` <span class="rs">전용 ${a.area}㎡</span>`:''}</div><div class="rs">${a.addr} · ${a.case||''}</div>
+ <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:6px 0;text-align:center"><div style="background:#f1f5f9;border-radius:6px;padding:4px"><div class="rs">감정가</div><b>${eok(a.ev)}</b></div><div style="background:#eff6ff;border-radius:6px;padding:4px"><div class="rs">최저가</div><b style="color:#1d4ed8">${eok(a.low)}</b><div class="rs">${a.ev?Math.round(a.low/a.ev*100)+'%':''}</div></div><div style="background:#fef3c7;border-radius:6px;padding:4px"><div class="rs">예상 낙찰</div><b style="color:#92400e">${eok(a.est)}</b><div class="rs">${a.rate}%</div></div></div>
+ <div class="rs" style="margin-bottom:4px">예상 근거: ${a.basis} (추정)</div>
+ ${rk.length||other.length?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin:3px 0">${rk.map(x=>`<span style="font-size:11px;border:1px solid #dc262633;color:#dc2626;border-radius:5px;padding:1px 6px">! ${x}</span>`).join('')}${other.map(x=>`<span style="font-size:11px;border:1px solid #64748b33;color:#475569;border-radius:5px;padding:1px 6px">${x}</span>`).join('')}</div>`:`<div class="rs" style="color:#16a34a">✓ 특수권리 표시 없음</div>`}
+ ${hs.length?`<div class="rs" style="margin-top:4px"><b>같은 단지 과거 낙찰</b> ${hs.slice(0,3).map(h=>`${(h.d||'').slice(2,7)} ${eok(h.p)}(${h.r}%${h.b?', '+h.b+'명':''})`).join(' · ')}</div>`:''}
+ <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><a href="${a.url}" target="_blank" rel="noopener" style="background:#0f172a;color:#fff;font-weight:700;border-radius:6px;padding:3px 9px;text-decoration:none">경매마당 상세 ↗</a>${a.hg?`<a href="https://hogangnono.com/apt/${a.hg}" target="_blank" rel="noopener" style="background:#6d28d9;color:#fff;font-weight:700;border-radius:6px;padding:3px 9px;text-decoration:none">호갱노노 ↗</a>`:''}</div></div>`}
+function aucList(){const all=((D.auc&&D.auc.rows)||[]).filter(a=>a.date>=TODAY);let L=all.filter(aucPass);
+ const S={date:(a,b)=>a.date.localeCompare(b.date),cheap:(a,b)=>(a.low||0)-(b.low||0),disc:(a,b)=>(a.est/a.ev)-(b.est/b.ev),hits:(a,b)=>(b.hits||0)-(a.hits||0)};L.sort(S[aucF.sort]);
+ const sg=[...new Set(all.map(a=>(a.sgg||'').split(' ')[0]).filter(Boolean))].sort();
+ return `<div style="padding:12px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0"><div style="font-weight:800;font-size:15px">경매 (경기 아파트) <span class="rs">진행 ${all.length}건 · 조건 맞음 ${L.length}건</span></div>
+ <div class="rs" style="margin:3px 0 6px">경매마당 목록 ${D.auc.src} 기준 · 지분 물건 제외 · 예상 낙찰가는 추정 · 입찰 전 경매마당 상세에서 상태 확인</div>
+ <div class="chips">${[['near','관심 동네 3.5km 안'],['budget','내 예산 안'],['clean','특수권리 없음'],['ok1','유찰 1회 이상']].map(([k,n])=>`<span class="chip ${aucF[k]?'on':''}" data-af="${k}">${n}</span>`).join('')}</div>
+ <div style="display:flex;gap:6px;margin-top:6px"><select id="ag"><option value="all">전체 시군</option>${sg.map(x=>`<option ${aucF.sgg===x?'selected':''}>${x}</option>`).join('')}</select><select id="as">${[['date','매각일 빠른 순'],['cheap','최저가 낮은 순'],['disc','예상가÷감정가 낮은 순'],['hits','조회수 많은 순']].map(([k,n])=>`<option value="${k}" ${aucF.sort===k?'selected':''}>${n}</option>`).join('')}</select></div></div>`+
+ (L.length?L.slice(0,150).map(a=>`<div class="news" data-au="${a.id}" style="cursor:pointer">${aucHtml(a)}</div>`).join('')+(L.length>150?`<div class="note" style="padding:10px 14px">목록은 150건까지 (지도에는 전부)</div>`:''):'<div class="note" style="padding:10px 14px">조건에 맞는 물건 없음</div>')}
 function zupBlock(){let L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY);if(zupF.sido!=='all')L=L.filter(z=>z.sido===zupF.sido);const J=z=>zJudge(z)[0];if(zupF.only)L=L.filter(z=>J(z)==='o');
  L.sort((a,b)=>({o:0,'?':1,x:2}[J(a)]-{o:0,'?':1,x:2}[J(b)])||String(a.end).localeCompare(String(b.end)));
  const sel=(id,opts,val)=>`<select id="${id}" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:2px">${opts.map(([v,n])=>`<option value="${v}" ${String(val)===String(v)?'selected':''}>${n}</option>`).join('')}</select>`;
@@ -406,6 +432,9 @@ function bindList(){document.querySelectorAll('[data-d]').forEach(e=>e.onclick=e
  const sk=document.getElementById('sk');if(sk)sk.onchange=()=>{sortKey=sk.value;render()};
  const pk=document.getElementById('pk');if(pk)pk.onchange=()=>{pinMode=pk.value;render()};const zk=document.getElementById('zk');if(zk)zk.onchange=()=>{sizeKey=zk.value;render()};
  [['mc','cash'],['mi','income'],['mr','rate'],['ms','stress']].forEach(([i,k])=>{const e=document.getElementById(i);if(e)e.onchange=()=>{D.me[k]=+e.value;render()}});
+ document.querySelectorAll('[data-af]').forEach(e=>e.onclick=()=>{const k=e.dataset.af;aucF[k]=!aucF[k];render()});
+ const ag=document.getElementById('ag');if(ag)ag.onchange=()=>{aucF.sgg=ag.value;render()};const as_=document.getElementById('as');if(as_)as_.onchange=()=>{aucF.sort=as_.value;render()};
+ document.querySelectorAll('[data-au]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const m=aucL.find(m=>m._d.id===e.dataset.au);if(m){if(!LAY.auc){LAY.auc=true;render()}map.flyTo(m.getLatLng(),15,{duration:.6});setTimeout(()=>{m.addTo(map);m.openPopup()},700)}});
  const cc=document.getElementById('cclr');if(cc)cc.onclick=()=>{cmp=[];render()}}
 function bindDet(){document.querySelectorAll('[data-la]').forEach(e=>e.onclick=()=>{const o=D.dongs.find(d=>d.id===sel),a=o.lead[+e.dataset.la];const T3=leadIdx(o);hApt=T3[+e.dataset.la];if(a.p84==null)hSize='p59';if(a.lat)map.flyTo([a.lat,a.lng],15,{duration:.6});render()});document.querySelectorAll('[data-hs]').forEach(e=>e.onclick=()=>{hSize=e.dataset.hs;if(hApt>=0)hApt=-2;render()});document.querySelectorAll('[data-hp]').forEach(e=>e.onclick=()=>{hPer=+e.dataset.hp;render()});const ha=document.getElementById('hapt');if(ha)ha.onchange=()=>{hApt=+ha.value;render()};
 document.getElementById('bk').onclick=()=>{sel=null;location.hash='';render()};
