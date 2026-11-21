@@ -124,7 +124,7 @@ const pinL={},lineL=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
 let HIST=null,hSize='p84',hPer=5,hApt=-2,pinMode='lead';
-const RC=['#5b3fd6','#ea580c','#0f766e'],RN=['대장','2위','3위'];const aptL=[];
+const short=o=>o.name.replace(/^(평택|처인|수원|기흥|화성|오산|용인|안성|성남|하남|남양주|고양|부천|인천|시흥|분당)\s/,'').split(/[·( ]/)[0];const RC=['#5b3fd6','#ea580c','#0f766e'],RN=['대장','2위','3위'];const aptL=[];
 fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window.RADAR=d;init();fetch('history.json?v='+Date.now()).then(r=>r.json()).then(h=>{HIST=h;render()}).catch(()=>{})});
 
 // ---------- 점수 엔진 ----------
@@ -173,7 +173,7 @@ function init(){
   const m=L.circleMarker([n.lat+r*Math.sin(a),n.lng+r*Math.cos(a)],{radius:5,color:'#fff',weight:1.5,fillColor:catCol(n.cat),fillOpacity:.95});m._d=n;m.bindPopup(()=>newsHtml(n,true));newsL.push(m)});
  D.sites.filter(s=>s.src==='n3').forEach(s=>{const m=L.circle([s.lat,s.lng],{radius:1300,color:'#475569',weight:1,dashArray:'4 4',fillOpacity:.05}).bindTooltip(s.name+' · '+s.stage,{className:'lt'});m.bindPopup(`<b>${s.name}</b><br>${s.key}`);n3L.push(m)});
  D.dongs.forEach(o=>{const m=L.marker([o.lat,o.lng],{icon:L.divIcon({className:'',html:'',iconSize:[0,0]})});m.on('click',()=>openDong(o.id));pinL[o.id]=m;m.addTo(map);
-  (o.lead||[]).forEach((a,k)=>{if(a.lat==null)return;const am=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="apin" style="--c:${RC[k]}"><div class="rk">${k+1}</div><div class="box"><div class="pt">${a.p84?'84㎡':'59㎡'} · ${a.by}년</div><div class="pp">${fmt(a.p84??a.p59)}</div></div><div class="nm">${a.name}</div></div>`})});am.on('click',()=>{openDong(o.id);pickApt(o.id,a.name)});am._o=o;aptL.push(am)})});
+  (o.lead||[]).forEach((a,k)=>{if(a.lat==null)return;const am=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="apin" style="--c:${RC[k]}"><div class="rk">${k+1}</div><div class="box"><div class="pt">${short(o)} ${k?(k+1)+'위':'대장'} · ${a.p84?'84㎡':'59㎡'}</div><div class="pp">${fmt(a.p84??a.p59)}</div></div><div class="nm">${a.name}</div></div>`})});am.on('click',()=>{openDong(o.id);pickApt(o.id,a.name)});am._o=o;aptL.push(am)})});
  // UI
  document.getElementById('pre').innerHTML=[['all','전체 경기'],['반도체벨트','반도체 벨트'],['3기·서울외곽','3기·서울 외곽']].map(([k,n])=>`<span class="chip" data-p="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-p]').forEach(c=>c.onclick=()=>{preset=c.dataset.p;fitPreset();render()});
