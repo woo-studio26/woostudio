@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "title": "3기 신도시 지도 피드",
  "regions": [
   "전체",
@@ -416,6 +416,26 @@
    "summary": "1,508명 중 308명 취소·포기. A2는 사전당첨 866명 중 138명이 본청약 미신청.",
    "url": "http://www.hanamilbo.net/news/articleView.html?idxno=12664",
    "src": "하남일보"
+  },
+  {
+   "id": "n22",
+   "date": "2026-11-20",
+   "site": "all",
+   "cat": "risk",
+   "title": "LH 민참 공모 일부 연기: 왕숙2 통합사업·창릉 A-3",
+   "summary": "LH가 11/20 정정공고로 남양주왕숙2·수원당수 통합사업과 고양창릉 A-3블록 민간참여 공모를 연기했다. 변경 일정은 추후 공지.",
+   "url": "https://www.betanews.net/article/view/beta202611210001",
+   "src": "베타뉴스"
+  },
+  {
+   "id": "n23",
+   "date": "2026-11-19",
+   "site": "wangsuk",
+   "cat": "hou",
+   "title": "공공분양 분양가 1년 새 12~16% 상승, 2027 왕숙 6개 블록 5,373가구",
+   "summary": "창릉·왕숙 후속 단지 분양가가 공사비 인상으로 12~16% 올랐다. 2027년 수도권 공공택지 약 2.7만 가구 중 3기 신도시 약 9,200가구, 왕숙은 A14·A25·S3·S4·S8·S9 6개 블록 약 5,373가구 계획.",
+   "url": "https://www.smartbizn.com/news/articleView.html?idxno=159979",
+   "src": "스마트비즈"
   }
  ],
  "milestones": [
