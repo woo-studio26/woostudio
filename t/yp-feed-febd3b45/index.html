@@ -45,6 +45,7 @@ h1{font-size:17px;margin:0 0 2px}
 .stg{font-size:10.5px;color:#6b7280;margin-top:2px}
 .lbl{background:rgba(255,255,255,.92);border:1px solid #d1d5db;border-radius:4px;padding:1px 5px;font-size:11px;font-weight:600;box-shadow:none;color:#111827}
 .lbl:before{display:none}
+.basemap{filter:grayscale(.85) brightness(1.05) contrast(.9)}
 .leaflet-popup-content{margin:10px 12px;font-size:12.5px;line-height:1.5}
 .pop h3{margin:0 0 3px;font-size:14px}
 .pop .k{color:#374151;margin:4px 0}
@@ -90,18 +91,22 @@ function site(id){return D.sites.find(s=>s.id===id)}
 function init(){
  document.getElementById('upd').textContent=`${D.updated} 기준 · 뉴스 ${D.news.length}건 · 거점 ${D.sites.length}곳 · 핀을 누르면 그 거점 소식만`;
  map=L.map('map',{zoomControl:true}).setView([37.13,127.13],10);
- L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:18}).addTo(map);
+ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18,className:'basemap'}).addTo(map);
  D.sites.forEach(s=>{
   const c=D.cats[s.cat].color;
   if(s.r) circles[s.id]=L.circle([s.lat,s.lng],{radius:s.r,color:c,weight:1,fillColor:c,fillOpacity:.08,dashArray:'4 4'}).addTo(map);
   const n=D.news.filter(x=>x.site===s.id).length, fresh=D.news.filter(x=>x.site===s.id&&daysAgo(x.date)<=7).length;
   const m=L.circleMarker([s.lat,s.lng],{radius:7+Math.min(n,6),color:'#fff',weight:2,fillColor:c,fillOpacity:.95}).addTo(map);
+  m.on('add',()=>setTimeout(()=>map.fire('zoomend'),0));
   m.bindTooltip(s.name.replace(/ \(.*\)/,'')+(fresh?` · 새 소식 ${fresh}`:''),{permanent:true,direction:'right',offset:[8,0],className:'lbl'});
   m.bindPopup(()=>popup(s),{maxWidth:300});
   m.on('click',()=>{state.site=s.id;state.tab='news';render()});
   markers[s.id]=m;
  });
- watchLayer=L.layerGroup(D.watch.map(w=>L.marker([w.lat,w.lng],{icon:L.divIcon({className:'',html:'<div class="watchicon">관</div>',iconSize:[18,18]})}).bindPopup(`<div class="pop"><h3>${w.name} <span style="font-size:11px;color:#7c3aed">mg 관심 지역</span></h3><div class="k">출퇴근(도로 기준, 막힘 미반영): ${w.commute}</div><div class="k">경매(2025~): ${w.auction}</div></div>`))).addTo(map);
+ const BIG=['sk','nat','idong','platform','ptcampus','brain','anjung','rail_s'];
+ const lab=()=>{const z=map.getZoom();D.sites.forEach(s=>{const t=markers[s.id].getTooltip();if(!t)return;const el=t.getElement();if(el)el.style.display=(z>=12||BIG.includes(s.id))?'':'none'})};
+ map.on('zoomend',lab);setTimeout(lab,50);
+ watchLayer=L.layerGroup(D.watch.map(w=>L.marker([w.lat,w.lng],{icon:L.divIcon({className:'',html:'<div class="watchicon">관</div>',iconSize:[18,18],iconAnchor:[24,24]})}).bindPopup(`<div class="pop"><h3>${w.name} <span style="font-size:11px;color:#7c3aed">mg 관심 지역</span></h3><div class="k">출퇴근(도로 기준, 막힘 미반영): ${w.commute}</div><div class="k">경매(2025~): ${w.auction}</div></div>`))).addTo(map);
  const lg=L.control({position:'bottomleft'});
  lg.onAdd=()=>{const d=L.DomUtil.create('div','legend');d.innerHTML=Object.values(D.cats).map(c=>`<span class="dot" style="background:${c.color}"></span> ${c.name}`).join('<br>')+'<br><span class="dot" style="background:#7c3aed;border-radius:2px"></span> 관심 지역<br><span style="color:#6b7280">점선 원 = 대략 범위 · 핀 크기 = 소식 수</span>';return d};
  lg.addTo(map);
