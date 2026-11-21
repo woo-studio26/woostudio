@@ -290,7 +290,7 @@ function zupHtml(z){const [v,ck]=zJudge(z),d=z.det||{},e=EV[v];const pr=(d.price
  <div class="nt">${z.name}</div><div class="rs">${z.addr||''}${z.n?' · '+z.n+'세대':''}</div>
  <div style="margin:5px 0 3px;display:flex;flex-wrap:wrap;gap:4px">${ck.map(c=>`<span style="font-size:11px;border:1px solid ${CC[c[0]]}33;color:${CC[c[0]]};border-radius:5px;padding:1px 6px">${CK[c[0]]} ${c[1]}</span>`).join('')}</div>
  <div class="rs">${zIsReg(z)?'규제지역':'비규제'}${d.resale?' · 전매 '+d.resale.slice(0,30):''}${d.livein&&d.livein!=='없음'?' · 거주의무 '+d.livein:''}${d.deposit?' · 계약금 '+d.deposit:''}${pmax?' · 최고 '+(pmax/10000).toFixed(2)+'억':''}</div>
- ${z.url?`<a href="${z.url}" target="_blank" rel="noopener">공고 보기 ↗</a>`:''} ${d.pdf?`<a href="${d.pdf}" target="_blank" rel="noopener">공고문 PDF ↗</a>`:''}`}
+ <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">${z.hg?`<a href="https://hogangnono.com/apt/${z.hg}" target="_blank" rel="noopener" style="background:#6d28d9;color:#fff;font-weight:700;border-radius:6px;padding:3px 9px;text-decoration:none">호갱노노에서 보기 ↗</a>`:`<span class="rs" style="color:#9ca3af">호갱노노 단지 없음</span>`}${z.url?`<a href="${z.url}" target="_blank" rel="noopener">공고 보기 ↗</a>`:''} ${d.pdf?`<a href="${d.pdf}" target="_blank" rel="noopener">공고문 PDF ↗</a>`:''}</div>`}
 let zupAll=false;
 function zupBlock(){let L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY);if(zupF.sido!=='all')L=L.filter(z=>z.sido===zupF.sido);const J=z=>zJudge(z)[0];if(zupF.only)L=L.filter(z=>J(z)==='o');
  L.sort((a,b)=>({o:0,'?':1,x:2}[J(a)]-{o:0,'?':1,x:2}[J(b)])||String(a.end).localeCompare(String(b.end)));
