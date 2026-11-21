@@ -269,7 +269,7 @@ function histStats(id,cls){if(!HIST||!HIST[id])return null;const d=HIST[id].d.fi
  const last=Math.max(...d.map(x=>mIdx(x[0])));const med=a=>{a=a.slice().sort((x,y)=>x-y);const n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):null};
  const rec=med(d.filter(x=>mIdx(x[0])>last-4).map(x=>x[2])),ya=med(d.filter(x=>mIdx(x[0])>=last-15&&mIdx(x[0])<=last-9).map(x=>x[2]));
  const hy={};d.forEach(x=>{const k=Math.floor(x[0]/100)+(x[0]%100>6?'하':'상');(hy[k]=hy[k]||[]).push(x[2])});
- let pk=null;Object.entries(hy).forEach(([k,a])=>{if(a.length>=3){const v=med(a);if(!pk||v>pk.v)pk={k,v}}});
+ let pk=null;Object.entries(hy).forEach(([k,a])=>{if(a.length>=5){const v=med(a);if(!pk||v>pk.v)pk={k,v}}});
  return {rec,ya,yoy:rec&&ya?rec/ya-1:null,pk,fromPk:rec&&pk?rec/pk.v-1:null,hy:Object.entries(hy).filter(([k,a])=>a.length>=2).map(([k,a])=>[k,med(a),a.length]).sort()}}
 function histSvg(o){const H=HIST&&HIST[o.id];if(!H)return `<div class="note">${HIST?'거래 기록 없음 (분양 예정지)':'가격 추이 불러오는 중…'}</div>`;
  const cls=hSize==='p59'?59:84;let d=H.d.filter(x=>x[1]===cls&&(hApt<0||x[3]===hApt));
@@ -282,7 +282,7 @@ function histSvg(o){const H=HIST&&HIST[o.id];if(!H)return `<div class="note">${H
  const yrs=[];for(let y=Math.ceil(x0/12);y*12<=x1;y++)yrs.push(y);const ys=yrs.length>6?yrs.filter((y,i)=>i%2===0):yrs;
  ys.forEach(y=>g+=`<text x="${X(y*12)}" y="${Hh-6}" font-size="9" fill="#999" text-anchor="middle">${String(y).slice(2)}년</text>`);
  const bym={};d.forEach(x=>(bym[x[0]]=bym[x[0]]||[]).push(x[2]));const med=a=>{a=a.slice().sort((p,q)=>p-q);const n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2};
- const line=Object.keys(bym).map(Number).sort().filter(m=>bym[m].length>=(hApt<0?2:1)).map(m=>[X(mIdx(m)+.5),Yy(med(bym[m])),m,med(bym[m]),bym[m].length]);
+ const line=Object.keys(bym).map(Number).sort().filter(m=>bym[m].length>=(hApt<0?3:1)).map(m=>[X(mIdx(m)+.5),Yy(med(bym[m])),m,med(bym[m]),bym[m].length]);
  let dots=d.map((x,i)=>`<circle cx="${X(mIdx(x[0])+((i*37)%10)/10)}" cy="${Yy(x[2])}" r="2.2" fill="#5b3fd6" opacity=".28"><title>${mLab(x[0])} ${H.apts[x[3]]} ${x[4]??''}층 ${x[2]}억</title></circle>`).join('');
  const path=line.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join('');
  const lp=line[line.length-1];
@@ -295,7 +295,7 @@ function histBlock(o){const H=HIST&&HIST[o.id];const cls=hSize==='p59'?59:84;con
  ${apts.length?`<select id="hapt" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:3px;max-width:150px"><option value="-1">전체 단지</option>${apts.map(([a,i,n])=>`<option value="${i}" ${hApt===i?'selected':''}>${a} (${n})</option>`).join('')}</select>`:''}</div>
  ${histSvg(o)}
  ${st?`<div class="kv" style="margin-top:6px"><div>최근 시세</div><div><b>${fmt(st.rec)}</b> (최근 4개월 중앙)</div><div>1년 전 대비</div><div>${pct(st.yoy)}</div><div>최고점 대비</div><div>${st.pk?`${pct(st.fromPk)} <span class="rs">(고점 ${st.pk.k.replace('상',' 상반기').replace('하',' 하반기')} ${fmt(st.pk.v)})</span>`:'-'}</div></div>`:''}
- <div class="note">점 = 실거래 1건, 선 = 표본 달의 중앙값. 2016~2025는 1·4·7·10월 표본(매일 조금씩 채우는 중), 최근 2년은 매월.</div></div>`}
+ <div class="note">점 = 실거래 1건, 선 = 표본 달의 중앙값. 2016~2025는 1·4·7·10월 표본(매일 조금씩 채우는 중), 최근 2년은 매월. 동네 전체 값은 신축·구축 비율에 따라 흔들리니 단지를 골라 보면 더 정확해요.</div></div>`}
 
 function cmpHist(cs){if(!HIST)return '';const cls=sizeKey==='p59'?59:84;const S=cmp.map(id=>histStats(id,cls));if(!S.some(x=>x&&x.hy.length))return '';
  const all=S.flatMap(x=>x?x.hy:[]);const ks=[...new Set(all.map(h=>h[0]))].sort();const vs=all.map(h=>h[1]);const y0=Math.min(...vs)*.9,y1=Math.max(...vs)*1.05;
