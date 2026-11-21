@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>경기 입지 레이더</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{--ac:#5b3fd6;--ac2:#efeafe;--bd:#e5e7eb;--mu:#6b7280;--bg:#f7f7f9;--red:#dc2626;--grn:#059669}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;color:#111827;background:#fff}
+#app{position:fixed;inset:0;display:grid;grid-template-columns:400px 1fr;grid-template-rows:auto 1fr}
+header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px;border-bottom:1px solid var(--bd);background:#fff;z-index:5;overflow-x:auto}
+.logo{font-weight:800;font-size:16px;white-space:nowrap;color:var(--ac)}
+.logo small{display:block;font-weight:500;font-size:10.5px;color:var(--mu)}
+.stat{white-space:nowrap}.stat b{display:block;font-size:17px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.stat span{font-size:10.5px;color:var(--mu)}
+#side{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--bd);background:#fff;z-index:4}
+.sbox{padding:10px 12px 6px}
+.search{display:flex;align-items:center;background:var(--bg);border-radius:10px;padding:8px 10px;gap:6px}
+.search input{border:0;background:transparent;flex:1;font-size:14px;outline:none}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{border:1px solid var(--bd);border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;user-select:none;white-space:nowrap;background:#fff}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tabs{display:flex;border-bottom:1px solid var(--bd);padding:0 6px}
+.tab{flex:1;text-align:center;padding:9px 0;font-size:13px;cursor:pointer;color:var(--mu);border-bottom:2px solid transparent}
+.tab.on{color:#111;border-bottom-color:#111;font-weight:700}
+#list{flex:1;overflow:auto}
+.row{padding:10px 14px;border-bottom:1px solid #f1f1f4;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.row:hover{background:#fafaff}
+.rn{font-weight:700;font-size:14px}.rs{font-size:11.5px;color:var(--mu)}
+.sc{font-weight:800;font-size:18px;text-align:right;font-variant-numeric:tabular-nums}
+.d{font-size:11.5px;font-weight:700}.up{color:var(--red)}.dn{color:#2563eb}
+.tag{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:4px;background:#f1f1f4;color:#374151;margin-right:3px}
+.tag.r{background:#fee2e2;color:#b91c1c}.tag.p{background:var(--ac2);color:var(--ac)}.tag.g{background:#dcfce7;color:#166534}
+.sortbar{display:flex;align-items:center;gap:6px;padding:8px 14px;font-size:12px;color:var(--mu);border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.sortbar select{font-size:12px;border:1px solid var(--bd);border-radius:6px;padding:3px}
+.det{padding:12px 14px}
+.back{font-size:12px;color:var(--ac);cursor:pointer;margin-bottom:6px}
+.gauge{display:flex;align-items:center;gap:14px;margin:8px 0}
+.bars .b{display:grid;grid-template-columns:92px 1fr 44px;align-items:center;gap:6px;font-size:12px;margin:4px 0}
+.trk{height:7px;background:#eef;border-radius:4px;overflow:hidden}.fil{height:7px;background:var(--ac);border-radius:4px}
+.sec{margin-top:14px}.sec h4{margin:0 0 6px;font-size:13px}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:3px 8px;font-size:12.5px}
+.kv div:nth-child(odd){color:var(--mu)}
+.note{font-size:11px;color:var(--mu);line-height:1.5}
+.warn{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.5;margin:8px 0}
+.btn{display:inline-block;border:1px solid var(--ac);color:var(--ac);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;margin-top:6px}
+.news{padding:10px 14px;border-bottom:1px solid #f1f1f4;cursor:pointer}
+.news:hover{background:#fafaff}
+.nt{font-weight:700;font-size:13.5px;margin:3px 0;line-height:1.35}.ns{font-size:12px;color:#374151;line-height:1.5}
+.news a{font-size:11px;color:var(--ac);text-decoration:none}
+#mapwrap{position:relative;min-height:0}
+#map{position:absolute;inset:0}
+.layers{position:absolute;right:10px;top:10px;z-index:500;display:flex;flex-direction:column;gap:5px}
+.lb{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:6px 8px;font-size:12px;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08);min-width:52px}
+.lb.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.yearbar{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;z-index:500;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.15);padding:10px 16px 8px;width:min(620px,92%)}
+.yt{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:2px}
+.yt b{font-size:18px;color:var(--ac)}
+.yearbar input{width:100%;accent-color:var(--ac)}
+.yl{display:flex;justify-content:space-between;font-size:10px;color:var(--mu)}
+.sce{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.sce .chip{font-size:11px;padding:3px 8px}
+.pin{position:relative;transform:translate(-50%,-100%);display:inline-block;white-space:nowrap;cursor:pointer}
+.pin .box{background:var(--c);color:#fff;border-radius:7px;padding:3px 6px 3px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.25);line-height:1.15}
+.pin .pt{font-size:10px;opacity:.9}.pin .pp{font-size:13px;font-weight:800}.pin .ps{font-size:10.5px;background:rgba(255,255,255,.22);border-radius:4px;margin-top:2px;padding:0 4px}
+.pin:after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:var(--c);border-bottom:0}
+.pin.dim{opacity:.25}.pin.sel .box{outline:3px solid #111}
+.pin .nm{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:7px;font-size:10.5px;font-weight:700;color:#111;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
+.lt{background:#fff;border:1px solid #ddd;border-radius:4px;padding:1px 5px;font-size:10.5px;font-weight:700;box-shadow:none}
+.lt:before{display:none}
+.ico{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);border:2px solid #fff}
+.leaflet-popup-content{font-size:12.5px;line-height:1.5;margin:10px 12px}
+@media(max-width:860px){
+ #app{grid-template-columns:1fr;grid-template-rows:auto 52vh 1fr}
+ header{grid-column:1}
+ #mapwrap{grid-row:2}#side{grid-row:3;border-right:0;border-top:1px solid var(--bd)}
+ .yearbar{bottom:6px;padding:6px 10px}.sce{display:none}
+ .layers{top:6px;right:6px}.lb{padding:4px 6px;min-width:44px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="logo">경기 입지 레이더<small>제2의 판교·동탄 찾기 · <span id="upd"></span></small></div>
+ <div class="stat"><b id="s1">-</b><span>점수 상위 (연도 기준)</span></div>
+ <div class="stat"><b id="s2">-</b><span>최근 7일 새 소식</span></div>
+ <div class="stat"><b id="s3">-</b><span>다음 청약</span></div>
+ <div class="stat"><b id="s4">11/26 금통위</b><span>정책 변수 일정</span></div>
+ <div class="stat"><b id="s5">-</b><span>내 매수 상한(증빙 전제)</span></div>
+</header>
+<aside id="side">
+ <div class="sbox">
+  <div class="search"><input id="q" placeholder="동네 검색 (예: 진안, 동탄, 지제)"></div>
+  <div class="chips" id="pre"></div>
+  <div class="chips" id="flt"></div>
+ </div>
+ <div class="tabs" id="tabs"></div>
+ <div id="list"></div>
+</aside>
+<div id="mapwrap">
+ <div id="map"></div>
+ <div class="layers" id="layers"></div>
+ <div class="yearbar">
+  <div class="yt"><span>연도 <b id="yv">2026</b></span><span id="ymsg" class="note"></span></div>
+  <input type="range" id="yr" min="2026" max="2036" step="1" value="2026">
+  <div class="yl"><span>2026</span><span>2028</span><span>2030</span><span>2032</span><span>2034</span><span>2036</span></div>
+  <div class="sce" id="sce"></div>
+ </div>
+</div>
+</div>
+<script>
+const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
+let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
+const LAY={rail:true,jobs:true,hosp:true,news:true,n3:false,subs:true};
+const pinL={},lineL=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
+const cl=x=>Math.max(0,Math.min(1,x));
+const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
+fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window.RADAR=d;init()});
+
+// ---------- 점수 엔진 ----------
+function gangT(o,y){let T=o.t.gangnam;for(const r of M.rail){const yy=r.year+(SC.has('gtxDelay')&&r.line==='gtxa_ext'?2:0);if(r.ids[o.id]!=null&&y>=yy)T=Math.min(T,r.ids[o.id])}
+ const s=M.scenarios.chip;if(SC.has('chip')&&s.ids[o.id]!=null&&y>=s.year)T=Math.min(T,s.ids[o.id]);return T}
+function score(o,y){const W=M.weights,t=o.t;const T=gangT(o,y);const g=W.gangnam*cl((65-T)/50);
+ let js=[];for(const a of D.anch){let w=0;for(const [yr,ww] of a.steps)if(y>=yr)w=ww;if(w&&t[a.id]!=null)js.push(w*cl((50-t[a.id])/40))}
+ js.sort((a,b)=>b-a);const j=W.jobs*Math.min(1,(js[0]||0)+.25*(js[1]||0));
+ let hs=[0];for(const h of D.hosp){if(h.open&&y<h.open)continue;if(SC.has('ajouCancel')&&h.id==='ajou_pt')continue;hs.push(h.w*cl((50-t[h.id])/35))}
+ const hp=W.hosp*Math.max(...hs);
+ let dv;if(M.dev[o.id]){const [a,b,m]=M.dev[o.id];dv=m*(.35+.65*cl((y-a)/(b-a)))}else dv=M.devFlat[o.id]??5;
+ const sch=M.school[o.id]??4;let pen=0;for(const p of M.supplyPenalty)if(p.ids.includes(o.id)&&p.years.includes(y))pen+=p.p;
+ const sup=10-pen;const cf=o.by==null?5:5*cl((o.by-1990)/32);
+ const parts=[g,j,hp,dv,sch,sup,cf];return {s:parts.reduce((a,b)=>a+b,0),parts,T}}
+let REG={a:0,b:0};
+function fitModel(){const pts=D.dongs.filter(o=>o.p84&&o.n84>=10).map(o=>[score(o,2026).s,Math.log(o.p84)]);
+ const n=pts.length,mx=pts.reduce((a,p)=>a+p[0],0)/n,my=pts.reduce((a,p)=>a+p[1],0)/n;
+ const b=pts.reduce((a,p)=>a+(p[0]-mx)*(p[1]-my),0)/pts.reduce((a,p)=>a+(p[0]-mx)**2,0);REG={a:my-b*mx,b}}
+const implied=s=>Math.exp(REG.a+REG.b*s);
+function cap(){const me=D.me,f=r=>{const m=r/1200,n=360;return m/(1-Math.pow(1+m,-n))*12};
+ const loanD=me.income*0.4/f(me.rate+me.stress)/10000;const c=.016;return Math.min((me.cash+Math.min(loanD,6))/(1+c),me.cash/(1-.7+c))}
+function price(o){return o[sizeKey]??null}
+function visible(o){if(preset!=='all'&&o.region!==preset&&!(preset==='반도체벨트'&&o.region==='기준'))return false;
+ if(q&&!(o.name+o.sig).includes(q))return false;return true}
+function passF(o){if(F.has('budget')){const p=o.p59;if(o.flags.includes('P'))return true;if(p==null||p>cap())return false}
+ if(F.has('noreg')&&M.regulated.includes(o.id))return false;
+ if(F.has('subs')&&!D.subs.some(s=>s.dong===o.id&&isUpcoming(s)))return false;return true}
+function isUpcoming(s){return !s.start||s.start>='2026-11-21'||s.start==='예정'||/^2026-12$/.test(s.start)}
+const col=s=>{const t=cl((s-50)/40);const h=255,l=72-t*34,sat=25+t*55;return `hsl(${h} ${sat}% ${l}%)`};
+
+// ---------- 지도 ----------
+function init(){
+ document.getElementById('upd').textContent=D.updated+' 기준';fitModel();
+ map=L.map('map',{zoomControl:false,zoomSnap:.5}).setView([37.22,127.08],10);
+ L.control.zoom({position:'bottomright'}).addTo(map);
+ const vw=(l,ext)=>L.tileLayer(`https://api.vworld.kr/req/wmts/1.0.0/${VKEY}/${l}/{z}/{y}/{x}.${ext}`,{maxZoom:19,attribution:'© VWorld'});
+ const osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'});
+ const T={base:VKEY.length>10?vw('Base','png'):osm,sat:L.layerGroup([vw('Satellite','jpeg'),vw('Hybrid','png')])};
+ T.base.on('tileerror',()=>{if(!window._f){window._f=1;map.removeLayer(T.base);T.base=osm;osm.addTo(map)}});
+ T.base.addTo(map);window._T=T;
+ // 노선
+ D.lines.forEach(l=>{const plan=!l.open||l.status==='건의';const pl=L.polyline(l.pts,{color:l.color,weight:3,opacity:.85,dashArray:plan?'6 6':null}).bindTooltip(l.name,{sticky:true});pl._d=l;lineL.push(pl)});
+ D.hosp.forEach(h=>{const m=L.marker([h.lat,h.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#dc2626">+</div>`,iconSize:[18,18]})});m._d=h;m.bindPopup(()=>`<b>${h.name}</b><br>${h.memo}${h.open?'<br>개원 목표 '+h.open:''}`);hospL.push(m)});
+ D.anch.forEach(a=>{const m=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#2563eb">▣</div>`,iconSize:[18,18]})});m._d=a;m.bindTooltip(a.name,{direction:'top',className:'lt'});m.bindPopup(()=>`<b>${a.name}</b><br>${a.steps.map(([y,w])=>(y?y+'년~':'현재 ')+'규모 '+Math.round(w*100)).join(' · ')}<br>${a.memo}`);anchL.push(m)});
+ const seen={};D.news.forEach(n=>{if(n.lat==null)return;const k=n.lat.toFixed(3)+n.lng.toFixed(3);seen[k]=(seen[k]||0)+1;const a=seen[k]*0.9,r=0.004*Math.sqrt(seen[k]);
+  const m=L.circleMarker([n.lat+r*Math.sin(a),n.lng+r*Math.cos(a)],{radius:5,color:'#fff',weight:1.5,fillColor:catCol(n.cat),fillOpacity:.95});m._d=n;m.bindPopup(()=>newsHtml(n,true));newsL.push(m)});
+ D.sites.filter(s=>s.src==='n3').forEach(s=>{const m=L.circle([s.lat,s.lng],{radius:1300,color:'#475569',weight:1,dashArray:'4 4',fillOpacity:.05}).bindTooltip(s.name+' · '+s.stage,{className:'lt'});m.bindPopup(`<b>${s.name}</b><br>${s.key}`);n3L.push(m)});
+ D.dongs.forEach(o=>{const m=L.marker([o.lat,o.lng],{icon:L.divIcon({className:'',html:'',iconSize:[0,0]})});m.on('click',()=>openDong(o.id));pinL[o.id]=m;m.addTo(map)});
+ // UI
+ document.getElementById('pre').innerHTML=[['all','전체 경기'],['반도체벨트','반도체 벨트'],['3기·서울외곽','3기·서울 외곽']].map(([k,n])=>`<span class="chip" data-p="${k}">${n}</span>`).join('');
+ document.querySelectorAll('[data-p]').forEach(c=>c.onclick=()=>{preset=c.dataset.p;fitPreset();render()});
+ document.getElementById('flt').innerHTML=[['budget','내 예산 안 (59㎡)'],['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
+ document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
+ document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
+ document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{tab=c.dataset.t;sel=null;render()});
+ document.getElementById('layers').innerHTML=[['rail','철도'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
+ document.querySelectorAll('[data-l]').forEach(c=>c.onclick=()=>{const k=c.dataset.l;if(k==='sat'){base=base==='sat'?'base':'sat';map.removeLayer(base==='sat'?_T.base:_T.sat);(base==='sat'?_T.sat:_T.base).addTo(map)}else LAY[k]=!LAY[k];render()});
+ document.getElementById('sce').innerHTML=Object.entries(M.scenarios).map(([k,s])=>`<span class="chip" data-s="${k}">${s.name}</span>`).join('');
+ document.querySelectorAll('[data-s]').forEach(c=>c.onclick=()=>{const k=c.dataset.s;SC.has(k)?SC.delete(k):SC.add(k);render()});
+ const yr=document.getElementById('yr');yr.oninput=()=>{Y=+yr.value;render()};
+ document.getElementById('q').oninput=e=>{q=e.target.value.trim();render()};
+ const h=location.hash.slice(1);if(h&&D.dongs.find(o=>o.id===h)){sel=h}
+ render();
+}
+function fitPreset(){const ds=D.dongs.filter(visible);if(ds.length)map.fitBounds(L.latLngBounds(ds.map(o=>[o.lat,o.lng])).pad(.12))}
+const catCol=c=>({ind:'#2563eb',trn:'#16a34a',hou:'#ea580c',risk:'#dc2626',hosp:'#db2777',mov:'#7c3aed'}[c]||'#475569');
+const catName=c=>({ind:'산단·일자리',trn:'교통',hou:'주거·분양',risk:'리스크',hosp:'병원',mov:'입주'}[c]||c);
+
+function render(){
+ document.getElementById('yv').textContent=Y;
+ const evs=[];D.lines.forEach(l=>{if(l.open===Y)evs.push(l.name+' 개통')});D.hosp.forEach(h=>{if(h.open===Y)evs.push(h.name.replace('(계획)','').replace('(공사중)','')+' 개원')});D.anch.forEach(a=>a.steps.forEach(([y])=>{if(y===Y)evs.push(a.name+' 가동')}));
+ document.getElementById('ymsg').textContent=evs.length?'이 해: '+evs.join(' · '):'';
+ document.querySelectorAll('[data-p]').forEach(c=>c.classList.toggle('on',c.dataset.p===preset));
+ document.querySelectorAll('[data-f]').forEach(c=>c.classList.toggle('on',F.has(c.dataset.f)));
+ document.querySelectorAll('[data-t]').forEach(c=>c.classList.toggle('on',c.dataset.t===tab));
+ document.querySelectorAll('[data-l]').forEach(c=>c.classList.toggle('on',c.dataset.l==='sat'?base==='sat':LAY[c.dataset.l]));
+ document.querySelectorAll('[data-s]').forEach(c=>c.classList.toggle('on',SC.has(c.dataset.s)));
+ // 레이어
+ lineL.forEach(p=>{const l=p._d,on=l.open&&Y>=l.open&&l.status!=='건의';p.setStyle({dashArray:on?null:'6 6',weight:on?4:2.5,opacity:on?.95:.6});LAY.rail?p.addTo(map):map.removeLayer(p)});
+ hospL.forEach(m=>{const h=m._d;const on=!h.open||Y>=h.open;const dead=SC.has('ajouCancel')&&h.id==='ajou_pt';m.setOpacity(dead?.15:on?1:.4);LAY.hosp?m.addTo(map):map.removeLayer(m)});
+ anchL.forEach(m=>{const a=m._d;const on=a.steps.some(([y])=>Y>=y);m.setOpacity(on?1:.35);LAY.jobs?m.addTo(map):map.removeLayer(m)});
+ newsL.forEach(m=>LAY.news?m.addTo(map):map.removeLayer(m));
+ n3L.forEach(m=>LAY.n3?m.addTo(map):map.removeLayer(m));
+ // 핀
+ const c=cap();
+ D.dongs.forEach(o=>{const v=visible(o),r=score(o,Y),r0=score(o,2026),p=price(o),ok=passF(o);const m=pinL[o.id];
+  if(!v){map.removeLayer(m);return}m.addTo(map);
+  const sub=LAY.subs&&D.subs.some(s=>s.dong===o.id&&isUpcoming(s));
+  m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:`<div class="pin ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${col(r.s)}"><div class="box"><div class="pt">${o.flags.includes('P')?'분양 예정':(sizeKey==='p59'?'59㎡':'84㎡')+(o.proxy?' 주변':'')}</div><div class="pp">${o.flags.includes('P')?'청약':fmt(p)}</div><div class="ps">${Math.round(r.s)}점${Y>2026?` ▲${Math.round(r.s-r0.s)}`:''}</div></div><div class="nm">${sub?'● ':''}${o.name.replace(' (기준)','')}</div></div>`}));
+  m.setZIndexOffset(Math.round(r.s*10)+(sel===o.id?10000:0))});
+ // 헤더
+ const vis=D.dongs.filter(o=>visible(o)&&passF(o)).map(o=>[o,score(o,Y).s]).sort((a,b)=>b[1]-a[1]);
+ document.getElementById('s1').textContent=vis.slice(0,3).map(x=>x[0].name.split(' ')[0].replace('(3기)','')).join(' · ')||'-';
+ document.getElementById('s2').textContent=D.news.filter(n=>n.date>='2026-11-14').length+'건';
+ const up=D.subs.filter(s=>s.start&&s.start>='2026-11-21'&&s.start.length===10).sort((a,b)=>a.start.localeCompare(b.start))[0];
+ document.getElementById('s3').textContent=up?up.start.slice(5).replace('-','/')+' '+up.name.split(/[ (]/)[0]:'12월 원삼';
+ document.getElementById('s5').textContent=c.toFixed(1)+'억';
+ // 패널
+ const el=document.getElementById('list');
+ if(sel){el.innerHTML=dongHtml(D.dongs.find(o=>o.id===sel));bindDet();return}
+ if(tab==='dong')el.innerHTML=dongList();
+ if(tab==='news')el.innerHTML=newsList();
+ if(tab==='subs')el.innerHTML=subsList();
+ if(tab==='money')el.innerHTML=moneyHtml();
+ if(tab==='cmp')el.innerHTML=cmpHtml();
+ bindList();
+}
+function dongList(){
+ const rows=D.dongs.filter(o=>visible(o)).map(o=>{const r=score(o,Y),r0=score(o,2026);return {o,s:r.s,d:r.s-r0.s,gap:o.p84?implied(r0.s)/o.p84-1:null,p:price(o)}});
+ const key={score:x=>-x.s,up:x=>-x.d,price:x=>x.p??99,gap:x=>-(x.gap??-9)}[sortKey];rows.sort((a,b)=>key(a)-key(b));
+ return `<div class="sortbar">정렬 <select id="sk">${[['score','점수'],['up','2026 대비 상승폭'],['price','가격 낮은 순'],['gap','모델 대비 저평가']].map(([k,n])=>`<option value="${k}" ${k===sortKey?'selected':''}>${n}</option>`).join('')}</select>
+ 평형 <select id="zk"><option value="p59" ${sizeKey==='p59'?'selected':''}>59㎡</option><option value="p84" ${sizeKey==='p84'?'selected':''}>84㎡</option></select> <span>${Y}년 기준</span></div>`+
+ rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.sig} · ${o.flags.includes('P')?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div></div></div>`}).join('')+
+ `<div class="note" style="padding:12px 14px">점수 = 강남 25 · 일자리 20 · 병원 15 · 개발호재 15 · 학군 10 · 공급 10 · 쾌적 5. 2026 점수와 84㎡ 시세 상관 0.83(38곳). '모델 대비'는 점수로 계산한 예상가 대비 실제가 차이(+면 점수보다 싸다). 강남·병원·일자리 시간은 차 기준(막힘 미반영), 학군은 임시 추정치. 투자 권유 아님.</div>`}
+function newsHtml(n,pop){return `<div><span class="tag" style="background:${catCol(n.cat)}22;color:${catCol(n.cat)}">${catName(n.cat)}</span><span class="rs">${n.date} · ${n.siteName||''}</span></div><div class="nt">${n.title}</div><div class="ns">${n.summary}</div><a href="${n.url}" target="_blank" rel="noopener">${n.src} ↗</a>`}
+let ncat='all';
+function newsList(){const cats=['all','ind','trn','hou','hosp','risk'];
+ return `<div class="sortbar">${cats.map(c=>`<span class="chip ${ncat===c?'on':''}" data-nc="${c}">${c==='all'?'전체':catName(c)}</span>`).join('')}<span class="chip ${ncat==='ms'?'on':''}" data-nc="ms">앞으로 일정</span></div>`+
+ (ncat==='ms'?D.milestones.slice().sort((a,b)=>String(a.when).localeCompare(String(b.when))).map(m=>{const s=D.sites.find(x=>x.id===m.site);return `<div class="news"><div class="rs"><b>${m.when}</b> · ${s?s.name:''}</div><div class="ns">${m.text}</div></div>`}).join(''):
+ D.news.filter(n=>ncat==='all'||n.cat===ncat).map(n=>`<div class="news" data-n="${n.id}">${newsHtml(n)}</div>`).join(''))}
+function subsList(){const me=D.me;
+ return `<div class="warn">가점 ${me.gajeom}. 가점제는 불리 → <b>비규제 85㎡ 이하 추첨</b>과 결혼 후 <b>신혼부부 특공</b>이 주 전략. 생애최초 특공은 소득세 5년 납부가 필요해 확인 필요.</div>`+
+ D.subs.slice().sort((a,b)=>String(b.start).localeCompare(String(a.start))).map(s=>{const o=D.dongs.find(x=>x.id===s.dong);const up=isUpcoming(s);
+  const how=s.pub?'공공분양: 가점 아님(납입 횟수·특공)':s.reg?'규제지역: 60㎡↓ 추첨 60%, 60~85㎡ 30%':'비규제: 85㎡↓ 대부분 추첨(공고 확인)';
+  return `<div class="news" ${o?`data-d="${o.id}"`:''} style="opacity:${up?1:.55}"><div><span class="tag ${up?'p':''}">${up?'진행·예정':'지난 공고'}</span><span class="rs">${s.start||''} 접수 · ${s.n.toLocaleString()}가구 · ${s.type||''}</span></div><div class="nt">${s.name}</div><div class="ns">${s.addr}<br>${how}</div>${s.url?`<a href="${s.url}" target="_blank" rel="noopener">공고·기사 ↗</a>`:''}</div>`}).join('')}
+function moneyHtml(){const me=D.me,c=cap();
+ return `<div class="det"><h4 style="margin:0 0 6px">내 조건 계산기</h4><div class="warn">${me.note}. 아래 연소득은 <b>증빙되는 소득</b>을 넣어야 맞아요.</div>
+ <div class="kv"><div>현금</div><div><input id="mc" type="number" step="0.05" value="${me.cash}" style="width:70px">억</div><div>증빙 연소득</div><div><input id="mi" type="number" step="100" value="${me.income}" style="width:80px">만</div><div>대출 금리</div><div><input id="mr" type="number" step="0.05" value="${me.rate}" style="width:60px">% (가정)</div><div>스트레스</div><div><input id="ms" type="number" step="0.25" value="${me.stress}" style="width:60px">%p</div></div>
+ <div class="gauge"><div><div class="rs">매수 상한</div><div style="font-size:26px;font-weight:800;color:var(--ac)">${c.toFixed(2)}억</div></div><div class="note">DSR 40%, 30년 원리금, 생애최초 LTV 70%, 취득세·비용 1.6% 가정. '내 예산 안' 필터가 이 값을 씀.</div></div>
+ <h4 style="margin:14px 0 6px">정책 변수판 (${D.policy.asof})</h4>${D.policy.items.map(([k,v,n,u])=>`<div class="news"><div class="rs">${k}</div><div class="nt">${v}</div><div class="ns">${n} <a href="${u}" target="_blank" rel="noopener">출처 ↗</a></div></div>`).join('')}
+ <div class="note" style="margin-top:8px">매일 08:30 루틴이 금통위·금융위·국토부 발표를 보고 값이 바뀌면 여기와 점수를 고쳐요.</div></div>`}
+function cmpHtml(){if(!cmp.length)return `<div class="det note">동네를 열고 '비교에 추가'를 누르면 최대 3곳을 나란히 봐요.</div>`;
+ const ys=[];for(let y=2026;y<=2036;y++)ys.push(y);const W=360,H=170,x=y=>20+(y-2026)/10*(W-30),yy=s=>H-20-(s-40)/60*(H-30);const cs=['#5b3fd6','#ea580c','#059669'];
+ let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">${[50,60,70,80,90].map(s=>`<line x1="20" x2="${W-10}" y1="${yy(s)}" y2="${yy(s)}" stroke="#eee"/><text x="2" y="${yy(s)+3}" font-size="9" fill="#999">${s}</text>`).join('')}${[2026,2028,2030,2032,2034,2036].map(y=>`<text x="${x(y)}" y="${H-4}" font-size="9" fill="#999" text-anchor="middle">${y}</text>`).join('')}`;
+ cmp.forEach((id,i)=>{const o=D.dongs.find(d=>d.id===id);svg+=`<polyline fill="none" stroke="${cs[i]}" stroke-width="2.5" points="${ys.map(y=>x(y)+','+yy(score(o,y).s)).join(' ')}"/><text x="${W-8}" y="${yy(score(o,2036).s)-4}" font-size="10" fill="${cs[i]}" text-anchor="end">${o.name}</text>`});svg+='</svg>';
+ const lab=['강남','일자리','병원','개발','학군','공급','쾌적'];
+ return `<div class="det">${svg}<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:8px"><tr><td></td>${cmp.map((id,i)=>`<td style="color:${cs[i]};font-weight:700">${D.dongs.find(d=>d.id===id).name}</td>`).join('')}</tr>
+ ${[['59㎡',o=>fmt(o.p59)],['84㎡',o=>fmt(o.p84)],[Y+' 점수',o=>Math.round(score(o,Y).s)],['강남(분)',o=>score(o,Y).T],...lab.map((l,k)=>[l,o=>score(o,Y).parts[k].toFixed(1)])].map(([n,f])=>`<tr style="border-top:1px solid #eee"><td class="rs">${n}</td>${cmp.map(id=>`<td>${f(D.dongs.find(d=>d.id===id))}</td>`).join('')}</tr>`).join('')}</table><div class="btn" id="cclr">비우기</div></div>`}
+function stageTxt(o){const s=score(o,2026).s,s36=score(o,2036).s,d=s36-s;
+ if(o.id==='pangyo'||o.id==='sunae')return '기준 지역(이미 완성)';
+ if(d>=15)return '판교 2006~2009 단계: 아직 오르기 전, 앞으로 남은 게 많음';if(d>=8)return '판교 2011~2015 단계: 일부 반영, 호재 진행 중';return '판교 2016 이후 단계: 이미 반영된 편'}
+function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강남 접근',W.gangnam],['일자리',W.jobs],['대형병원',W.hosp],['개발호재',W.dev],['학군(추정)',W.school],['공급 부담',W.supply],['쾌적(신축)',W.comfort]];
+ const ys=[];for(let y=2026;y<=2036;y++)ys.push(score(o,y).s);const mn=Math.min(...ys)-3,mx=Math.max(...ys)+3;
+ const spark=`<svg viewBox="0 0 200 50" style="width:200px;height:50px"><polyline fill="none" stroke="#5b3fd6" stroke-width="2" points="${ys.map((s,i)=>(i*19+5)+','+(45-(s-mn)/(mx-mn)*40)).join(' ')}"/><circle cx="${(Y-2026)*19+5}" cy="${45-(r.s-mn)/(mx-mn)*40}" r="3.5" fill="#5b3fd6"/><text x="2" y="10" font-size="8" fill="#999">2026</text><text x="198" y="10" font-size="8" fill="#999" text-anchor="end">2036</text></svg>`;
+ const hs=D.hosp.map(h=>({h,t:o.t[h.id]})).filter(x=>x.t!=null).sort((a,b)=>a.t-b.t).slice(0,3);
+ const as=D.anch.map(a=>({a,t:o.t[a.id]})).filter(x=>x.t!=null).sort((a,b)=>a.t-b.t).slice(0,3);
+ const nn=D.news.filter(n=>n.lat!=null&&Math.hypot(n.lat-o.lat,(n.lng-o.lng)*.8)<.07).slice(0,6);
+ const ss=D.subs.filter(s=>s.dong===o.id);
+ const dv=M.dev[o.id];const imp=implied(r0.s),imp2=implied(r.s);
+ const deg=Math.round(r.s/100*180);
+ return `<div class="det"><div class="back" id="bk">← 목록</div>
+ <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:19px;font-weight:800">${o.name}</div><div class="rs">${o.sig} · ${o.region}${M.regulated.includes(o.id)?' · <span class="tag r">규제지역·토허(2년 실거주)</span>':' · <span class="tag g">비규제</span>'}</div></div><div class="btn" id="addc">비교에 추가</div></div>
+ <div class="gauge"><svg viewBox="0 0 120 70" style="width:120px"><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="#eee" stroke-width="12"/><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="${col(r.s)}" stroke-width="12" stroke-dasharray="${157*r.s/100} 157"/><text x="60" y="56" font-size="22" font-weight="800" text-anchor="middle" fill="#111">${Math.round(r.s)}</text></svg>
+ <div><div class="rs">${Y}년 입지 점수 ${Y>2026?`<span class="d up">▲${Math.round(r.s-r0.s)} vs 2026</span>`:''}</div>${spark}<div class="note">${stageTxt(o)}</div></div></div>
+ <div class="bars">${lab.map(([n,w],k)=>`<div class="b"><span>${n}</span><div class="trk"><div class="fil" style="width:${r.parts[k]/w*100}%"></div></div><span class="rs">${r.parts[k].toFixed(1)}/${w}</span></div>`).join('')}</div>
+ <div class="sec"><h4>시세 (국토부 실거래 2026.7~10 중앙값)</h4><div class="kv"><div>59㎡</div><div>${fmt(o.p59)} <span class="rs">(${o.n59}건)</span></div><div>84㎡</div><div>${fmt(o.p84)} <span class="rs">(${o.n84}건)</span></div><div>거래 많은 단지</div><div>${o.top.join(', ')||'-'}</div>${o.proxy?'<div>주의</div><div>3기 지구 안은 아직 시세 없음 → 바로 옆 기존 단지 시세</div>':''}
+ ${o.p84?`<div>점수 모델가</div><div>${fmt(imp)} (2026) → ${fmt(imp2)} (${Y}) <span class="rs">· 실제 대비 ${Math.round((imp/o.p84-1)*100)}%</span></div>`:''}</div></div>
+ <div class="sec"><h4>강남·병원·일자리 (차 기준)</h4><div class="kv"><div>강남역</div><div>${r.T}분 ${r.T<o.t.gangnam?'<span class="tag p">철도 개통 반영</span>':''}</div>
+ ${hs.map(x=>`<div>병원</div><div>${x.h.name} ${x.t}분${x.h.open?` <span class="tag ${Y>=x.h.open?'p':''}">${x.h.open} 개원 목표</span>`:''}</div>`).join('')}
+ ${as.map(x=>`<div>일자리</div><div>${x.a.name} ${x.t}분</div>`).join('')}</div></div>
+ ${dv?`<div class="sec"><h4>개발호재</h4><div class="ns">${dv[3]} (${dv[0]}~${dv[1]})</div></div>`:''}
+ ${ss.length?`<div class="sec"><h4>청약</h4>${ss.map(s=>`<div class="ns">· ${s.name} (${s.start||''}, ${s.n}가구${s.url?`, <a href="${s.url}" target="_blank">링크</a>`:''})</div>`).join('')}</div>`:''}
+ <div class="sec"><h4>근처 소식</h4>${nn.length?nn.map(n=>`<div class="news" style="padding:8px 0">${newsHtml(n)}</div>`).join(''):'<div class="note">아직 없음</div>'}</div>
+ <div class="note" style="margin-top:10px">점수는 공개 자료 기반 모델 추정이에요. 학군은 임시 추정치이고, 시간은 차 기준(막힘 미반영)이에요. 투자 권유가 아니에요.</div></div>`}
+function openDong(id){sel=id;const o=D.dongs.find(d=>d.id===id);location.hash=id;render();if(window.innerWidth>860)map.panTo([o.lat,o.lng])}
+function bindList(){document.querySelectorAll('[data-d]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const o=D.dongs.find(d=>d.id===e.dataset.d);map.flyTo([o.lat,o.lng],12.5,{duration:.6});openDong(o.id)});
+ document.querySelectorAll('[data-n]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const m=newsL.find(m=>m._d.id===e.dataset.n);if(m){if(!LAY.news){LAY.news=true;render()}map.flyTo(m.getLatLng(),12,{duration:.6});setTimeout(()=>m.openPopup(),650)}});
+ document.querySelectorAll('[data-nc]').forEach(e=>e.onclick=()=>{ncat=e.dataset.nc;render()});
+ const sk=document.getElementById('sk');if(sk)sk.onchange=()=>{sortKey=sk.value;render()};
+ const zk=document.getElementById('zk');if(zk)zk.onchange=()=>{sizeKey=zk.value;render()};
+ [['mc','cash'],['mi','income'],['mr','rate'],['ms','stress']].forEach(([i,k])=>{const e=document.getElementById(i);if(e)e.onchange=()=>{D.me[k]=+e.value;render()}});
+ const cc=document.getElementById('cclr');if(cc)cc.onclick=()=>{cmp=[];render()}}
+function bindDet(){document.getElementById('bk').onclick=()=>{sel=null;location.hash='';render()};
+ document.getElementById('addc').onclick=()=>{if(!cmp.includes(sel)){cmp.push(sel);if(cmp.length>3)cmp.shift()}tab='cmp';sel=null;render()};
+ document.querySelectorAll('.det [data-n],.det a').forEach(()=>{})}
+</script>
+</body>
+</html>
