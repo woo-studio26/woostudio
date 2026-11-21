@@ -75,6 +75,12 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 .pin .nm{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:7px;font-size:10.5px;font-weight:700;color:#111;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
 .lt{background:#fff;border:1px solid #ddd;border-radius:4px;padding:1px 5px;font-size:10.5px;font-weight:700;box-shadow:none}
 .lt:before{display:none}
+.ll{background:#fff;border:2px solid var(--c);color:var(--c);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap}.ll:before{display:none}.ll small{font-weight:600;color:#6b7280}
+.legend{position:absolute;left:10px;top:10px;z-index:500;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.15);padding:8px 10px;width:250px;max-height:calc(100% - 150px);overflow:auto;font-size:12px}
+.legend h5{margin:0 0 4px;font-size:12.5px;display:flex;justify-content:space-between;cursor:pointer}
+.lg{display:grid;grid-template-columns:34px 1fr;gap:6px;align-items:center;padding:4px 2px;border-radius:6px;cursor:pointer}.lg:hover,.lg.on{background:#f6f3ff}.lg b{font-size:12px}.lg div div{font-size:10.5px;color:#6b7280;line-height:1.3}
+.lkey{display:grid;grid-template-columns:34px 1fr;gap:4px 6px;align-items:center;font-size:10.5px;color:#374151;border-top:1px solid #eee;margin-top:6px;padding-top:6px}
+@media(max-width:860px){.legend{width:190px;top:auto;bottom:70px;max-height:40%}}
 .ico{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);border:2px solid #fff}
 .leaflet-popup-content{font-size:12.5px;line-height:1.5;margin:10px 12px}
 @media(max-width:860px){
@@ -108,6 +114,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 <div id="mapwrap">
  <div id="map"></div>
  <div class="layers" id="layers"></div>
+ <div class="legend" id="legend"></div>
  <div class="yearbar">
   <div class="yt"><span>연도 <b id="yv">2026</b></span><span id="ymsg" class="note"></span></div>
   <input type="range" id="yr" min="2026" max="2036" step="1" value="2026">
@@ -118,9 +125,10 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 </div>
 <script>
 const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
+let hiLine=null,legOpen=true;
 let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
 const LAY={rail:true,jobs:true,hosp:true,news:true,n3:false,subs:true};
-const pinL={},lineL=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
+const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
 let HIST=null,hSize='p84',hPer=5,hApt=-2,pinMode='lead';
@@ -166,7 +174,8 @@ function init(){
  T.base.on('tileerror',()=>{if(!window._f){window._f=1;map.removeLayer(T.base);T.base=osm;osm.addTo(map)}});
  T.base.addTo(map);window._T=T;map.on('zoomend',()=>render());
  // 노선
- D.lines.forEach(l=>{const plan=!l.open||l.status==='건의';const pl=L.polyline(l.pts,{color:l.color,weight:3,opacity:.85,dashArray:plan?'6 6':null}).bindTooltip(l.name,{sticky:true});pl._d=l;lineL.push(pl)});
+ D.lines.forEach(l=>{const pl=L.polyline(l.pts,{color:l.color,weight:3,opacity:.85}).bindTooltip(()=>lineTip(l),{sticky:true});pl._d=l;pl.on('click',()=>{hiLine=hiLine===l.id?null:l.id;render()});lineL.push(pl);
+  const mid=l.pts[Math.floor((l.pts.length-1)/2)],nx=l.pts[Math.floor((l.pts.length-1)/2)+1]||mid;const lm=L.marker([(mid[0]+nx[0])/2,(mid[1]+nx[1])/2],{icon:L.divIcon({className:'',iconSize:[0,0],html:''}),interactive:false});lm._d=l;lineLab.push(lm)});
  D.hosp.forEach(h=>{const m=L.marker([h.lat,h.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#dc2626">+</div>`,iconSize:[18,18]})});m._d=h;m.bindPopup(()=>`<b>${h.name}</b><br>${h.memo}${h.open?'<br>개원 목표 '+h.open:''}`);hospL.push(m)});
  D.anch.forEach(a=>{const m=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#2563eb">▣</div>`,iconSize:[18,18]})});m._d=a;m.bindTooltip(a.name,{direction:'top',className:'lt'});m.bindPopup(()=>`<b>${a.name}</b><br>${a.steps.map(([y,w])=>(y?y+'년~':'현재 ')+'규모 '+Math.round(w*100)).join(' · ')}<br>${a.memo}`);anchL.push(m)});
  const seen={};D.news.forEach(n=>{if(n.lat==null)return;const k=n.lat.toFixed(3)+n.lng.toFixed(3);seen[k]=(seen[k]||0)+1;const a=seen[k]*0.9,r=0.004*Math.sqrt(seen[k]);
@@ -191,6 +200,12 @@ function init(){
  render();
 }
 function fitPreset(){const ds=D.dongs.filter(visible);if(ds.length)map.fitBounds(L.latLngBounds(ds.map(o=>[o.lat,o.lng])).pad(.12))}
+function lineState(l){if(l.status==='건의')return 'plan';if(l.open&&Y>=l.open)return 'run';return 'build'}
+function lineTip(l){const st=lineState(l);return `<b>${l.name}</b><br>${st==='run'?'운행 중':st==='plan'?'건의 단계(확정 아님)':'공사·설계 중'}${l.yearNote?' · '+l.yearNote:l.open&&l.open<2026?' · '+l.open+' 개통':''}`}
+const sw=(l,st)=>`<svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="${l.color}" stroke-width="${st==='run'?4:3}" stroke-dasharray="${st==='run'?'':st==='plan'?'1.5 4':'7 4'}" stroke-linecap="${st==='plan'?'round':'butt'}"/></svg>`;
+function legendHtml(){if(!LAY.rail)return '<h5 id="legh">철도 레이어 꺼짐</h5>';const ord={run:0,build:1,plan:2};const ls=D.lines.slice().sort((a,b)=>ord[lineState(a)]-ord[lineState(b)]||(a.open||9999)-(b.open||9999));
+ return `<h5 id="legh"><span>노선 보기 (${Y}년 기준)</span><span>${legOpen?'접기 ▴':'펼치기 ▾'}</span></h5>`+(legOpen?ls.map(l=>{const st=lineState(l);return `<div class="lg ${hiLine===l.id?'on':''}" data-hl="${l.id}">${sw(l,st)}<div><b style="color:${l.color}">${l.name}</b><div>${st==='run'?'운행 중'+(l.open&&l.open>2000&&l.open<=Y?' · '+l.open+' 개통':''):st==='plan'?'건의 단계 · '+(l.yearNote||''):'공사·설계 중 · '+(l.yearNote||'')}</div></div></div>`}).join('')+
+ `<div class="lkey"><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="4"/></svg><span>굵은 실선 = 운행 중 (슬라이더 연도 기준)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="7 4"/></svg><span>긴 점선 = 공사·설계 중 (목표 연도에 실선으로 바뀜)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="1.5 4" stroke-linecap="round"/></svg><span>짧은 점선 = 건의 단계 (확정 아님, 노선 개략)</span></div><div class="note" style="margin-top:4px">이름을 누르면 그 노선만 강조돼요.</div>`:'')}
 const catCol=c=>({ind:'#2563eb',trn:'#16a34a',hou:'#ea580c',risk:'#dc2626',hosp:'#db2777',mov:'#7c3aed'}[c]||'#475569');
 const catName=c=>({ind:'산단·일자리',trn:'교통',hou:'주거·분양',risk:'리스크',hosp:'병원',mov:'입주'}[c]||c);
 
@@ -204,7 +219,10 @@ function render(){
  document.querySelectorAll('[data-l]').forEach(c=>c.classList.toggle('on',c.dataset.l==='sat'?base==='sat':LAY[c.dataset.l]));
  document.querySelectorAll('[data-s]').forEach(c=>c.classList.toggle('on',SC.has(c.dataset.s)));
  // 레이어
- lineL.forEach(p=>{const l=p._d,on=l.open&&Y>=l.open&&l.status!=='건의';p.setStyle({dashArray:on?null:'6 6',weight:on?4:2.5,opacity:on?.95:.6});LAY.rail?p.addTo(map):map.removeLayer(p)});
+ lineL.forEach(p=>{const l=p._d,st=lineState(l),dim=hiLine&&hiLine!==l.id;p.setStyle({dashArray:st==='run'?null:st==='plan'?'2 7':'10 7',weight:(st==='run'?(l.short==='1호선'||l.short==='SRT'?3:5):3.5)+(hiLine===l.id?3:0),opacity:dim?.12:st==='run'?.95:.8,lineCap:st==='plan'?'round':'butt'});LAY.rail?p.addTo(map):map.removeLayer(p);if(hiLine===l.id)p.bringToFront()});
+ lineLab.forEach(m=>{const l=m._d,st=lineState(l),dim=hiLine&&hiLine!==l.id;const show=LAY.rail&&!dim&&(map.getZoom()>=9.5)&&!(l.short==='1호선'||l.short==='SRT')||hiLine===l.id;
+  if(show){m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:`<div class="ll" style="--c:${l.color};transform:translate(-50%,-50%);display:inline-block">${l.short} <small>${st==='run'?(l.open&&l.open>2000?l.open+' 개통':'운행'):st==='plan'?'건의':(l.open?l.open+' 목표':'추진')}</small></div>`}));m.addTo(map)}else map.removeLayer(m)});
+ document.getElementById('legend').innerHTML=legendHtml();document.querySelectorAll('[data-hl]').forEach(e=>e.onclick=()=>{const id=e.dataset.hl;hiLine=hiLine===id?null:id;if(hiLine){const l=D.lines.find(x=>x.id===id);map.fitBounds(L.latLngBounds(l.pts).pad(.3))}render()});const lh=document.getElementById('legh');if(lh)lh.onclick=()=>{legOpen=!legOpen;render()};
  hospL.forEach(m=>{const h=m._d;const on=!h.open||Y>=h.open;const dead=SC.has('ajouCancel')&&h.id==='ajou_pt';m.setOpacity(dead?.15:on?1:.4);LAY.hosp?m.addTo(map):map.removeLayer(m)});
  anchL.forEach(m=>{const a=m._d;const on=a.steps.some(([y])=>Y>=y);m.setOpacity(on?1:.35);LAY.jobs?m.addTo(map):map.removeLayer(m)});
  newsL.forEach(m=>LAY.news?m.addTo(map):map.removeLayer(m));
