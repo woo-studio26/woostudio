@@ -99,7 +99,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
  <div class="stat"><b id="s1">-</b><span>점수 상위 (연도 기준)</span></div>
  <div class="stat"><b id="s2">-</b><span>최근 7일 새 소식</span></div>
  <div class="stat"><b id="s3">-</b><span>다음 청약</span></div>
- <div class="stat"><b id="s6" style="color:#b45309">-</b><span>줍줍·잔여 진행 중</span></div>
+ <div class="stat"><b id="s6" style="color:#b45309">-</b><span>줍줍 진행 · 내 조건 가능</span></div>
  <div class="stat"><b id="s4">11/26 금통위</b><span>정책 변수 일정</span></div>
  <div class="stat"><b id="s5">-</b><span>내 매수 상한(증빙 전제)</span></div>
 </header>
@@ -230,7 +230,7 @@ function render(){
  newsL.forEach(m=>LAY.news?m.addTo(map):map.removeLayer(m));
  n3L.forEach(m=>LAY.n3?m.addTo(map):map.removeLayer(m));
  zupL.forEach(m=>LAY.zup?m.addTo(map):map.removeLayer(m));
- const zopen=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);document.getElementById('s6').textContent=zopen.length+'건 (관심권 '+zopen.filter(z=>z.focus).length+')';
+ const zopen=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);document.getElementById('s6').textContent=zopen.length+'건 · 가능 '+zopen.filter(z=>zJudge(z)[0]==='o').length;
  // 핀
  const c=cap();const zz=map.getZoom(),big=zz>=13;
  aptL.forEach(am=>{(big&&visible(am._o))?am.addTo(map):map.removeLayer(am)});
@@ -271,17 +271,36 @@ function newsList(){const cats=['all','ind','trn','hou','hosp','risk'];
  return `<div class="sortbar">${cats.map(c=>`<span class="chip ${ncat===c?'on':''}" data-nc="${c}">${c==='all'?'전체':catName(c)}</span>`).join('')}<span class="chip ${ncat==='ms'?'on':''}" data-nc="ms">앞으로 일정</span></div>`+
  (ncat==='ms'?D.milestones.slice().sort((a,b)=>String(a.when).localeCompare(String(b.when))).map(m=>{const s=D.sites.find(x=>x.id===m.site);return `<div class="news"><div class="rs"><b>${m.when}</b> · ${s?s.name:''}</div><div class="ns">${m.text}</div></div>`}).join(''):
  D.news.filter(n=>ncat==='all'||n.cat===ncat).map(n=>`<div class="news" data-n="${n.id}">${newsHtml(n)}</div>`).join(''))}
-function zupRule(k){if(/무순위/.test(k)&&!/LH/.test(k))return '무주택 세대만. 거주 요건은 공고마다(전국이면 대구 거주도 가능). 통장·가점 불필요, 추첨';
- if(/임의공급/.test(k))return '청약홈 기준 해당 주택건설지역 거주 요건 있는 경우 많음 → 공고문 신청자격 확인';
- if(/불법행위/.test(k))return '계약취소주택 재공급: 해당 지역 거주 + 원래 일반공급분은 세대주 요건';
- if(/LH/.test(k))return 'LH 공고: 제목의 무주택/유주택 가능 여부와 거주 요건을 공고문에서 확인';return '공고문 확인'}
+const ZME={sido:'대구',nohouse:true,head:null};let zupF={only:false,sido:'all'};
+try{Object.assign(ZME,JSON.parse(localStorage.getItem('zme')||'{}'))}catch(e){}
+const REG_GG=['과천','광명','분당','수정구','중원구','영통','장안구','팔달','동안구','수지','기흥','의왕','하남','동탄','구리'];
+function zIsReg(z){const f=(z.det&&z.det.reg)||'';if(/투기과열|청약과열|조정/.test(f))return true;const a=(z.addr||'')+(z.name||'');return /서울/.test(a)||REG_GG.some(k=>a.includes(k))}
+function zJudge(z){const d=z.det||{},k=z.kind||'',out=[];const live=d.live||'';
+ if(!live)out.push(['?','거주 요건 공고 확인']);else if(/전국|국내/.test(live))out.push(['o','거주: 전국 가능']);else if(live.includes(ZME.sido)||(['서울','경기','인천'].includes(ZME.sido)&&live.includes('수도권')))out.push(['o','거주: '+live]);else out.push(['x',live.replace(' 거주자','')+' 거주자만']);
+ if(d.need_nohouse)out.push([ZME.nohouse?'o':'x','무주택 세대 필요']);else if(d.house_ok||/임의공급/.test(k))out.push(['o','유주택도 가능']);else out.push(['?','무주택 여부 공고 확인']);
+ if(d.need_head)out.push([ZME.head===true?'o':ZME.head===false?'x':'?','세대주만']);
+ const m=((d.rewin||'').match(/(\d{1,2})\s*년/)||[])[1];if(zIsReg(z)&&/무순위|불법/.test(k))out.push(['!','규제지역 당첨 시 재당첨 제한'+(m?' '+m+'년':'')]);
+ out.push(['!','당첨되면 분양권=주택 → 이후 신혼특공·생애최초 불가']);
+ const v=out.some(c=>c[0]==='x')?'x':out.some(c=>c[0]==='?')?'?':'o';return [v,out]}
 function dday(e){if(!e)return '';const d=Math.round((new Date(e)-new Date(TODAY))/864e5);return d<0?'마감':d===0?'오늘 마감':'D-'+d}
-function zupHtml(z){return `<div><span class="tag" style="background:#fef3c7;color:#92400e">${z.kind}</span>${z.focus?'<span class="tag p">관심권</span>':''}<span class="rs">${z.start||''} ~ ${z.end||''} <b style="color:#b45309">${dday(z.end)}</b></span></div><div class="nt">${z.name}</div><div class="ns">${z.addr||''}${z.n?' · '+z.n+'세대':''}<br><span class="rs">${zupRule(z.kind)}</span></div>${z.url?`<a href="${z.url}" target="_blank" rel="noopener">공고 보기 ↗</a>`:''}`}
+const EV={o:['넣을 수 있음','#059669','#dcfce7'],x:['불가','#b91c1c','#fee2e2'],'?':['조건 확인','#92400e','#fef3c7']};
+const CK={o:'✓',x:'✗','?':'?','!':'!'};const CC={o:'#166534',x:'#b91c1c','?':'#92400e','!':'#6b7280'};
+function zupHtml(z){const [v,ck]=zJudge(z),d=z.det||{},e=EV[v];const pr=(d.prices||[]);const pmax=pr.length?Math.max(...pr.map(p=>p[1])):null;
+ return `<div><span class="tag" style="background:${e[2]};color:${e[1]};font-weight:700">${e[0]}</span><span class="tag" style="background:#fef3c7;color:#92400e">${z.kind}</span><span class="tag">${z.sido||''}</span><span class="rs">${z.start||''}~${z.end||''} <b style="color:#b45309">${dday(z.end)}</b></span></div>
+ <div class="nt">${z.name}</div><div class="rs">${z.addr||''}${z.n?' · '+z.n+'세대':''}</div>
+ <div style="margin:5px 0 3px;display:flex;flex-wrap:wrap;gap:4px">${ck.map(c=>`<span style="font-size:11px;border:1px solid ${CC[c[0]]}33;color:${CC[c[0]]};border-radius:5px;padding:1px 6px">${CK[c[0]]} ${c[1]}</span>`).join('')}</div>
+ <div class="rs">${zIsReg(z)?'규제지역':'비규제'}${d.resale?' · 전매 '+d.resale.slice(0,30):''}${d.livein&&d.livein!=='없음'?' · 거주의무 '+d.livein:''}${d.deposit?' · 계약금 '+d.deposit:''}${pmax?' · 최고 '+(pmax/10000).toFixed(2)+'억':''}</div>
+ ${z.url?`<a href="${z.url}" target="_blank" rel="noopener">공고 보기 ↗</a>`:''} ${d.pdf?`<a href="${d.pdf}" target="_blank" rel="noopener">공고문 PDF ↗</a>`:''}`}
 let zupAll=false;
-function zupBlock(){const L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY).sort((a,b)=>(b.focus-a.focus)||String(a.end).localeCompare(String(b.end)));
- return `<div class="sortbar" style="background:#fffbeb"><b style="color:#92400e">줍줍·잔여세대</b> <span class="chip ${zupAll?'':'on'}" data-za="0">진행 중</span><span class="chip ${zupAll?'on':''}" data-za="1">최근 60일 전체</span></div>`+
- (L.length?L.map(z=>`<div class="news">${zupHtml(z)}</div>`).join(''):'<div class="note" style="padding:10px 14px">진행 중인 줍줍 없음</div>')+
- `<div class="note" style="padding:6px 14px 12px">출처: 청약홈(무순위·잔여·임의공급·불법행위 재공급) + LH청약플러스(공가세대 매각·잔여 추가모집). 하루 3번(08:30·12:30·19:30) 확인해서 관심권(용인·평택·화성·수원 등)에 새 공고가 뜨면 알려 드려요. 비규제 지역 일부 미분양은 사업주체 홈페이지 선착순으로만 나오기도 해서 빠질 수 있어요.</div>`}
+function zupBlock(){let L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY);if(zupF.sido!=='all')L=L.filter(z=>z.sido===zupF.sido);const J=z=>zJudge(z)[0];if(zupF.only)L=L.filter(z=>J(z)==='o');
+ L.sort((a,b)=>({o:0,'?':1,x:2}[J(a)]-{o:0,'?':1,x:2}[J(b)])||String(a.end).localeCompare(String(b.end)));
+ const sel=(id,opts,val)=>`<select id="${id}" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:2px">${opts.map(([v,n])=>`<option value="${v}" ${String(val)===String(v)?'selected':''}>${n}</option>`).join('')}</select>`;
+ const cnt=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);
+ return `<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fde68a"><b style="color:#92400e">줍줍·잔여세대</b> <span class="rs">진행 ${cnt.length}건 · 넣을 수 있음 ${cnt.filter(z=>J(z)==='o').length}건</span>
+ <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12px">내 조건 · 거주 ${sel('zs',[['대구','대구'],['서울','서울'],['경기','경기'],['인천','인천']],ZME.sido)} 무주택 ${sel('zn',[['true','예'],['false','아니오']],ZME.nohouse)} 세대주 ${sel('zh',[['null','모름'],['true','예'],['false','아니오']],ZME.head)}</div>
+ <div class="chips" style="margin-top:6px"><span class="chip ${zupF.only?'on':''}" data-zo="1">넣을 수 있는 것만</span>${[['all','전체'],['서울','서울'],['경기','경기'],['인천','인천']].map(([k,n])=>`<span class="chip ${zupF.sido===k?'on':''}" data-zr="${k}">${n}</span>`).join('')}<span class="chip ${zupAll?'on':''}" data-za="${zupAll?0:1}">${zupAll?'지난 공고 숨기기':'지난 공고 보기'}</span></div></div>`+
+ (L.length?L.map(z=>`<div class="news">${zupHtml(z)}</div>`).join(''):'<div class="note" style="padding:10px 14px">조건에 맞는 공고 없음</div>')+
+ `<div class="note" style="padding:6px 14px 12px">자격은 청약홈 공고문 PDF 첫 장 요약표(규제·거주요건·재당첨·전매)와 본문 문구를 자동으로 읽어 판정해요. 계약 전에는 반드시 공고문으로 다시 확인하세요. LH 공고는 제목 기준이라 거주 요건은 '공고 확인'으로 나와요. 무주택은 주민등록표 세대원 전원 기준(만 60세 이상 부모 소유 집은 예외).</div>`}
 function subsList(){const me=D.me;
  return zupBlock()+`<div class="warn">가점 ${me.gajeom}. 가점제는 불리 → <b>비규제 85㎡ 이하 추첨</b>과 결혼 후 <b>신혼부부 특공</b>이 주 전략. 생애최초 특공은 소득세 5년 납부가 필요해 확인 필요.</div>`+
  D.subs.slice().sort((a,b)=>String(b.start).localeCompare(String(a.start))).map(s=>{const o=D.dongs.find(x=>x.id===s.dong);const up=isUpcoming(s);
@@ -381,7 +400,8 @@ ${leadBlock(o)}${histBlock(o)}
 function openDong(id){if(sel!==id)hApt=-2;sel=id;const o=D.dongs.find(d=>d.id===id);location.hash=id;render();if(window.innerWidth>860)map.panTo([o.lat,o.lng])}
 function bindList(){document.querySelectorAll('[data-d]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const o=D.dongs.find(d=>d.id===e.dataset.d);map.flyTo([o.lat,o.lng],12.5,{duration:.6});openDong(o.id)});
  document.querySelectorAll('[data-n]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const m=newsL.find(m=>m._d.id===e.dataset.n);if(m){if(!LAY.news){LAY.news=true;render()}map.flyTo(m.getLatLng(),12,{duration:.6});setTimeout(()=>m.openPopup(),650)}});
- document.querySelectorAll('[data-za]').forEach(e=>e.onclick=()=>{zupAll=e.dataset.za==='1';render()});
+ document.querySelectorAll('[data-za]').forEach(e=>e.onclick=()=>{zupAll=e.dataset.za==='1';render()});document.querySelectorAll('[data-zo]').forEach(e=>e.onclick=()=>{zupF.only=!zupF.only;render()});document.querySelectorAll('[data-zr]').forEach(e=>e.onclick=()=>{zupF.sido=e.dataset.zr;render()});
+ [['zs','sido',v=>v],['zn','nohouse',v=>v==='true'],['zh','head',v=>v==='null'?null:v==='true']].forEach(([i,k,f])=>{const el=document.getElementById(i);if(el)el.onchange=()=>{ZME[k]=f(el.value);try{localStorage.setItem('zme',JSON.stringify(ZME))}catch(e){};render()}});
  document.querySelectorAll('[data-nc]').forEach(e=>e.onclick=()=>{ncat=e.dataset.nc;render()});
  const sk=document.getElementById('sk');if(sk)sk.onchange=()=>{sortKey=sk.value;render()};
  const pk=document.getElementById('pk');if(pk)pk.onchange=()=>{pinMode=pk.value;render()};const zk=document.getElementById('zk');if(zk)zk.onchange=()=>{sizeKey=zk.value;render()};
