@@ -221,7 +221,8 @@ function render(){
  document.getElementById('s5').textContent=c.toFixed(1)+'억';
  // 패널
  const el=document.getElementById('list');
- if(sel){el.innerHTML=dongHtml(D.dongs.find(o=>o.id===sel));bindDet();return}
+ if(sel){const fresh=el.dataset.sel!==sel;el.innerHTML=dongHtml(D.dongs.find(o=>o.id===sel));if(fresh)el.scrollTop=0;el.dataset.sel=sel;bindDet();return}
+ el.dataset.sel='';
  if(tab==='dong')el.innerHTML=dongList();
  if(tab==='news')el.innerHTML=newsList();
  if(tab==='subs')el.innerHTML=subsList();
