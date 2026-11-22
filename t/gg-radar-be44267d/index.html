@@ -60,6 +60,12 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 .yt{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:2px}
 .yt b{font-size:18px;color:var(--ac)}
 .yearbar input{width:100%;accent-color:var(--ac)}
+.yq{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin:4px 0 2px;font-size:11.5px}
+.yq .b{border:1px solid #cbd5e1;border-radius:999px;padding:2px 9px;cursor:pointer;background:#fff;color:#334155;font-weight:600}
+.yq .b.on{background:#111827;color:#fff;border-color:#111827}.yq .sp{flex:1}
+.gleg{display:flex;gap:3px;align-items:center;font-size:10.5px;color:#334155;margin:3px 0 4px;flex-wrap:wrap}
+.gleg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:2px}
+.gleg span{margin-right:6px;white-space:nowrap}
 .yl{display:flex;justify-content:space-between;font-size:10px;color:var(--mu)}
 .sce{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
 .sce .chip{font-size:11px;padding:3px 8px}
@@ -126,6 +132,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
  <div class="legend" id="legend"></div>
  <div class="yearbar">
   <div class="yt"><span>연도 <b id="yv">2026</b></span><span id="ymsg" class="note"></span></div>
+  <div class="yq" id="yq"></div><div class="gleg" id="gleg"></div>
   <input type="range" id="yr" min="2026" max="2036" step="1" value="2026">
   <div class="yl"><span>2026</span><span>2028</span><span>2030</span><span>2032</span><span>2034</span><span>2036</span></div>
   <div class="sce" id="sce"></div>
@@ -170,6 +177,9 @@ function passF(o){if(F.has('budget')){const p=o.p59;if(o.flags.includes('P')&&p=
  if(F.has('noreg')&&M.regulated.includes(o.id))return false;
  if(F.has('subs')&&!D.subs.some(s=>s.dong===o.id&&isUpcoming(s)))return false;return true}
 function isUpcoming(s){return !s.start||s.start>='2026-11-21'||s.start==='예정'||/^2026-12$/.test(s.start)}
+const GB=[[20,'#dc2626','+20↑ 급상승'],[10,'#ea580c','+10~19 크게'],[3,'#f59e0b','+3~9 조금'],[-0.5,'#94a3b8','0~+2 그대로'],[-99,'#2563eb','하락']];
+const gcol=d=>GB.find(g=>d>=g[0]||g[0]===-99)[1];
+let CM='auto';const cmode=()=>CM==='auto'?(Y>2026?'up':'score'):CM;
 const col=s=>{const t=cl((s-50)/40);if(t<.25)return `hsl(220 10% ${66-t*20}%)`;const h=265-t*25,l=66-t*36,sat=40+t*50;return `hsl(${h} ${sat}% ${l}%)`};
 
 // ---------- 지도 ----------
@@ -207,6 +217,7 @@ function init(){
  document.getElementById('sce').innerHTML=Object.entries(M.scenarios).map(([k,s])=>`<span class="chip" data-s="${k}">${s.name}</span>`).join('');
  document.querySelectorAll('[data-s]').forEach(c=>c.onclick=()=>{const k=c.dataset.s;SC.has(k)?SC.delete(k):SC.add(k);render()});
  const yr=document.getElementById('yr');yr.oninput=()=>{Y=+yr.value;render()};
+ document.getElementById('yq').onclick=e=>{const b=e.target.closest('[data-y],[data-cm]');if(!b)return;if(b.dataset.y){Y=+b.dataset.y;yr.value=Y;sortKey=Y>2026&&CM!=='score'?'up':'score'}else{CM=b.dataset.cm;sortKey=CM==='up'&&Y>2026?'up':'score'}render()};
  document.getElementById('q').oninput=e=>{q=e.target.value.trim();render()};
  const h=location.hash.slice(1);if(h&&D.dongs.find(o=>o.id===h)){sel=h}
  render();
@@ -215,6 +226,13 @@ function fitPreset(){const ds=D.dongs.filter(visible);if(ds.length)map.fitBounds
 function lineState(l){if(l.status==='건의')return 'plan';if(l.open&&Y>=l.open)return 'run';return 'build'}
 function lineTip(l){const st=lineState(l);return `<b>${l.name}</b><br>${st==='run'?'운행 중':st==='plan'?'건의 단계(확정 아님)':'공사·설계 중'}${l.yearNote?' · '+l.yearNote:l.open&&l.open<2026?' · '+l.open+' 개통':''}`}
 const sw=(l,st)=>`<svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="${l.color}" stroke-width="${st==='run'?4:3}" stroke-dasharray="${st==='run'?'':st==='plan'?'1.5 4':'7 4'}" stroke-linecap="${st==='plan'?'round':'butt'}"/></svg>`;
+function yqRender(){const UP=cmode()==='up';
+ document.getElementById('yq').innerHTML=[[2026,'지금'],[2031,'5년 뒤'],[2036,'10년 뒤']].map(([y,n])=>`<span class="b ${Y===y?'on':''}" data-y="${y}">${n}</span>`).join('')+`<span class="sp"></span>색 <span class="b ${!UP?'on':''}" data-cm="score">점수</span><span class="b ${UP?'on':''}" data-cm="up">오르는 폭</span>`;
+ const g=document.getElementById('gleg');
+ if(!UP){g.innerHTML=`<span><i style="background:${col(55)}"></i>낮음</span><span><i style="background:${col(70)}"></i>보통</span><span><i style="background:${col(88)}"></i>높음</span><span style="color:#64748b">${Y}년 입지 점수</span>`;return}
+ if(Y===2026){g.innerHTML='<span style="color:#64748b">연도를 뒤로 옮기면 지금 대비 오르는 폭으로 색이 바뀌어요</span>';return}
+ const ds=D.dongs.filter(o=>visible(o)).map(o=>Math.round(score(o,Y).s-score(o,2026).s));
+ g.innerHTML=GB.map((b,i)=>{const lo=b[0],hi=i?GB[i-1][0]:999;const n=ds.filter(d=>d>=lo&&d<hi&&!(b[0]===-99&&d>=-0.5)).length;return `<span><i style="background:${b[1]}"></i>${b[2]} ${n}</span>`}).join('')+`<span style="color:#64748b">2026→${Y}</span>`}
 function legendHtml(){if(!LAY.rail)return '<h5 id="legh">철도 레이어 꺼짐</h5>';const ord={run:0,build:1,plan:2};const ls=D.lines.slice().sort((a,b)=>ord[lineState(a)]-ord[lineState(b)]||(a.open||9999)-(b.open||9999));
  return `<h5 id="legh"><span>노선 보기 (${Y}년 기준)</span><span>${legOpen?'접기 ▴':'펼치기 ▾'}</span></h5>`+(legOpen?ls.map(l=>{const st=lineState(l);return `<div class="lg ${hiLine===l.id?'on':''}" data-hl="${l.id}">${sw(l,st)}<div><b style="color:${l.color}">${l.name}</b><div>${st==='run'?'운행 중'+(l.open&&l.open>2000&&l.open<=Y?' · '+l.open+' 개통':''):st==='plan'?'건의 단계 · '+(l.yearNote||''):'공사·설계 중 · '+(l.yearNote||'')}</div></div></div>`}).join('')+
  `<div class="lkey"><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="4"/></svg><span>굵은 실선 = 운행 중 (슬라이더 연도 기준)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="7 4"/></svg><span>긴 점선 = 공사·설계 중 (목표 연도에 실선으로 바뀜)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="1.5 4" stroke-linecap="round"/></svg><span>짧은 점선 = 건의 단계 (확정 아님, 노선 개략)</span></div><div class="note" style="margin-top:4px">이름을 누르면 그 노선만 강조돼요.</div>`:'')}
@@ -250,8 +268,10 @@ function render(){
   if(!v){map.removeLayer(m);return}m.addTo(map);
   const sub=LAY.subs&&D.subs.some(s=>s.dong===o.id&&isUpcoming(s));
   const small=map.getZoom()<11.5;const pv=o.flags.includes('P')&&p==null&&!(o.lead&&o.lead.length);const ld=o.lead&&o.lead[0];
-  m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:small?`<div class="dot ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${col(r.s)}" title="${o.name}">${Math.round(r.s)}</div>`:`<div class="pin ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${col(r.s)}"><div class="box"><div class="pt">${pv?'분양 예정':pinMode==='lead'&&ld?'대장 '+(ld.p84?'84㎡':'59㎡')+(o.proxy?' 주변':''):(sizeKey==='p59'?'59㎡':'84㎡')+(o.proxy?' 주변':'')}</div><div class="pp">${pv?'청약':pinMode==='lead'&&ld?fmt(ld.p84??ld.p59):fmt(p)}</div><div class="ps">${Math.round(r.s)}점${Y>2026?` ▲${Math.round(r.s-r0.s)}`:''}</div></div><div class="nm">${sub?'● ':''}${o.name.replace(' (기준)','')}</div></div>`}));
-  m.setZIndexOffset(Math.round(r.s*10)+(sel===o.id?10000:0))});
+  const dl=Math.round(r.s-r0.s),UP=cmode()==='up',cc=UP?gcol(dl):col(r.s);
+  m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:small?`<div class="dot ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${cc}" title="${o.name}">${UP?(dl>0?'+':'')+dl:Math.round(r.s)}</div>`:`<div class="pin ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${cc}"><div class="box"><div class="pt">${pv?'분양 예정':pinMode==='lead'&&ld?'대장 '+(ld.p84?'84㎡':'59㎡')+(o.proxy?' 주변':''):(sizeKey==='p59'?'59㎡':'84㎡')+(o.proxy?' 주변':'')}</div><div class="pp">${pv?'청약':pinMode==='lead'&&ld?fmt(ld.p84??ld.p59):fmt(p)}</div><div class="ps">${UP?`<b style="font-size:12px">${dl>0?'▲'+dl:dl<0?'▼'+(-dl):'±0'}</b> ${Math.round(r0.s)}→${Math.round(r.s)}점`:`${Math.round(r.s)}점${Y>2026?` ▲${dl}`:''}`}</div></div><div class="nm">${sub?'● ':''}${o.name.replace(' (기준)','')}</div></div>`}));
+  m.setZIndexOffset((UP?dl*20+500:Math.round(r.s*10))+(sel===o.id?10000:0))});
+ yqRender();
  // 헤더
  const vis=D.dongs.filter(o=>visible(o)&&passF(o)).map(o=>[o,score(o,Y).s]).sort((a,b)=>b[1]-a[1]);
  document.getElementById('s1').textContent=vis.slice(0,3).map(x=>x[0].name.split(' ')[0].replace('(3기)','')).join(' · ')||'-';
