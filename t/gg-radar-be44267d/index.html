@@ -154,15 +154,21 @@ fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window
 // ---------- 점수 엔진 ----------
 function gangT(o,y){let T=o.t.gangnam;for(const r of M.rail){const yy=r.year+(SC.has('gtxDelay')&&r.line==='gtxa_ext'?2:0);if(r.ids[o.id]!=null&&y>=yy)T=Math.min(T,r.ids[o.id])}
  const s=M.scenarios.chip;if(SC.has('chip')&&s.ids[o.id]!=null&&y>=s.year)T=Math.min(T,s.ids[o.id]);return T}
-function score(o,y){const W=M.weights,t=o.t;const T=gangT(o,y);const g=W.gangnam*cl((65-T)/50);
- let js=[];for(const a of D.anch){let w=0;for(const [yr,ww] of a.steps)if(y>=yr)w=ww;if(w&&t[a.id]!=null)js.push(w*cl((50-t[a.id])/40))}
+const OPT=()=>SC.has('opt');const CF=c=>OPT()?1:(c??1);
+function gScore(o,y){const W=M.weights.gangnam,f=T=>W*cl((65-T)/50);const T0=o.t.gangnam,g0=f(T0);let g=g0;
+ for(const r of M.rail){const yy=r.year+(SC.has('gtxDelay')&&r.line==='gtxa_ext'?2:0);if(r.ids[o.id]!=null&&y>=yy)g=Math.max(g,g0+CF(r.conf)*(f(r.ids[o.id])-g0))}
+ const s=M.scenarios.chip;if(SC.has('chip')&&s.ids[o.id]!=null&&y>=s.year)g=Math.max(g,f(s.ids[o.id]));return g}
+function score(o,y){const W=M.weights,t=o.t;const T=gangT(o,y);const g=gScore(o,y);
+ let js=[];for(const a of D.anch){let w=0,w0=0;for(const [yr,ww] of a.steps){if(y>=yr)w=ww;if(2026>=yr)w0=ww}if(w>w0)w=w0+CF((M.anchConf||{})[a.id])*(w-w0);if(w&&t[a.id]!=null)js.push(w*cl((50-t[a.id])/40))}
  js.sort((a,b)=>b-a);const j=W.jobs*Math.min(1,(js[0]||0)+.25*(js[1]||0));
- let hs=[0];for(const h of D.hosp){if(h.open&&y<h.open)continue;if(SC.has('ajouCancel')&&h.id==='ajou_pt')continue;hs.push(h.w*cl((50-t[h.id])/35))}
+ let hs=[0];for(const h of D.hosp){const hp_=(M.hospPlan||{})[h.id],op=OPT()?h.open:(hp_?hp_.open:h.open);if(op&&y<op)continue;if(SC.has('ajouCancel')&&h.id==='ajou_pt')continue;hs.push(h.w*cl((50-t[h.id])/35)*(op?CF(hp_&&hp_.conf):1))}
  const hp=W.hosp*Math.max(...hs);
- let dv;if(M.dev[o.id]){const [a,b,m]=M.dev[o.id];dv=m*(.35+.65*cl((y-a)/(b-a)))}else dv=M.devFlat[o.id]??5;
+ let dv;if(M.dev[o.id]){const [a,b,m]=M.dev[o.id];dv=m*(.35+.65*CF((M.devConf||{})[o.id])*cl((y-a)/(b-a)))}else dv=M.devFlat[o.id]??5;
  const sch=M.school[o.id]??4;let pen=0;for(const p of M.supplyPenalty)if(p.ids.includes(o.id)&&p.years.includes(y))pen+=p.p;
  const sup=10-pen;const cf=o.by==null?5:5*cl((o.by-1990)/32);
  const parts=[g,j,hp,dv,sch,sup,cf];return {s:parts.reduce((a,b)=>a+b,0),parts,T}}
+function gain(o,y){const r=score(o,y),r0=score(o,2026);return {d:(r.s-r.parts[5])-(r0.s-r0.parts[5]),sup:r.parts[5]-r0.parts[5]}}
+function priced(o){if(!o.p84)return null;for(let y=2026;y<=2036;y++)if(implied(score(o,y).s)>=o.p84)return y;return 9999}
 let REG={a:0,b:0};
 function fitModel(){const pts=D.dongs.filter(o=>o.p84&&o.n84>=10).map(o=>[score(o,2026).s,Math.log(o.p84)]);
  const n=pts.length,mx=pts.reduce((a,p)=>a+p[0],0)/n,my=pts.reduce((a,p)=>a+p[1],0)/n;
@@ -231,7 +237,7 @@ function yqRender(){const UP=cmode()==='up';
  const g=document.getElementById('gleg');
  if(!UP){g.innerHTML=`<span><i style="background:${col(55)}"></i>낮음</span><span><i style="background:${col(70)}"></i>보통</span><span><i style="background:${col(88)}"></i>높음</span><span style="color:#64748b">${Y}년 입지 점수</span>`;return}
  if(Y===2026){g.innerHTML='<span style="color:#64748b">연도를 뒤로 옮기면 지금 대비 오르는 폭으로 색이 바뀌어요</span>';return}
- const ds=D.dongs.filter(o=>visible(o)).map(o=>Math.round(score(o,Y).s-score(o,2026).s));
+ const ds=D.dongs.filter(o=>visible(o)).map(o=>Math.round(gain(o,Y).d));
  g.innerHTML=GB.map((b,i)=>{const lo=b[0],hi=i?GB[i-1][0]:999;const n=ds.filter(d=>d>=lo&&d<hi&&!(b[0]===-99&&d>=-0.5)).length;return `<span><i style="background:${b[1]}"></i>${b[2]} ${n}</span>`}).join('')+`<span style="color:#64748b">2026→${Y}</span>`}
 function legendHtml(){if(!LAY.rail)return '<h5 id="legh">철도 레이어 꺼짐</h5>';const ord={run:0,build:1,plan:2};const ls=D.lines.slice().sort((a,b)=>ord[lineState(a)]-ord[lineState(b)]||(a.open||9999)-(b.open||9999));
  return `<h5 id="legh"><span>노선 보기 (${Y}년 기준)</span><span>${legOpen?'접기 ▴':'펼치기 ▾'}</span></h5>`+(legOpen?ls.map(l=>{const st=lineState(l);return `<div class="lg ${hiLine===l.id?'on':''}" data-hl="${l.id}">${sw(l,st)}<div><b style="color:${l.color}">${l.name}</b><div>${st==='run'?'운행 중'+(l.open&&l.open>2000&&l.open<=Y?' · '+l.open+' 개통':''):st==='plan'?'건의 단계 · '+(l.yearNote||''):'공사·설계 중 · '+(l.yearNote||'')}</div></div></div>`}).join('')+
@@ -268,7 +274,7 @@ function render(){
   if(!v){map.removeLayer(m);return}m.addTo(map);
   const sub=LAY.subs&&D.subs.some(s=>s.dong===o.id&&isUpcoming(s));
   const small=map.getZoom()<11.5;const pv=o.flags.includes('P')&&p==null&&!(o.lead&&o.lead.length);const ld=o.lead&&o.lead[0];
-  const dl=Math.round(r.s-r0.s),UP=cmode()==='up',cc=UP?gcol(dl):col(r.s);
+  const dl=Math.round(gain(o,Y).d),UP=cmode()==='up',cc=UP?gcol(dl):col(r.s);
   m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:small?`<div class="dot ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${cc}" title="${o.name}">${UP?(dl>0?'+':'')+dl:Math.round(r.s)}</div>`:`<div class="pin ${ok?'':'dim'} ${sel===o.id?'sel':''}" style="--c:${cc}"><div class="box"><div class="pt">${pv?'분양 예정':pinMode==='lead'&&ld?'대장 '+(ld.p84?'84㎡':'59㎡')+(o.proxy?' 주변':''):(sizeKey==='p59'?'59㎡':'84㎡')+(o.proxy?' 주변':'')}</div><div class="pp">${pv?'청약':pinMode==='lead'&&ld?fmt(ld.p84??ld.p59):fmt(p)}</div><div class="ps">${UP?`<b style="font-size:12px">${dl>0?'▲'+dl:dl<0?'▼'+(-dl):'±0'}</b> ${Math.round(r0.s)}→${Math.round(r.s)}점`:`${Math.round(r.s)}점${Y>2026?` ▲${dl}`:''}`}</div></div><div class="nm">${sub?'● ':''}${o.name.replace(' (기준)','')}</div></div>`}));
   m.setZIndexOffset((UP?dl*20+500:Math.round(r.s*10))+(sel===o.id?10000:0))});
  yqRender();
@@ -294,7 +300,7 @@ function render(){
  bindList();
 }
 function dongList(){
- const rows=D.dongs.filter(o=>visible(o)).map(o=>{const r=score(o,Y),r0=score(o,2026);return {o,s:r.s,d:r.s-r0.s,gap:o.p84?implied(r0.s)/o.p84-1:null,p:price(o)}});
+ const rows=D.dongs.filter(o=>visible(o)).map(o=>{const r=score(o,Y),r0=score(o,2026);return {o,s:r.s,d:gain(o,Y).d,gap:o.p84?implied(r0.s)/o.p84-1:null,p:price(o)}});
  const key={score:x=>-x.s,up:x=>-x.d,price:x=>x.p??99,gap:x=>-(x.gap??-9)}[sortKey];rows.sort((a,b)=>key(a)-key(b));
  return `<div class="sortbar">정렬 <select id="sk">${[['score','점수'],['up','2026 대비 상승폭'],['price','가격 낮은 순'],['gap','모델 대비 저평가']].map(([k,n])=>`<option value="${k}" ${k===sortKey?'selected':''}>${n}</option>`).join('')}</select>
  핀 <select id="pk"><option value="lead" ${pinMode==='lead'?'selected':''}>대장 아파트</option><option value="med" ${pinMode==='med'?'selected':''}>동네 중앙값</option></select> 평형 <select id="zk"><option value="p59" ${sizeKey==='p59'?'selected':''}>59㎡</option><option value="p84" ${sizeKey==='p84'?'selected':''}>84㎡</option></select> <span>${Y}년 기준</span></div>`+
@@ -428,7 +434,7 @@ function cmpHist(cs){if(!HIST)return '';const cls=sizeKey==='p59'?59:84;const S=
  ks.forEach((k,i)=>{if(k.endsWith('상')&&(+k.slice(0,4))%2===0)g+=`<text x="${X(k)}" y="${H-5}" font-size="9" fill="#999" text-anchor="middle">${k.slice(2,4)}</text>`});
  S.forEach((st,i)=>{if(!st)return;g+=`<polyline fill="none" stroke="${cs[i]}" stroke-width="2" points="${st.hy.map(h=>X(h[0])+','+Yv(h[1])).join(' ')}"/>`;const l=st.hy[st.hy.length-1];if(l)g+=`<text x="${X(l[0])-2}" y="${Yv(l[1])-5}" font-size="10" fill="${cs[i]}" text-anchor="end">${fmt(l[1])}</text>`});
  return g+'</svg>'}
-function stageTxt(o){const s=score(o,2026).s,s36=score(o,2036).s,d=s36-s;
+function stageTxt(o){const d=gain(o,2036).d;
  if(o.id==='pangyo'||o.id==='sunae')return '기준 지역(이미 완성)';
  if(d>=15)return '2036까지 +'+Math.round(d)+'점: 앞으로 오를 요인 많음 (판교 2006~09 같은 단계)';if(d>=8)return '2036까지 +'+Math.round(d)+'점: 호재 진행 중 (판교 2011~15 같은 단계)';return '2036까지 +'+Math.round(d)+'점: 추가 호재 적음, 지금 입지로 평가'}
 function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강남 접근',W.gangnam],['일자리',W.jobs],['대형병원',W.hosp],['개발호재',W.dev],['학군(추정)',W.school],['공급 부담',W.supply],['쾌적(신축)',W.comfort]];
@@ -443,9 +449,9 @@ function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강�
  return `<div class="det"><div class="back" id="bk">← 목록</div>
  <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:19px;font-weight:800">${o.name}</div><div class="rs">${o.sig} · ${o.region}${M.regulated.includes(o.id)?' · <span class="tag r">규제지역·토허(2년 실거주)</span>':' · <span class="tag g">비규제</span>'}</div></div><div class="btn" id="addc">비교에 추가</div></div>
  <div class="gauge"><svg viewBox="0 0 120 70" style="width:120px"><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="#eee" stroke-width="12"/><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="${col(r.s)}" stroke-width="12" stroke-dasharray="${157*r.s/100} 157"/><text x="60" y="56" font-size="22" font-weight="800" text-anchor="middle" fill="#111">${Math.round(r.s)}</text></svg>
- <div><div class="rs">${Y}년 입지 점수 ${Y>2026?`${(()=>{const d=Math.round(r.s-r0.s);return `<span class="d" style="color:${gcol(d)}">${d>0?"▲"+d:d<0?"▼"+(-d):"±0"} vs 2026</span>`})()}`:''}</div>${spark}<div class="note">${stageTxt(o)}</div></div></div>
+ <div><div class="rs">${Y}년 입지 점수 ${Y>2026?`${(()=>{const G=gain(o,Y),d=Math.round(G.d),sp=Math.round(G.sup);return `<span class="d" style="color:${gcol(d)}">입지 ${d>0?"▲"+d:d<0?"▼"+(-d):"±0"} vs 2026</span>${sp?`<span class="rs"> · 공급 부담 ${sp>0?'+':''}${sp} 별도</span>`:''}`})()}`:''}</div>${spark}<div class="note">${stageTxt(o)}</div></div></div>
 ${leadBlock(o)}${histBlock(o)}
- <div class="bars">${lab.map(([n,w],k)=>`<div class="b"><span>${n}</span><div class="trk"><div class="fil" style="width:${r.parts[k]/w*100}%"></div></div><span class="rs">${r.parts[k].toFixed(1)}/${w}</span></div>`).join('')}</div>
+ <div class="bars">${lab.map(([n,w],k)=>`<div class="b"><span>${n}</span><div class="trk"><div class="fil" style="width:${r.parts[k]/w*100}%"></div></div><span class="rs">${r.parts[k].toFixed(1)}/${w}${Y>2026&&Math.abs(r.parts[k]-r0.parts[k])>=.5?` <b style="color:${r.parts[k]>r0.parts[k]?'#dc2626':'#2563eb'}">${r.parts[k]>r0.parts[k]?'+':''}${(r.parts[k]-r0.parts[k]).toFixed(1)}</b>`:''}</span></div>`).join('')}</div>${(()=>{const py=priced(o);if(py==null)return '';const t=py===2026?'지금 점수로도 시세가 싼 편 (미래 호재가 아직 값에 안 붙음)':py===9999?'시세가 10년 뒤 점수로 계산한 값보다도 비쌈 (호재가 이미 다 붙음)':`84㎡ 시세 ${fmt(o.p84)}는 이미 <b>${py}년 점수</b> 수준을 반영 (${py-2026}년치 호재 선반영)`;return `<div class="note" style="margin-top:4px">시세 반영: ${t}</div>`})()}<div class="note">미확정 계획은 단계별 확정도만큼만 반영 (운행 100 · 공사 85 · 설계 60 · 승인 50 · 차질 30 · 건의 20%). 공급 부담 변화는 상승폭에서 뺌.</div>
  <div class="sec"><h4>시세 (국토부 실거래 2026.7~10 중앙값)</h4><div class="kv"><div>59㎡</div><div>${fmt(o.p59)} <span class="rs">(${o.n59}건)</span></div><div>84㎡</div><div>${fmt(o.p84)} <span class="rs">(${o.n84}건)</span></div><div>거래 많은 단지</div><div>${o.top.join(', ')||'-'}</div>${o.proxy?'<div>주의</div><div>3기 지구 안은 아직 시세 없음 → 바로 옆 기존 단지 시세</div>':''}
  ${o.p84?`<div>점수 모델가</div><div>${fmt(imp)} (2026) → ${fmt(imp2)} (${Y}) <span class="rs">· 실제 대비 ${Math.round((imp/o.p84-1)*100)}%</span></div>`:''}</div></div>
  <div class="sec"><h4>강남·병원·일자리 (차 기준)</h4><div class="kv"><div>강남역</div><div>${r.T}분 ${r.T<o.t.gangnam?'<span class="tag p">철도 개통 반영</span>':''}</div>
