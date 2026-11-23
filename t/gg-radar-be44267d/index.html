@@ -103,6 +103,13 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 .bpin{transform:translate(-50%,-100%);display:inline-block;color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:2px 6px;border:2px solid #fff;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .btbl{width:100%;border-collapse:collapse;font-size:11.5px;margin:5px 0}.btbl td,.btbl th{border-bottom:1px solid #f1f5f9;padding:2px 3px;text-align:right}.btbl th{color:#64748b;font-weight:600}.btbl td:first-child,.btbl th:first-child{text-align:left}
 @media(max-width:860px){#jbp{right:62px;width:165px;top:6px;max-height:45vh}}
+.gst{position:absolute;transform:translate(-9px,-9px);display:flex;align-items:center;gap:1px;white-space:nowrap;cursor:pointer}
+.gb{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;font:700 10px/1 system-ui;box-sizing:border-box}
+.gb.run{background:var(--c);color:#fff;border:2px solid #fff;box-shadow:0 0 0 1px var(--c)}
+.gb.build{background:#fff;color:var(--c);border:2px solid var(--c)}
+.gb.plan{background:#fff;color:var(--c);border:2px dashed var(--c);opacity:.9}
+.gn{margin-left:3px;font:700 11px/1.2 system-ui;color:#111;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
+.lkey .gb{margin-right:2px}
 </style>
 </head>
 <body>
@@ -143,8 +150,8 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
 let hiLine=null,legOpen=window.innerWidth>860;
 let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
-const LAY={rail:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true,auc:true,bun:true,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
-const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
+const LAY={rail:true,gtx:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true,auc:true,bun:true,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+const gtxL=[];const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
 let HIST=null,hSize='p84',hPer=5,hApt=-2,pinMode='lead';
@@ -201,6 +208,7 @@ function init(){
  // 노선
  D.lines.forEach(l=>{const pl=L.polyline(l.pts,{color:l.color,weight:3,opacity:.85}).bindTooltip(()=>lineTip(l),{sticky:true});pl._d=l;pl.on('click',()=>{hiLine=hiLine===l.id?null:l.id;render()});lineL.push(pl);
   const mid=l.pts[Math.floor((l.pts.length-1)/2)],nx=l.pts[Math.floor((l.pts.length-1)/2)+1]||mid;const lm=L.marker([(mid[0]+nx[0])/2,(mid[1]+nx[1])/2],{icon:L.divIcon({className:'',iconSize:[0,0],html:''}),interactive:false});lm._d=l;lineLab.push(lm)});
+ (D.gtx||[]).forEach(g=>{const m=L.marker([g.lat,g.lng],{icon:L.divIcon({className:'',html:'',iconSize:[0,0]}),zIndexOffset:500});m._d=g;m.bindPopup(()=>gtxPop(g));gtxL.push(m)});
  D.hosp.forEach(h=>{const m=L.marker([h.lat,h.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#dc2626">+</div>`,iconSize:[18,18]})});m._d=h;m.bindPopup(()=>`<b>${h.name}</b><br>${h.memo}${h.open?'<br>개원 목표 '+h.open:''}`);hospL.push(m)});
  D.anch.forEach(a=>{const m=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#2563eb">▣</div>`,iconSize:[18,18]})});m._d=a;m.bindTooltip(a.name,{direction:'top',className:'lt'});m.bindPopup(()=>`<b>${a.name}</b><br>${a.steps.map(([y,w])=>(y?y+'년~':'현재 ')+'규모 '+Math.round(w*100)).join(' · ')}<br>${a.memo}`);anchL.push(m)});
  const seen={};D.news.forEach(n=>{if(n.lat==null)return;const k=n.lat.toFixed(3)+n.lng.toFixed(3);seen[k]=(seen[k]||0)+1;const a=seen[k]*0.9,r=0.004*Math.sqrt(seen[k]);
@@ -218,7 +226,7 @@ function init(){
  document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
  document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['bun','분양'],['jb','정비'],['auc','경매'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{tab=c.dataset.t;sel=null;render()});
- document.getElementById('layers').innerHTML=[['rail','철도'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['zup','줍줍'],['bun','분양'],['jb','정비구역'],['auc','경매'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
+ document.getElementById('layers').innerHTML=[['rail','철도'],['gtx','GTX역'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['zup','줍줍'],['bun','분양'],['jb','정비구역'],['auc','경매'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-l]').forEach(c=>c.onclick=()=>{const k=c.dataset.l;if(k==='sat'){base=base==='sat'?'base':'sat';map.removeLayer(base==='sat'?_T.base:_T.sat);(base==='sat'?_T.sat:_T.base).addTo(map)}else LAY[k]=!LAY[k];render()});
  document.getElementById('sce').innerHTML=Object.entries(M.scenarios).map(([k,s])=>`<span class="chip" data-s="${k}">${s.name}</span>`).join('');
  document.querySelectorAll('[data-s]').forEach(c=>c.onclick=()=>{const k=c.dataset.s;SC.has(k)?SC.delete(k):SC.add(k);render()});
@@ -229,8 +237,8 @@ function init(){
  render();
 }
 function fitPreset(){const ds=D.dongs.filter(visible);if(ds.length)map.fitBounds(L.latLngBounds(ds.map(o=>[o.lat,o.lng])).pad(.12))}
-function lineState(l){if(l.status==='건의')return 'plan';if(l.open&&Y>=l.open)return 'run';return 'build'}
-function lineTip(l){const st=lineState(l);return `<b>${l.name}</b><br>${st==='run'?'운행 중':st==='plan'?'건의 단계(확정 아님)':'공사·설계 중'}${l.yearNote?' · '+l.yearNote:l.open&&l.open<2026?' · '+l.open+' 개통':''}`}
+function lineState(l){if(l.status==='건의'||l.status==='연장추진')return 'plan';if(l.open&&Y>=l.open)return 'run';return 'build'}
+function lineTip(l){const st=lineState(l);return `<b>${l.name}</b><br>${st==='run'?'운행 중':st==='plan'?(l.stage||'건의 단계(확정 아님)'):'공사·설계 중'}${l.yearNote?' · '+l.yearNote:l.open&&l.open<2026?' · '+l.open+' 개통':''}`}
 const sw=(l,st)=>`<svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="${l.color}" stroke-width="${st==='run'?4:3}" stroke-dasharray="${st==='run'?'':st==='plan'?'1.5 4':'7 4'}" stroke-linecap="${st==='plan'?'round':'butt'}"/></svg>`;
 function yqRender(){const UP=cmode()==='up';
  document.getElementById('yq').innerHTML=[[2026,'지금'],[2031,'5년 뒤'],[2036,'10년 뒤']].map(([y,n])=>`<span class="b ${Y===y?'on':''}" data-y="${y}">${n}</span>`).join('')+`<span class="sp"></span>색 <span class="b ${!UP?'on':''}" data-cm="score">점수</span><span class="b ${UP?'on':''}" data-cm="up">오르는 폭</span>`;
@@ -239,9 +247,13 @@ function yqRender(){const UP=cmode()==='up';
  if(Y===2026){g.innerHTML='<span style="color:#64748b">연도를 뒤로 옮기면 지금 대비 오르는 폭으로 색이 바뀌어요</span>';return}
  const ds=D.dongs.filter(o=>visible(o)).map(o=>Math.round(gain(o,Y).d));
  g.innerHTML=GB.map((b,i)=>{const lo=b[0],hi=i?GB[i-1][0]:999;const n=ds.filter(d=>d>=lo&&d<hi&&!(b[0]===-99&&d>=-0.5)).length;return `<span><i style="background:${b[1]}"></i>${b[2]} ${n}</span>`}).join('')+`<span style="color:#64748b">2026→${Y}</span>`}
+const GC={A:'#7c3aed',B:'#2563eb',C:'#0d9488',D:'#b45309'},GN={A:'GTX-A',B:'GTX-B',C:'GTX-C',D:'서부권 급행'};
+function gSt(x){if(x.st==='plan')return 'plan';if(x.open&&Y>=x.open)return 'run';return x.st==='run'?'run':'build'}
+function gtxPop(g){return `<b>${g.name}역</b>${g.approx?' <small style="color:#b45309">(위치 개략)</small>':''}<br>`+g.ls.map(x=>{const st=gSt(x);return `<span class="gb ${st}" style="--c:${GC[x.l]}">${x.l==='D'?'D':x.l}</span> <b style="color:${GC[x.l]}">${GN[x.l]}</b> · ${st==='run'?(x.open&&x.open<=2026?'운행 중':Y+'년 기준 개통(목표)'):x.txt}`}).join('<br>')+(g.memo?`<br><small>${g.memo}</small>`:'')+`<br><small style="color:#64748b">2026-11-23 기준 · 국토부·지자체 발표</small>`}
+function gtxIcon(g){const z=map.getZoom();const b=g.ls.map(x=>`<span class="gb ${gSt(x)}" style="--c:${GC[x.l]}">${x.l}</span>`).join('');const lab=z>=10?`<span class="gn">${g.name}</span>`:'';return L.divIcon({className:'',iconSize:[0,0],html:`<div class="gst">${b}${lab}</div>`})}
 function legendHtml(){if(!LAY.rail)return '<h5 id="legh">철도 레이어 꺼짐</h5>';const ord={run:0,build:1,plan:2};const ls=D.lines.slice().sort((a,b)=>ord[lineState(a)]-ord[lineState(b)]||(a.open||9999)-(b.open||9999));
- return `<h5 id="legh"><span>노선 보기 (${Y}년 기준)</span><span>${legOpen?'접기 ▴':'펼치기 ▾'}</span></h5>`+(legOpen?ls.map(l=>{const st=lineState(l);return `<div class="lg ${hiLine===l.id?'on':''}" data-hl="${l.id}">${sw(l,st)}<div><b style="color:${l.color}">${l.name}</b><div>${st==='run'?'운행 중'+(l.open&&l.open>2000&&l.open<=Y?' · '+l.open+' 개통':''):st==='plan'?'건의 단계 · '+(l.yearNote||''):'공사·설계 중 · '+(l.yearNote||'')}</div></div></div>`}).join('')+
- `<div class="lkey"><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="4"/></svg><span>굵은 실선 = 운행 중 (슬라이더 연도 기준)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="7 4"/></svg><span>긴 점선 = 공사·설계 중 (목표 연도에 실선으로 바뀜)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="1.5 4" stroke-linecap="round"/></svg><span>짧은 점선 = 건의 단계 (확정 아님, 노선 개략)</span></div><div class="note" style="margin-top:4px">이름을 누르면 그 노선만 강조돼요.</div>`:'')}
+ return `<h5 id="legh"><span>노선 보기 (${Y}년 기준)</span><span>${legOpen?'접기 ▴':'펼치기 ▾'}</span></h5>`+(legOpen?ls.map(l=>{const st=lineState(l);return `<div class="lg ${hiLine===l.id?'on':''}" data-hl="${l.id}">${sw(l,st)}<div><b style="color:${l.color}">${l.name}</b><div>${st==='run'?'운행 중'+(l.open&&l.open>2000&&l.open<=Y?' · '+l.open+' 개통':''):st==='plan'?(l.stage||'건의 단계')+' · '+(l.yearNote||''):'공사·설계 중 · '+(l.yearNote||'')}</div></div></div>`}).join('')+
+ `<div class="lkey"><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="4"/></svg><span>굵은 실선 = 운행 중 (슬라이더 연도 기준)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="7 4"/></svg><span>긴 점선 = 공사·설계 중 (목표 연도에 실선으로 바뀜)</span><svg width="34" height="10"><line x1="1" y1="5" x2="33" y2="5" stroke="#111" stroke-width="3" stroke-dasharray="1.5 4" stroke-linecap="round"/></svg><span>짧은 점선 = 건의·연장 추진 (미착공, 확정 아님)</span></div><div class="lkey"><span class="gb run" style="--c:#7c3aed">A</span><span>GTX역 운행 중</span><span class="gb build" style="--c:#7c3aed">A</span><span>공사·설계 중(확정)</span><span class="gb plan" style="--c:#0d9488">C</span><span>연장 추진·예타 통과(미착공)</span></div><div class="note" style="margin-top:4px">이름을 누르면 그 노선만 강조돼요. 역 배지를 누르면 개통 일정이 나와요.</div>`:'')}
 const catCol=c=>({ind:'#2563eb',trn:'#16a34a',hou:'#ea580c',risk:'#dc2626',hosp:'#db2777',mov:'#7c3aed'}[c]||'#475569');
 const catName=c=>({ind:'산단·일자리',trn:'교통',hou:'주거·분양',risk:'리스크',hosp:'병원',mov:'입주'}[c]||c);
 
@@ -257,8 +269,9 @@ function render(){
  // 레이어
  lineL.forEach(p=>{const l=p._d,st=lineState(l),dim=hiLine&&hiLine!==l.id;p.setStyle({dashArray:st==='run'?null:st==='plan'?'2 7':'10 7',weight:(st==='run'?(l.short==='1호선'||l.short==='SRT'?3:5):3.5)+(hiLine===l.id?3:0),opacity:dim?.12:st==='run'?.95:.8,lineCap:st==='plan'?'round':'butt'});LAY.rail?p.addTo(map):map.removeLayer(p);if(hiLine===l.id)p.bringToFront()});
  lineLab.forEach(m=>{const l=m._d,st=lineState(l),dim=hiLine&&hiLine!==l.id;const show=LAY.rail&&!dim&&(map.getZoom()>=9.5)&&!(l.short==='1호선'||l.short==='SRT')||hiLine===l.id;
-  if(show){m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:`<div class="ll" style="--c:${l.color};transform:translate(-50%,-50%);display:inline-block">${l.short} <small>${st==='run'?(l.open&&l.open>2000?l.open+' 개통':'운행'):st==='plan'?'건의':(l.open?l.open+' 목표':'추진')}</small></div>`}));m.addTo(map)}else map.removeLayer(m)});
+  if(show){m.setIcon(L.divIcon({className:'',iconSize:[0,0],html:`<div class="ll" style="--c:${l.color};transform:translate(-50%,-50%);display:inline-block">${l.short} <small>${st==='run'?(l.open&&l.open>2000?l.open+' 개통':'운행'):st==='plan'?(l.stage?'추진':'건의'):(l.open?l.open+' 목표':'추진')}</small></div>`}));m.addTo(map)}else map.removeLayer(m)});
  document.getElementById('legend').innerHTML=legendHtml();document.querySelectorAll('[data-hl]').forEach(e=>e.onclick=()=>{const id=e.dataset.hl;hiLine=hiLine===id?null:id;if(hiLine){const l=D.lines.find(x=>x.id===id);map.fitBounds(L.latLngBounds(l.pts).pad(.3))}render()});const lh=document.getElementById('legh');if(lh)lh.onclick=()=>{legOpen=!legOpen;render()};
+ gtxL.forEach(m=>{if(LAY.gtx&&map.getZoom()>=8.5){m.setIcon(gtxIcon(m._d));m.addTo(map)}else map.removeLayer(m)});
  hospL.forEach(m=>{const h=m._d;const on=!h.open||Y>=h.open;const dead=SC.has('ajouCancel')&&h.id==='ajou_pt';m.setOpacity(dead?.15:on?1:.4);LAY.hosp?m.addTo(map):map.removeLayer(m)});
  anchL.forEach(m=>{const a=m._d;const on=a.steps.some(([y])=>Y>=y);m.setOpacity(on?1:.35);LAY.jobs?m.addTo(map):map.removeLayer(m)});
  newsL.forEach(m=>LAY.news?m.addTo(map):map.removeLayer(m));
