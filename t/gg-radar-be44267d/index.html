@@ -55,7 +55,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 #map{position:absolute;inset:0}
 .layers{position:absolute;right:10px;top:10px;z-index:500;display:flex;flex-direction:column;gap:5px}
 .lb{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:6px 8px;font-size:12px;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08);min-width:52px}
-.lb.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.lb.on{background:var(--ac);color:#fff;border-color:var(--ac)} .lb.all{background:#0f172a;color:#fff;border-color:#0f172a;font-weight:700}
 .yearbar{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;z-index:500;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.15);padding:10px 16px 8px;width:min(620px,92%)}
 .yt{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:2px}
 .yt b{font-size:18px;color:var(--ac)}
@@ -150,7 +150,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
 let hiLine=null,legOpen=window.innerWidth>860;
 let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
-const LAY={rail:true,gtx:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true,auc:true,bun:true,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+const LAY={rail:true,gtx:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true,auc:true,bun:true,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);const zNew=z=>!!z.first&&(new Date(TODAY)-new Date(z.first))/864e5<=3;
 const gtxL=[];const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
@@ -213,7 +213,7 @@ function init(){
  D.anch.forEach(a=>{const m=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',html:`<div class="ico" style="background:#2563eb">▣</div>`,iconSize:[18,18]})});m._d=a;m.bindTooltip(a.name,{direction:'top',className:'lt'});m.bindPopup(()=>`<b>${a.name}</b><br>${a.steps.map(([y,w])=>(y?y+'년~':'현재 ')+'규모 '+Math.round(w*100)).join(' · ')}<br>${a.memo}`);anchL.push(m)});
  const seen={};D.news.forEach(n=>{if(n.lat==null)return;const k=n.lat.toFixed(3)+n.lng.toFixed(3);seen[k]=(seen[k]||0)+1;const a=seen[k]*0.9,r=0.004*Math.sqrt(seen[k]);
   const m=L.circleMarker([n.lat+r*Math.sin(a),n.lng+r*Math.cos(a)],{radius:5,color:'#fff',weight:1.5,fillColor:catCol(n.cat),fillOpacity:.95});m._d=n;m.bindPopup(()=>newsHtml(n,true));newsL.push(m)});
- (D.zup||[]).forEach(z=>{if(!z.ll||(z.end&&z.end<TODAY))return;const m=L.marker(z.ll,{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div style="transform:translate(-50%,-50%);display:inline-block;background:#f59e0b;color:#fff;font-weight:800;font-size:11px;border-radius:999px;padding:2px 7px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);white-space:nowrap">줍 ${z.end?z.end.slice(5).replace('-','/'):''}</div>`})});m.bindPopup(()=>zupHtml(z));zupL.push(m)});
+ (D.zup||[]).forEach(z=>{if(!z.ll||(z.end&&z.end<TODAY))return;const m=L.marker(z.ll,{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div style="transform:translate(-50%,-50%);display:inline-block;background:${zNew(z)?'#e11d48':'#f59e0b'};color:#fff;font-weight:800;font-size:11px;border-radius:999px;padding:2px 7px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);white-space:nowrap">${zNew(z)?'NEW ':''}줍 ${z.end?z.end.slice(5).replace('-','/'):''}</div>`}),zIndexOffset:zNew(z)?800:0});m.bindPopup(()=>zupHtml(z));zupL.push(m)});
  ((D.auc&&D.auc.rows)||[]).forEach(a=>{if(!a.ll||a.date<TODAY)return;const m=L.marker(a.ll,{icon:aucIcon(a,false)});m._d=a;m.bindPopup(()=>aucHtml(a),{maxWidth:320});aucL.push(m)});
  bunInit();jbInit();map.on('moveend',()=>{if(tab==='jb'&&!sel)render()});
  D.sites.filter(s=>s.src==='n3').forEach(s=>{const m=L.circle([s.lat,s.lng],{radius:1300,color:'#475569',weight:1,dashArray:'4 4',fillOpacity:.05}).bindTooltip(s.name+' · '+s.stage,{className:'lt'});m.bindPopup(`<b>${s.name}</b><br>${s.key}`);n3L.push(m)});
@@ -226,8 +226,9 @@ function init(){
  document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
  document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['bun','분양'],['jb','정비'],['auc','경매'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{tab=c.dataset.t;sel=null;render()});
- document.getElementById('layers').innerHTML=[['rail','철도'],['gtx','GTX역'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['zup','줍줍'],['bun','분양'],['jb','정비구역'],['auc','경매'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
+ document.getElementById('layers').innerHTML=`<div class="lb all" id="lball">모두 끄기</div>`+[['rail','철도'],['gtx','GTX역'],['jobs','일자리'],['hosp','병원'],['news','뉴스'],['subs','청약'],['zup','줍줍'],['bun','분양'],['jb','정비구역'],['auc','경매'],['n3','3기 지구'],['sat','위성']].map(([k,n])=>`<div class="lb" data-l="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-l]').forEach(c=>c.onclick=()=>{const k=c.dataset.l;if(k==='sat'){base=base==='sat'?'base':'sat';map.removeLayer(base==='sat'?_T.base:_T.sat);(base==='sat'?_T.sat:_T.base).addTo(map)}else LAY[k]=!LAY[k];render()});
+ let LAYsave=null;document.getElementById('lball').onclick=()=>{const anyOn=Object.values(LAY).some(v=>v);if(anyOn){LAYsave={...LAY};Object.keys(LAY).forEach(k=>LAY[k]=false)}else{const r=LAYsave||{rail:true,gtx:true,jobs:true,hosp:true,news:true,subs:true,zup:true,auc:true,bun:true};Object.keys(LAY).forEach(k=>LAY[k]=!!r[k]);LAYsave=null}render()};
  document.getElementById('sce').innerHTML=Object.entries(M.scenarios).map(([k,s])=>`<span class="chip" data-s="${k}">${s.name}</span>`).join('');
  document.querySelectorAll('[data-s]').forEach(c=>c.onclick=()=>{const k=c.dataset.s;SC.has(k)?SC.delete(k):SC.add(k);render()});
  const yr=document.getElementById('yr');yr.oninput=()=>{Y=+yr.value;render()};
@@ -264,7 +265,7 @@ function render(){
  document.querySelectorAll('[data-p]').forEach(c=>c.classList.toggle('on',c.dataset.p===preset));
  document.querySelectorAll('[data-f]').forEach(c=>c.classList.toggle('on',F.has(c.dataset.f)));
  document.querySelectorAll('[data-t]').forEach(c=>c.classList.toggle('on',c.dataset.t===tab));
- document.querySelectorAll('[data-l]').forEach(c=>c.classList.toggle('on',c.dataset.l==='sat'?base==='sat':LAY[c.dataset.l]));
+ document.querySelectorAll('[data-l]').forEach(c=>c.classList.toggle('on',c.dataset.l==='sat'?base==='sat':LAY[c.dataset.l]));{const b=document.getElementById('lball');if(b)b.textContent=Object.values(LAY).some(v=>v)?'모두 끄기':'다시 켜기'}
  document.querySelectorAll('[data-s]').forEach(c=>c.classList.toggle('on',SC.has(c.dataset.s)));
  // 레이어
  lineL.forEach(p=>{const l=p._d,st=lineState(l),dim=hiLine&&hiLine!==l.id;p.setStyle({dashArray:st==='run'?null:st==='plan'?'2 7':'10 7',weight:(st==='run'?(l.short==='1호선'||l.short==='SRT'?3:5):3.5)+(hiLine===l.id?3:0),opacity:dim?.12:st==='run'?.95:.8,lineCap:st==='plan'?'round':'butt'});LAY.rail?p.addTo(map):map.removeLayer(p);if(hiLine===l.id)p.bringToFront()});
@@ -340,7 +341,7 @@ function dday(e){if(!e)return '';const d=Math.round((new Date(e)-new Date(TODAY)
 const EV={o:['넣을 수 있음','#059669','#dcfce7'],x:['불가','#b91c1c','#fee2e2'],'?':['조건 확인','#92400e','#fef3c7']};
 const CK={o:'✓',x:'✗','?':'?','!':'!'};const CC={o:'#166534',x:'#b91c1c','?':'#92400e','!':'#6b7280'};
 function zupHtml(z){const [v,ck]=zJudge(z),d=z.det||{},e=EV[v];const pr=(d.prices||[]);const pmax=pr.length?Math.max(...pr.map(p=>p[1])):null;
- return `<div><span class="tag" style="background:${e[2]};color:${e[1]};font-weight:700">${e[0]}</span><span class="tag" style="background:#fef3c7;color:#92400e">${z.kind}</span><span class="tag">${z.sido||''}</span><span class="rs">${z.start||''}~${z.end||''} <b style="color:#b45309">${dday(z.end)}</b></span></div>
+ return `<div>${zNew(z)?'<span class="tag" style="background:#e11d48;color:#fff;font-weight:800">NEW</span>':''}<span class="tag" style="background:${e[2]};color:${e[1]};font-weight:700">${e[0]}</span><span class="tag" style="background:#fef3c7;color:#92400e">${z.kind}</span><span class="tag">${z.sido||''}</span><span class="rs">${z.start||''}~${z.end||''} <b style="color:#b45309">${dday(z.end)}</b></span></div>
  <div class="nt">${z.name}</div><div class="rs">${z.addr||''}${z.n?' · '+z.n+'세대':''}</div>
  <div style="margin:5px 0 3px;display:flex;flex-wrap:wrap;gap:4px">${ck.map(c=>`<span style="font-size:11px;border:1px solid ${CC[c[0]]}33;color:${CC[c[0]]};border-radius:5px;padding:1px 6px">${CK[c[0]]} ${c[1]}</span>`).join('')}</div>
  <div class="rs">${zIsReg(z)?'규제지역':'비규제'}${d.resale?' · 전매 '+d.resale.slice(0,30):''}${d.livein&&d.livein!=='없음'?' · 거주의무 '+d.livein:''}${d.deposit?' · 계약금 '+d.deposit:''}${pmax?' · 최고 '+(pmax/10000).toFixed(2)+'억':''}</div>
@@ -373,10 +374,10 @@ function zupBlock(){let L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY);if
  L.sort((a,b)=>({o:0,'?':1,x:2}[J(a)]-{o:0,'?':1,x:2}[J(b)])||String(a.end).localeCompare(String(b.end)));
  const sel=(id,opts,val)=>`<select id="${id}" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:2px">${opts.map(([v,n])=>`<option value="${v}" ${String(val)===String(v)?'selected':''}>${n}</option>`).join('')}</select>`;
  const cnt=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);
- return `<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fde68a"><b style="color:#92400e">줍줍·잔여세대</b> <span class="rs">진행 ${cnt.length}건 · 넣을 수 있음 ${cnt.filter(z=>J(z)==='o').length}건</span>
+ return `<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fde68a"><b style="color:#92400e">줍줍·잔여세대</b> <span class="rs"><b style="color:#e11d48">새로 뜬 것 ${cnt.filter(zNew).length}건</b>(빨강, 3일 안) · 진행 ${cnt.length}건 · 넣을 수 있음 ${cnt.filter(z=>J(z)==='o').length}건</span>
  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12px">내 조건 · 거주 ${sel('zs',[['대구','대구'],['서울','서울'],['경기','경기'],['인천','인천']],ZME.sido)} 무주택 ${sel('zn',[['true','예'],['false','아니오']],ZME.nohouse)} 세대주 ${sel('zh',[['null','모름'],['true','예'],['false','아니오']],ZME.head)}</div>
  <div class="chips" style="margin-top:6px"><span class="chip ${zupF.only?'on':''}" data-zo="1">넣을 수 있는 것만</span>${[['all','전체'],['서울','서울'],['경기','경기'],['인천','인천']].map(([k,n])=>`<span class="chip ${zupF.sido===k?'on':''}" data-zr="${k}">${n}</span>`).join('')}<span class="chip ${zupAll?'on':''}" data-za="${zupAll?0:1}">${zupAll?'지난 공고 숨기기':'지난 공고 보기'}</span></div></div>`+
- (L.length?L.map(z=>`<div class="news">${zupHtml(z)}</div>`).join(''):'<div class="note" style="padding:10px 14px">조건에 맞는 공고 없음</div>')+
+ (L.length?L.slice().sort((a,b)=>zNew(b)-zNew(a)).map(z=>`<div class="news">${zupHtml(z)}</div>`).join(''):'<div class="note" style="padding:10px 14px">조건에 맞는 공고 없음</div>')+
  `<div class="note" style="padding:6px 14px 12px">자격은 청약홈 공고문 PDF 첫 장 요약표(규제·거주요건·재당첨·전매)와 본문 문구를 자동으로 읽어 판정해요. 계약 전에는 반드시 공고문으로 다시 확인하세요. LH 공고는 제목 기준이라 거주 요건은 '공고 확인'으로 나와요. 무주택은 주민등록표 세대원 전원 기준(만 60세 이상 부모 소유 집은 예외).</div>`}
 function subsList(){const me=D.me;
  return zupBlock()+`<div class="warn">가점 ${me.gajeom}. 가점제는 불리 → <b>비규제 85㎡ 이하 추첨</b>과 결혼 후 <b>신혼부부 특공</b>이 주 전략. 생애최초 특공은 소득세 5년 납부가 필요해 확인 필요.</div>`+
