@@ -7,7 +7,8 @@
   "school": 10,
   "supply": 10,
   "comfort": 5,
-  "pop": 10
+  "popN": 10,
+  "popG": 5
  },
  "school": {
   "sunae": 10,
