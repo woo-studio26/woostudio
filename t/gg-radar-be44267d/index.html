@@ -223,7 +223,7 @@ function init(){
  D.dongs.forEach(o=>{const m=L.marker([o.lat,o.lng],{icon:L.divIcon({className:'',html:'',iconSize:[0,0]})});m.on('click',()=>openDong(o.id));pinL[o.id]=m;m.addTo(map);
   (o.lead||[]).forEach((a,k)=>{if(a.lat==null)return;const am=L.marker([a.lat,a.lng],{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="apin" style="--c:${RC[k]}"><div class="rk">${k+1}</div><div class="box"><div class="pt">${short(o)} ${k?(k+1)+'위':'대장'} · ${a.p84?'84㎡':'59㎡'}</div><div class="pp">${fmt(a.p84??a.p59)}</div></div><div class="nm">${a.name}</div></div>`})});am.on('click',()=>{openDong(o.id);pickApt(o.id,a.name)});am._o=o;aptL.push(am)})});
  // UI
- document.getElementById('pre').innerHTML=[['all','전체 경기'],['반도체벨트','반도체 벨트'],['3기·서울외곽','3기·서울 외곽']].map(([k,n])=>`<span class="chip" data-p="${k}">${n}</span>`).join('');
+ document.getElementById('pre').innerHTML=[['all','전체 경기'],['반도체벨트','반도체 벨트'],['3기·서울외곽','3기·서울 외곽'],['서울남부권','서울 남부권']].map(([k,n])=>`<span class="chip" data-p="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-p]').forEach(c=>c.onclick=()=>{preset=c.dataset.p;fitPreset();render()});
  document.getElementById('flt').innerHTML=[['budget','내 예산 안 (59㎡)'],['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
