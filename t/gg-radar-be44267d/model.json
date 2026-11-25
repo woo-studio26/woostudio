@@ -48,7 +48,19 @@
   "gongdo": 3,
   "idong": 3,
   "hyangnam": 3,
-  "wonsam": 2
+  "wonsam": 2,
+  "pyeongchon": 9,
+  "seohyeon": 9,
+  "jukjeon": 7,
+  "yeongtong": 7,
+  "naeson": 7,
+  "sanbon": 7,
+  "cheolsan": 6,
+  "yeongdeok": 5,
+  "singal": 5,
+  "opo": 5,
+  "icheon": 4,
+  "namyang": 4
  },
  "dev": {
   "idong": [
@@ -195,7 +207,10 @@
   "bijeon": 5,
   "gongdo": 4,
   "wirye": 9,
-  "misa": 7
+  "misa": 7,
+  "cheolsan": 7,
+  "naeson": 6,
+  "icheon": 6
  },
  "supplyPenalty": [
   {
