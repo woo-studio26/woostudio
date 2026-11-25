@@ -1,0 +1,418 @@
+{
+ "weights": {
+  "gangnam": 25,
+  "jobs": 20,
+  "hosp": 15,
+  "dev": 15,
+  "school": 10,
+  "supply": 10,
+  "comfort": 5,
+  "pop": 10
+ },
+ "school": {
+  "sunae": 10,
+  "pangyo": 9,
+  "gwacheon": 9,
+  "suji": 8,
+  "gwanggyo": 8,
+  "wirye": 8,
+  "dt2": 7,
+  "dt1": 6,
+  "maetan": 6,
+  "misa": 6,
+  "dongbaek": 6,
+  "guseong": 6,
+  "gmsh": 6,
+  "daejang": 6,
+  "gwonseon": 5,
+  "yeokbuk": 5,
+  "jinan": 5,
+  "sega": 5,
+  "godeok": 5,
+  "dongsak": 5,
+  "gyosan": 5,
+  "wangsuk": 5,
+  "changneung": 5,
+  "baegot": 5,
+  "gorim": 4,
+  "samga": 4,
+  "osan": 4,
+  "jije": 4,
+  "brain": 4,
+  "bijeon": 4,
+  "namsa": 4,
+  "bongdam": 4,
+  "gyeyang": 4,
+  "anjung": 3,
+  "gongdo": 3,
+  "idong": 3,
+  "hyangnam": 3,
+  "wonsam": 2
+ },
+ "dev": {
+  "idong": [
+   2026,
+   2033,
+   15,
+   "이동 공공주택 1.6만(2031 입주 목표)+국가산단"
+  ],
+  "wonsam": [
+   2026,
+   2030,
+   13,
+   "SK 클러스터 주거용지·협력단지"
+  ],
+  "namsa": [
+   2026,
+   2035,
+   12,
+   "국가산단 바로 옆"
+  ],
+  "guseong": [
+   2025,
+   2030,
+   14,
+   "플랫폼시티 2030 하반기 준공 목표"
+  ],
+  "jije": [
+   2026,
+   2030,
+   11,
+   "지제·세교 도시개발 2028, 역세권 공공주택 (복합환승은 GTX-A 강남 점수에 이미 반영해 뺌)"
+  ],
+  "godeok": [
+   2026,
+   2032,
+   13,
+   "고덕국제화지구 3단계, 행정타운"
+  ],
+  "brain": [
+   2026,
+   2031,
+   13,
+   "브레인시티 입주, KAIST 평택 2029 목표"
+  ],
+  "sega": [
+   2027,
+   2033,
+   11,
+   "세교3 공공주택, 자족용지(9.3만→30만 평 추진)"
+  ],
+  "jinan": [
+   2027,
+   2033,
+   11,
+   "진안 공공주택지구(화성 2040 계획)"
+  ],
+  "bongdam": [
+   2027,
+   2033,
+   10,
+   "봉담3 공공주택지구"
+  ],
+  "hyangnam": [
+   2026,
+   2028,
+   8,
+   "H-테크노밸리 2028 준공 목표"
+  ],
+  "anjung": [
+   2026,
+   2035,
+   8,
+   "신안산선 안중 연장·서해선 KTX(계획)"
+  ],
+  "pangyo": [
+   2027,
+   2031,
+   13,
+   "제3판교 팹리스 집적"
+  ],
+  "gmsh": [
+   2028,
+   2035,
+   15,
+   "광명시흥 3기"
+  ],
+  "gyosan": [
+   2027,
+   2032,
+   14,
+   "하남 교산 3기"
+  ],
+  "wangsuk": [
+   2028,
+   2033,
+   14,
+   "남양주 왕숙 3기, GTX-B"
+  ],
+  "changneung": [
+   2027,
+   2032,
+   14,
+   "고양 창릉 3기, 첫 입주 2027.12"
+  ],
+  "daejang": [
+   2027,
+   2031,
+   13,
+   "부천 대장 3기, 첫 입주 2027.11"
+  ],
+  "gyeyang": [
+   2026,
+   2030,
+   12,
+   "인천 계양 3기, 첫 입주 2026.12"
+  ],
+  "gwacheon": [
+   2027,
+   2030,
+   12,
+   "과천 3기·지식정보타운"
+  ],
+  "baegot": [
+   2026,
+   2029,
+   10,
+   "서울대 시흥캠퍼스·병원"
+  ]
+ },
+ "devFlat": {
+  "sunae": 7,
+  "suji": 6,
+  "dongbaek": 5,
+  "yeokbuk": 6,
+  "gorim": 6,
+  "samga": 5,
+  "dt2": 11,
+  "dt1": 6,
+  "osan": 5,
+  "gwanggyo": 8,
+  "maetan": 6,
+  "gwonseon": 6,
+  "dongsak": 7,
+  "bijeon": 5,
+  "gongdo": 4,
+  "wirye": 9,
+  "misa": 7
+ },
+ "supplyPenalty": [
+  {
+   "ids": [
+    "jije",
+    "dongsak",
+    "godeok",
+    "brain",
+    "bijeon"
+   ],
+   "years": [
+    2026,
+    2027
+   ],
+   "p": 4,
+   "why": "평택 1년 입주 11,111세대(+5.4%, 호갱노노 공급 11/21)"
+  },
+  {
+   "ids": [
+    "jije",
+    "dongsak",
+    "godeok",
+    "brain",
+    "bijeon"
+   ],
+   "years": [
+    2028
+   ],
+   "p": 2,
+   "why": "평택 입주 지속"
+  },
+  {
+   "ids": [
+    "yeokbuk",
+    "gorim",
+    "samga",
+    "namsa"
+   ],
+   "years": [
+    2031,
+    2032,
+    2033
+   ],
+   "p": 3,
+   "why": "이동 공공주택 1.6만 입주 목표 2031"
+  },
+  {
+   "ids": [
+    "gyeyang"
+   ],
+   "years": [
+    2027
+   ],
+   "p": 3,
+   "why": "계양 첫 입주 2026.12"
+  },
+  {
+   "ids": [
+    "daejang"
+   ],
+   "years": [
+    2028
+   ],
+   "p": 3,
+   "why": "대장 첫 입주 2027.11"
+  },
+  {
+   "ids": [
+    "changneung"
+   ],
+   "years": [
+    2028
+   ],
+   "p": 3,
+   "why": "창릉 첫 입주 2027.12"
+  }
+ ],
+ "rail": [
+  {
+   "ids": {
+    "jije": 32,
+    "dongsak": 35,
+    "godeok": 38,
+    "brain": 40
+   },
+   "year": 2031,
+   "line": "gtxa_ext",
+   "why": "GTX-A 평택 연장: 지제~삼성역 약 30분(평택시 전망), 2028 착공 목표라 2031로 가정",
+   "stage": "설계 중",
+   "conf": 0.6,
+   "src": "2026-04 국가철도공단 설계 착수, 2028 착공 목표·개통 연도 미발표, 실시설계 뒤 2단계 중앙투자심사 남음(한국경제 2026-09-22)"
+  },
+  {
+   "ids": {
+    "gwonseon": 38,
+    "maetan": 36
+   },
+   "year": 2031,
+   "line": "gtxc",
+   "why": "GTX-C 수원~삼성 2031 목표(스마트비즈 11/20)",
+   "stage": "공사 중",
+   "conf": 0.85,
+   "src": "2026-09 본공사 착수, 2031 개통 목표(한국경제 2026-09-22)"
+  }
+ ],
+ "scenarios": {
+  "chip": {
+   "name": "반도체선·경강선 개통 가정(2035)",
+   "ids": {
+    "idong": 32,
+    "wonsam": 35,
+    "namsa": 34,
+    "yeokbuk": 30,
+    "gorim": 30,
+    "samga": 30
+   },
+   "year": 2035
+  },
+  "gtxDelay": {
+   "name": "GTX-A 평택 2년 지연",
+   "shift": 2
+  },
+  "ajouCancel": {
+   "name": "아주대 평택병원 무산",
+   "hosp": "ajou_pt"
+  },
+  "opt": {
+   "name": "계획 다 된다고 가정(낙관)"
+  }
+ },
+ "regulated": [
+  "guseong",
+  "suji",
+  "dongbaek",
+  "dt2",
+  "dt1",
+  "gwanggyo",
+  "maetan",
+  "pangyo",
+  "sunae",
+  "wirye",
+  "gwacheon",
+  "gyosan",
+  "misa",
+  "gmsh"
+ ],
+ "toheo": [
+  "guseong",
+  "suji",
+  "dongbaek",
+  "dt2",
+  "dt1",
+  "gwanggyo",
+  "maetan",
+  "pangyo",
+  "sunae",
+  "wirye",
+  "gwacheon",
+  "gyosan",
+  "misa",
+  "gmsh"
+ ],
+ "stageConf": {
+  "운행": 1.0,
+  "공사 중": 0.85,
+  "설계 중": 0.6,
+  "계획 확정(지구 지정)": 0.7,
+  "타당성·승인 단계": 0.5,
+  "착공 전·차질": 0.3,
+  "건의": 0.2
+ },
+ "hospPlan": {
+  "ajou_pt": {
+   "open": 2033,
+   "stage": "착공 전·차질",
+   "conf": 0.3,
+   "src": "주관사 협약 해제 요구·건축비 55% 상승, 8년째 착공 못 함(연합뉴스 2026-09-20). 착공 전이라 개원 2031→2033 이후로 늦춤"
+  },
+  "ku_dt": {
+   "open": 2035,
+   "stage": "타당성·승인 단계",
+   "conf": 0.5,
+   "src": "2026.3 복지부 사전승인"
+  },
+  "snu_bg": {
+   "open": 2029,
+   "stage": "공사 중",
+   "conf": 0.85,
+   "src": "2025.8 착공"
+  }
+ },
+ "anchConf": {
+  "ss_pt": 0.85,
+  "sk_yongin": 0.85,
+  "ss_nat": 0.6,
+  "pangyo3": 0.6
+ },
+ "devConf": {
+  "idong": 0.7,
+  "wonsam": 0.85,
+  "namsa": 0.6,
+  "guseong": 0.85,
+  "jije": 0.7,
+  "godeok": 0.85,
+  "brain": 0.7,
+  "sega": 0.6,
+  "jinan": 0.5,
+  "bongdam": 0.7,
+  "hyangnam": 0.7,
+  "anjung": 0.2,
+  "pangyo": 0.6,
+  "gmsh": 0.7,
+  "gyosan": 0.7,
+  "wangsuk": 0.7,
+  "changneung": 0.85,
+  "daejang": 0.85,
+  "gyeyang": 0.85,
+  "gwacheon": 0.85,
+  "baegot": 0.7
+ }
+}
