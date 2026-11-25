@@ -156,7 +156,7 @@ const gtxL=[];const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
 let HIST=null,hSize='p84',hPer=5,hApt=-2,pinMode='lead';
-const short=o=>o.name.replace(/^(평택|처인|수원|기흥|화성|오산|용인|안성|성남|하남|남양주|고양|부천|인천|시흥|분당)\s/,'').split(/[·( ]/)[0];const RC=['#5b3fd6','#ea580c','#0f766e'],RN=['대장','2위','3위'];const aptL=[];
+const short=o=>o.name.replace(/^(동탄2|평택|처인|수원|기흥|화성|오산|용인|안성|성남|하남|남양주|고양|부천|인천|시흥|분당)\s/,'').split(/[·( ]/)[0];const RC=['#5b3fd6','#ea580c','#0f766e'],RN=['대장','2위','3위'];const aptL=[];
 fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window.RADAR=d;init();fetch('history.json?v='+Date.now()).then(r=>r.json()).then(h=>{HIST=h;render()}).catch(()=>{})});
 
 // ---------- 점수 엔진 ----------
