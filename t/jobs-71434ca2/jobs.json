@@ -1,7 +1,107 @@
 {
- "updated": "2026-11-25 21:19",
+ "updated": "2026-11-26 07:34",
  "source": "keywork.co.kr",
  "jobs": [
+  {
+   "id": "d12127",
+   "url": "https://keywork.co.kr/jobs/d12127",
+   "title": "[세보] 평택시 P5 복합동 덕트",
+   "company": "세보",
+   "client": "삼성",
+   "region": "평택",
+   "loc": "평택시",
+   "fab": "P5 복합동",
+   "area": "평택",
+   "trade": "덕트",
+   "rates": [
+    {
+     "role": "조공",
+     "k": "jo",
+     "w": 15.0,
+     "n": 2
+    },
+    {
+     "role": "기공",
+     "k": "gi",
+     "w": null,
+     "n": 1
+    }
+   ],
+   "ilbi": 0.0,
+   "ilbiIncl": false,
+   "ot": "주 2회이상",
+   "gongsu": 30,
+   "lodging": "제공",
+   "lodgingRaw": "숙소제공",
+   "meal": "식권제공 (3장)",
+   "cond": "7:00~17:00",
+   "need": "기초안전이수증 1개월 이상",
+   "etc": "",
+   "posted": "2026-11-25",
+   "postedAt": "2026-11-25T21:35:25.190664+00:00",
+   "valid": "2026-12-09",
+   "status": "모집중",
+   "badge": "APP",
+   "applied": 0,
+   "flags": {
+    "cert": true,
+    "exp": true,
+    "beginner": false,
+    "ins4": false,
+    "tax33": false,
+    "direct": false,
+    "commute_only": false,
+    "night": false
+   },
+   "first": "2026-11-26"
+  },
+  {
+   "id": "d12126",
+   "url": "https://keywork.co.kr/jobs/d12126",
+   "title": "[선재테크] 평택 P5 전기",
+   "company": "선재테크",
+   "client": "삼성",
+   "region": "평택",
+   "loc": "평택시",
+   "fab": "P5",
+   "area": "평택",
+   "trade": "전기",
+   "rates": [
+    {
+     "role": "조공",
+     "k": "jo",
+     "w": 18.0,
+     "n": 5
+    }
+   ],
+   "ilbi": 0.0,
+   "ilbiIncl": true,
+   "ot": "주 2회이상",
+   "gongsu": 30,
+   "lodging": "없음",
+   "lodgingRaw": "숙소없음",
+   "meal": "단가포함",
+   "cond": "주5일근무",
+   "need": "",
+   "etc": "55세까지",
+   "posted": "2026-11-25",
+   "postedAt": "2026-11-25T20:56:23.778557+00:00",
+   "valid": "2026-12-09",
+   "status": "모집중",
+   "badge": "직접",
+   "applied": 0,
+   "flags": {
+    "cert": false,
+    "exp": false,
+    "beginner": true,
+    "ins4": false,
+    "tax33": false,
+    "direct": true,
+    "commute_only": false,
+    "night": false
+   },
+   "first": "2026-11-26"
+  },
   {
    "id": "d12124",
    "url": "https://keywork.co.kr/jobs/d12124",
@@ -95,7 +195,7 @@
    "valid": "2026-12-09",
    "status": "모집중",
    "badge": "",
-   "applied": 0,
+   "applied": 2,
    "flags": {
     "cert": false,
     "exp": false,
@@ -1324,7 +1424,7 @@
    "valid": "2026-12-07",
    "status": "모집중",
    "badge": "",
-   "applied": 2,
+   "applied": 3,
    "flags": {
     "cert": false,
     "exp": true,
@@ -1483,7 +1583,7 @@
    "valid": "2026-12-14",
    "status": "모집중",
    "badge": "APP",
-   "applied": 2,
+   "applied": 3,
    "flags": {
     "cert": true,
     "exp": false,
@@ -2785,6 +2885,59 @@
    "first": "2026-11-20"
   },
   {
+   "id": "d11999",
+   "url": "https://keywork.co.kr/jobs/d11999",
+   "title": "[SK 원삼 Y1 PH1] 용인시 Y1 비계",
+   "company": "SK 원삼 Y1 PH1",
+   "client": "SK하이닉스",
+   "region": "Y1",
+   "loc": "용인시",
+   "fab": "",
+   "area": "용인",
+   "trade": "비계",
+   "rates": [
+    {
+     "role": "조공",
+     "k": "jo",
+     "w": 18.0,
+     "n": 5
+    },
+    {
+     "role": "준기공",
+     "k": "jun",
+     "w": 22.0,
+     "n": 2
+    }
+   ],
+   "ilbi": 0.0,
+   "ilbiIncl": false,
+   "ot": "주 2회이상",
+   "gongsu": 30,
+   "lodging": "없음",
+   "lodgingRaw": "숙소없음",
+   "meal": "단가포함",
+   "cond": "06:30~16:30",
+   "need": "비계공 6개월 이상. 기초안전.비계이수증필수",
+   "etc": "연락주세요",
+   "posted": "2026-11-20",
+   "postedAt": "2026-11-20T02:55:48.624864+00:00",
+   "valid": "2026-12-04",
+   "status": "모집중",
+   "badge": "",
+   "applied": 1,
+   "flags": {
+    "cert": true,
+    "exp": true,
+    "beginner": true,
+    "ins4": false,
+    "tax33": false,
+    "direct": false,
+    "commute_only": false,
+    "night": false
+   },
+   "first": "2026-11-26"
+  },
+  {
    "id": "d11998",
    "url": "https://keywork.co.kr/jobs/d11998",
    "title": "[스마트안전] 평택 고덕 P5 신축현장 안전",
@@ -2824,7 +2977,7 @@
    "valid": "2026-12-04",
    "status": "모집중",
    "badge": "",
-   "applied": 5,
+   "applied": 6,
    "flags": {
     "cert": false,
     "exp": true,
@@ -3222,7 +3375,7 @@
    "posted": "2026-11-19",
    "postedAt": "2026-11-19T11:14:22.674039+00:00",
    "valid": "2026-12-03",
-   "status": "모집중",
+   "status": "마감",
    "badge": "APP",
    "applied": 6,
    "flags": {
@@ -3235,7 +3388,8 @@
     "commute_only": false,
     "night": false
    },
-   "first": "2026-11-19"
+   "first": "2026-11-19",
+   "closedSeen": "2026-11-26"
   },
   {
    "id": "d11974",
@@ -3428,7 +3582,7 @@
    "posted": "2026-11-19",
    "postedAt": "2026-11-19T05:17:45.755479+00:00",
    "valid": "2026-12-03",
-   "status": "모집중",
+   "status": "마감",
    "badge": "직접",
    "applied": 3,
    "flags": {
@@ -3441,7 +3595,8 @@
     "commute_only": false,
     "night": false
    },
-   "first": "2026-11-19"
+   "first": "2026-11-19",
+   "closedSeen": "2026-11-26"
   },
   {
    "id": "d11977",
@@ -3605,7 +3760,7 @@
    "posted": "2026-11-18",
    "postedAt": "2026-11-18T08:42:14.604194+00:00",
    "valid": "2026-12-02",
-   "status": "모집중",
+   "status": "마감",
    "badge": "직접",
    "applied": 1,
    "flags": {
@@ -3618,7 +3773,8 @@
     "commute_only": false,
     "night": false
    },
-   "first": "2026-11-18"
+   "first": "2026-11-18",
+   "closedSeen": "2026-11-26"
   },
   {
    "id": "d11966",
@@ -4559,6 +4715,65 @@
     "night": true
    },
    "first": "2026-11-16"
+  },
+  {
+   "id": "d11910",
+   "url": "https://keywork.co.kr/jobs/d11910",
+   "title": "[바른ENG] 평택 P3 배관",
+   "company": "바른ENG",
+   "client": "삼성",
+   "region": "평택",
+   "loc": "평택시",
+   "fab": "P3",
+   "area": "평택",
+   "trade": "배관",
+   "rates": [
+    {
+     "role": "조공",
+     "k": "jo",
+     "w": 16.0,
+     "n": 10
+    },
+    {
+     "role": "준기공",
+     "k": "jun",
+     "w": 17.0,
+     "n": 4
+    },
+    {
+     "role": "기공",
+     "k": "gi",
+     "w": 23.0,
+     "n": 4
+    }
+   ],
+   "ilbi": 0.0,
+   "ilbiIncl": false,
+   "ot": "주 2회이상",
+   "gongsu": 30,
+   "lodging": "없음",
+   "lodgingRaw": "숙소없음",
+   "meal": "식대제공 (30000)",
+   "cond": "07:00~19:00",
+   "need": "상생포털 회원가입자만 입사가능",
+   "etc": "한달기준 만근시 헤바공수 6공수지급",
+   "posted": "2026-11-15",
+   "postedAt": "2026-11-15T11:29:01.182088+00:00",
+   "valid": "2026-11-29",
+   "status": "모집중",
+   "badge": "직접",
+   "applied": 10,
+   "flags": {
+    "cert": false,
+    "exp": false,
+    "beginner": false,
+    "ins4": false,
+    "tax33": false,
+    "direct": true,
+    "commute_only": false,
+    "night": false
+   },
+   "first": "2026-11-26"
   },
   {
    "id": "d11909",
@@ -5632,6 +5847,53 @@
    "first": "2026-10-22"
   },
   {
+   "id": "d11556",
+   "url": "https://keywork.co.kr/jobs/d11556",
+   "title": "[우신엔지니어링(일우)] 화성시 H1 배관",
+   "company": "우신엔지니어링(일우)",
+   "client": "삼성",
+   "region": "H1",
+   "loc": "화성시",
+   "fab": "",
+   "area": "화성",
+   "trade": "배관",
+   "rates": [
+    {
+     "role": "s가스용접사",
+     "k": "etc",
+     "w": 25.0,
+     "n": 3
+    }
+   ],
+   "ilbi": 0.0,
+   "ilbiIncl": false,
+   "ot": "풀연장",
+   "gongsu": 39,
+   "lodging": "제공",
+   "lodgingRaw": "숙소제공",
+   "meal": "단가포함",
+   "cond": "8:00~17:00 (1공수) / ⏳연장시간 : 17:00~19:30 (1.4공수) / 토요일출근 08:00~ 14:00 (1공수) / 💰단가 : 배기 배관사 (단가협의) / 보조공 (14~15) / 💸급여일 : 매월 말일 / 🗓️기간 : 현재~2027년 까지 풀연장 진행중 토욜 출근 부분 진행 / 🚙 출퇴근 가능자 / 🌱 팀 분위기 좋음 / 🌱 성실히 일하실 분들 / ⛔4대보험 필수가입(퇴직금발생) / 🤠 68년생이하까지 가능 / 📲“이름 / 생년월일” 문자 / 📞 010-****-**** / 부재시 문자 주시면 바로 연락드리겠습니다",
+   "need": "s-가스 모집합니다",
+   "etc": "s-가스 모집합니다",
+   "posted": "2026-10-21",
+   "postedAt": "2026-10-21T23:07:02.335728+00:00",
+   "valid": "2026-12-20",
+   "status": "모집중",
+   "badge": "APP",
+   "applied": 8,
+   "flags": {
+    "cert": false,
+    "exp": false,
+    "beginner": true,
+    "ins4": true,
+    "tax33": false,
+    "direct": false,
+    "commute_only": false,
+    "night": false
+   },
+   "first": "2026-11-26"
+  },
+  {
    "id": "d11550",
    "url": "https://keywork.co.kr/jobs/d11550",
    "title": "[유창] 용인 원삼 칸막이",
@@ -5765,7 +6027,7 @@
    "valid": "2026-12-27",
    "status": "모집중",
    "badge": "직접",
-   "applied": 7,
+   "applied": 8,
    "flags": {
     "cert": false,
     "exp": false,
@@ -5912,7 +6174,7 @@
    "valid": "2026-12-15",
    "status": "모집중",
    "badge": "",
-   "applied": 8,
+   "applied": 9,
    "flags": {
     "cert": false,
     "exp": false,
