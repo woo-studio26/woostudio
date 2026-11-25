@@ -174,9 +174,9 @@ function score(o,y){const W=M.weights,t=o.t;const T=gangT(o,y);const g=gScore(o,
  let dv;if(M.dev[o.id]){const [a,b,m]=M.dev[o.id];dv=m*(.35+.65*CF((M.devConf||{})[o.id])*cl((y-a)/(b-a)))}else dv=M.devFlat[o.id]??5;
  const sch=M.school[o.id]??4;let pen=0;for(const p of M.supplyPenalty)if(p.ids.includes(o.id)&&p.years.includes(y))pen+=p.p;
  const sup=10-pen;const cf=o.by==null?5:5*cl((o.by-1990)/32);
- const pp=popPart(o,W.pop||0);const K=100/Object.values(W).reduce((a,b)=>a+b,0);
- const parts=[g,j,hp,dv,sch,sup,cf,pp].map(x=>x*K);return {s:parts.reduce((a,b)=>a+b,0),parts,T}}
-function popPart(o,w){const p=o.pop;if(!w)return 0;if(!p||p.y3==null)return w*.4;return w*(.4*cl((p.y3+5)/15)+.6*cl(((p.c3040??0)+10)/25))}
+ const [pn,pg]=popPart(o,W.popN||0,W.popG||0);const K=100/Object.values(W).reduce((a,b)=>a+b,0);
+ const parts=[g,j,hp,dv,sch,sup,cf,pn,pg].map(x=>x*K);return {s:parts.reduce((a,b)=>a+b,0),parts,T}}
+function popPart(o,wn,wg){const p=o.pop;if(!p||!p.n)return [0,wg*.4];const n=wn*cl(Math.log10(p.n/20000));const g=p.y3==null?wg*.4:wg*(.4*cl((p.y3+5)/15)+.6*cl(((p.c3040??0)+10)/25));return [n,g]}
 function gain(o,y){const r=score(o,y),r0=score(o,2026);return {d:(r.s-r.parts[5])-(r0.s-r0.parts[5]),sup:r.parts[5]-r0.parts[5]}}
 function priced(o){if(!o.p84)return null;for(let y=2026;y<=2036;y++)if(implied(score(o,y).s)>=o.p84)return y;return 9999}
 let REG={a:0,b:0};
@@ -464,7 +464,7 @@ function popBlock(o){const p=o.pop;if(!p)return '';
  <div class="kv"><div>지금 인구</div><div>${p.n.toLocaleString()}명${rk}</div><div>1년 / 3년</div><div>${pc(p.y1)} / ${pc(p.y3)}</div>
  <div>30·40대</div><div>${p.p3040??'-'}% <span class="rs">· 3년간 수 ${p.c3040==null?'-':(p.c3040>0?'+':'')+p.c3040+'%'}</span></div><div>0~9세 / 60세+</div><div>${p.pkid??'-'}% / ${p.p60??'-'}%</div></div>
  <div class="note">행안부 주민등록 인구(법정동 합산: ${p.parts.join(', ')}). 전입·전출이 아니라 순증감(출생·사망 포함). 3기 지구·신규 택지는 입주 전이라 주변 동 기준.</div></div>`}
-function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강남 접근',W.gangnam],['일자리',W.jobs],['대형병원',W.hosp],['개발호재',W.dev],['학군(추정)',W.school],['공급 부담',W.supply],['쾌적(신축)',W.comfort],['인구 흐름',W.pop||0]].map(([n,w])=>[n,w*100/Object.values(W).reduce((a,b)=>a+b,0)]);
+function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강남 접근',W.gangnam],['일자리',W.jobs],['대형병원',W.hosp],['개발호재',W.dev],['학군(추정)',W.school],['공급 부담',W.supply],['쾌적(신축)',W.comfort],['인구 규모',W.popN||0],['인구 증가',W.popG||0]].map(([n,w])=>[n,w*100/Object.values(W).reduce((a,b)=>a+b,0)]);
  const ys=[];for(let y=2026;y<=2036;y++)ys.push(score(o,y).s);const mn=Math.min(...ys)-3,mx=Math.max(...ys)+3;
  const spark=`<svg viewBox="0 0 200 50" style="width:200px;height:50px"><polyline fill="none" stroke="#5b3fd6" stroke-width="2" points="${ys.map((s,i)=>(i*19+5)+','+(45-(s-mn)/(mx-mn)*40)).join(' ')}"/><circle cx="${(Y-2026)*19+5}" cy="${45-(r.s-mn)/(mx-mn)*40}" r="3.5" fill="#5b3fd6"/><text x="2" y="10" font-size="8" fill="#999">2026</text><text x="198" y="10" font-size="8" fill="#999" text-anchor="end">2036</text></svg>`;
  const hs=D.hosp.map(h=>({h,t:o.t[h.id]})).filter(x=>x.t!=null).sort((a,b)=>a.t-b.t).slice(0,3);
