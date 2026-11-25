@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>현장 공고 피드 · 용인·평택</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14181f;--mut:#6b7280;--line:#e5e7eb;--blue:#2563eb;--red:#e11d48;--green:#059669;--amber:#d97706}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard",sans-serif}
+header{position:sticky;top:0;z-index:5;background:#0f172a;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:-.3px}
+header .u{font-size:12px;color:#94a3b8}
+header a{color:#93c5fd;font-size:12px;margin-left:auto;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.st .l{font-size:11px;color:var(--mut)}.st .v{font-size:20px;font-weight:700;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.st .s{font-size:11px;color:var(--mut)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+.row .lb{font-size:11px;color:var(--mut);width:54px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;user-select:none}
+.chip.on{background:#0f172a;color:#fff;border-color:#0f172a}
+select{font-size:12px;padding:3px 6px;border-radius:6px;border:1px solid var(--line)}
+.list{display:grid;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:start}
+.card.hard{opacity:.62}.card.closed{opacity:.4}
+.sc{width:52px;height:52px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#fff;font-variant-numeric:tabular-nums}
+.sc small{font-size:9px;font-weight:500;opacity:.85}
+.t{font-weight:700;font-size:15px;letter-spacing:-.3px}
+.t a{color:inherit;text-decoration:none}.t a:hover{text-decoration:underline}
+.meta{font-size:12px;color:var(--mut);margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tg{font-size:11px;padding:1px 7px;border-radius:6px;background:#f1f5f9;color:#334155;white-space:nowrap}
+.tg.new{background:var(--red);color:#fff;font-weight:700}
+.tg.g{background:#dcfce7;color:#166534}.tg.w{background:#fef3c7;color:#92400e}.tg.x{background:#fee2e2;color:#991b1b}.tg.b{background:#dbeafe;color:#1e40af}
+.rates{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:12px}
+.rates b{font-variant-numeric:tabular-nums}
+.money{text-align:right;min-width:120px}
+.money .v{font-size:18px;font-weight:800;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.money .l{font-size:11px;color:var(--mut)}
+details{margin-top:6px;font-size:12px;color:#374151}
+details pre{white-space:pre-wrap;font:12px/1.5 inherit;margin:6px 0 0;background:#f8fafc;padding:8px;border-radius:8px}
+.news{display:grid;gap:6px}.news a{color:var(--ink);text-decoration:none}.news a:hover{text-decoration:underline}
+.news .d{font-size:11px;color:var(--mut);margin-right:6px}
+h2{font-size:14px;margin:18px 0 8px}
+.foot{font-size:11px;color:var(--mut);margin:16px 0 30px;line-height:1.7}
+@media(max-width:640px){.card{grid-template-columns:44px 1fr}.money{grid-column:2;text-align:left}.sc{width:42px;height:42px;font-size:16px}}
+</style>
+</head>
+<body>
+<header><h1>현장 공고 피드 · 용인·평택·화성</h1><span class="u" id="upd"></span><a href="https://www.woostudio.co.kr/t/gg-radar-be44267d/" target="_blank">경기 레이더 →</a></header>
+<div class="wrap">
+  <div class="stats" id="stats"></div>
+  <div class="panel">
+    <div class="row"><span class="lb">내 조건</span><span id="me"></span></div>
+    <div class="row"><span class="lb">지역</span><span id="areas"></span></div>
+    <div class="row"><span class="lb">보기</span><span id="opts"></span>
+      <select id="trade"></select>
+      <select id="sort"><option value="score">점수순</option><option value="new">최신순</option><option value="net">실수령순</option></select></div>
+  </div>
+  <div class="list" id="list"></div>
+  <h2>현장 소식</h2>
+  <div class="panel news" id="news"></div>
+  <div class="foot" id="foot"></div>
+</div>
+<script>
+const LS='jobfeed_me_v1';
+const ME=Object.assign({cert:false,exp:false,lodge:true},JSON.parse(localStorage.getItem(LS)||'{}'));
+const ST={areas:new Set(['용인','평택','화성']),onlyOpen:true,onlyOk:false,lodgeOnly:false,beginner:false,newOnly:false,trade:'',sort:'score'};
+let D=null;
+const GROW_HI=/전기|배관|칸막이|방화|훅업|판넬|내장|수장|경량/, GROW_MID=/덕트|비계|철골|방수|도장|양중|철거|목수|설비/;
+const today=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+const days=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+function best(j,kinds){let r=j.rates.filter(x=>kinds.includes(x.k)&&x.w);return r.sort((a,b)=>b.w-a.w)[0]}
+function calc(j){
+  const kinds=ME.exp?['jo','jun','safe','etc']:['jo','safe','etc'];
+  let r=best(j,kinds)||best(j,['jun','gi']);
+  if(!r) return {gross:null,net:null,role:null};
+  const gross=r.w*j.gongsu+(j.ilbi||0)*26;
+  const net=j.flags.tax33?gross*0.967:gross*0.9;
+  return {gross,net,role:r};
+}
+function score(j){
+  const c=calc(j), f=j.flags; let s=0, why=[];
+  const onlyGi=!j.rates.some(r=>['jo','safe','jun'].includes(r.k));
+  const hard=(f.exp&&!ME.exp)||onlyGi||(f.cert&&!ME.cert&&false);
+  if(c.net){const v=Math.max(0,Math.min(1,(c.net-380)/(560-380)));s+=30*v}
+  let jun=0;const jr=j.rates.find(r=>r.k==='jun');
+  if(jr){jun+=13;if(jr.w&&jr.w>=18)jun+=5}
+  if(/준기공|준전공/.test(j.etc)&&/협의/.test(j.etc))jun+=4;
+  if(f.beginner)jun+=5; if(f.exp&&!ME.exp)jun-=8; s+=Math.max(0,Math.min(25,jun));
+  const tr=j.trade+' '+j.title;
+  const onlySafe=j.rates.length&&j.rates.every(r=>r.k==='safe');
+  s+= onlySafe?3:GROW_HI.test(tr)?20:GROW_MID.test(tr)?11:6;
+  if(ME.lodge){s+= j.lodging==='제공'?15:j.lodging==='협의'?8:j.lodging==='미기재'?5:0}else s+=12;
+  s+= (j.badge==='사업자인증'?4:j.badge==='직접'?3:1)+(f.direct?3:0)+(f.ins4?3:0);
+  s=Math.round(Math.min(100,hard?s*0.6:s));
+  return {s,hard,c};
+}
+const col=s=>s>=80?'#059669':s>=70?'#2563eb':s>=60?'#d97706':'#9ca3af';
+const won=v=>v==null?'-':Math.round(v)+'만';
+function chip(lbl,on,fn){const e=document.createElement('span');e.className='chip'+(on?' on':'');e.textContent=lbl;e.onclick=fn;return e}
+function renderControls(){
+  const me=document.getElementById('me');me.innerHTML='';
+  me.append(chip('이수증 있음',ME.cert,()=>{ME.cert=!ME.cert;save()}),chip('반도체 경력 있음',ME.exp,()=>{ME.exp=!ME.exp;save()}),chip('숙소 필요',ME.lodge,()=>{ME.lodge=!ME.lodge;save()}));
+  const ar=document.getElementById('areas');ar.innerHTML='';
+  ['용인','평택','화성'].forEach(a=>ar.append(chip(a+' '+D.jobs.filter(j=>j.area===a&&j.status==='모집중').length,ST.areas.has(a),()=>{ST.areas.has(a)?ST.areas.delete(a):ST.areas.add(a);render()})));
+  const op=document.getElementById('opts');op.innerHTML='';
+  op.append(chip('NEW만',ST.newOnly,()=>{ST.newOnly=!ST.newOnly;render()}),chip('지원 가능만',ST.onlyOk,()=>{ST.onlyOk=!ST.onlyOk;render()}),chip('숙소 제공만',ST.lodgeOnly,()=>{ST.lodgeOnly=!ST.lodgeOnly;render()}),chip('초보 가능만',ST.beginner,()=>{ST.beginner=!ST.beginner;render()}),chip('마감 포함',!ST.onlyOpen,()=>{ST.onlyOpen=!ST.onlyOpen;render()}));
+}
+function save(){localStorage.setItem(LS,JSON.stringify(ME));render()}
+function median(a){a=a.filter(x=>x).sort((x,y)=>x-y);if(!a.length)return null;const m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2}
+function renderStats(){
+  const open=D.jobs.filter(j=>j.status==='모집중');
+  const nw=open.filter(j=>days(j.first,today)<=2);
+  const med=t=>median(open.filter(j=>t.test(j.trade)).flatMap(j=>j.rates.filter(r=>r.k==='jo').map(r=>r.w)));
+  const sc=open.map(j=>score(j)).filter(x=>!x.hard);
+  const top=open.map(j=>({j,...score(j)})).sort((a,b)=>b.s-a.s)[0];
+  document.getElementById('stats').innerHTML=[
+    ['새로 뜬 공고 (3일)',nw.length+'건','오늘 '+open.filter(j=>j.first===today).length+'건'],
+    ['모집 중',open.length+'건','용인 '+open.filter(j=>j.area==='용인').length+' · 평택 '+open.filter(j=>j.area==='평택').length+' · 화성 '+open.filter(j=>j.area==='화성').length],
+    ['조공 단가 중앙값','전기 '+(med(/전기/)??'-')+'만','배관 '+(med(/배관/)??'-')+'만 · 칸막이 '+(med(/칸막이/)??'-')+'만'],
+    ['실수령 500만↑ (지원 가능)',open.filter(j=>{const x=score(j);return !x.hard&&x.c.net>=500}).length+'건','세전×0.9 기준'],
+    ['지금 1위',top?top.s+'점':'-',top?top.j.company+' '+top.j.trade:'']
+  ].map(([l,v,s])=>`<div class="st"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+}
+function render(){
+  renderControls();renderStats();
+  const ts=[...new Set(D.jobs.map(j=>j.trade).filter(Boolean))].sort();
+  const sel=document.getElementById('trade');sel.innerHTML='<option value="">공종 전체</option>'+ts.map(t=>`<option ${t===ST.trade?'selected':''}>${t}</option>`).join('');
+  let L=D.jobs.map(j=>({j,...score(j)}));
+  L=L.filter(({j,hard})=>ST.areas.has(j.area)&&(!ST.onlyOpen||j.status==='모집중')&&(!ST.onlyOk||!hard)&&(!ST.lodgeOnly||j.lodging==='제공')&&(!ST.beginner||j.flags.beginner)&&(!ST.newOnly||days(j.first,today)<=2)&&(!ST.trade||j.trade===ST.trade));
+  const so=ST.sort;
+  L.sort((a,b)=>so==='new'?(b.j.postedAt||'').localeCompare(a.j.postedAt||''):so==='net'?((b.c.net||0)-(a.c.net||0)):(b.s-a.s));
+  document.getElementById('list').innerHTML=L.length?L.map(card).join(''):'<div class="panel">조건에 맞는 공고 없음</div>';
+}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function card({j,s,hard,c}){
+  const f=j.flags,isNew=days(j.first,today)<=2&&j.status==='모집중';
+  const tags=[];
+  if(isNew)tags.push('<span class="tg new">NEW</span>');
+  if(j.status!=='모집중')tags.push('<span class="tg x">마감</span>');
+  tags.push(`<span class="tg b">${j.area}</span>`);
+  if(j.trade)tags.push(`<span class="tg">${esc(j.trade)}</span>`);
+  tags.push(`<span class="tg ${j.lodging==='제공'?'g':j.lodging==='협의'?'w':''}">숙소 ${j.lodging}</span>`);
+  if(j.ot)tags.push(`<span class="tg">${esc(j.ot)}</span>`);
+  if(f.beginner)tags.push('<span class="tg g">초보 가능</span>');
+  if(f.ins4)tags.push('<span class="tg">4대보험</span>');
+  if(f.tax33)tags.push('<span class="tg w">3.3%</span>');
+  if(f.direct)tags.push('<span class="tg">팀장 직접</span>');
+  if(f.cert&&!ME.cert)tags.push('<span class="tg w">이수증 필요</span>');
+  if(f.exp&&!ME.exp)tags.push('<span class="tg x">경력 요구</span>');
+  if(f.commute_only)tags.push('<span class="tg">출퇴근만</span>');
+  if(j.badge)tags.push(`<span class="tg">${j.badge}</span>`);
+  const rates=j.rates.map(r=>`<span>${esc(r.role)} <b>${r.w?r.w+'만':'협의'}</b>${r.n?' · '+r.n+'명':''}</span>`).join('')+(j.ilbi?`<span>+ 일비 <b>${j.ilbi}만</b></span>`:'');
+  const body=[['근무조건',j.cond],['필요사항',j.need],['식사',j.meal],['숙소 원문',j.lodgingRaw],['기타',j.etc]].filter(x=>x[1]).map(x=>'■ '+x[0]+': '+esc(x[1])).join('\n');
+  return `<div class="card ${hard?'hard':''} ${j.status!=='모집중'?'closed':''}">
+  <div class="sc" style="background:${col(s)}">${s}<small>점</small></div>
+  <div><div class="t"><a href="${j.url}" target="_blank">${esc(j.title)}</a></div>
+  <div class="meta">${esc(j.client||'')} · ${esc(j.fab||'')} · 게시 ${j.posted.slice(5).replace('-','/')}${j.applied!=null?' · 신청 '+j.applied+'명':''}${hard?' · <b style="color:#b91c1c">지원 어려움</b>':''}</div>
+  <div class="rates">${rates}</div><div class="tags">${tags.join('')}</div>
+  <details><summary>원문 조건</summary><pre>${body}</pre></details></div>
+  <div class="money"><div class="l">실수령 월 예상</div><div class="v">${won(c.net)}</div><div class="l">세전 ${won(c.gross)} · ${c.role?esc(c.role.role)+' '+c.role.w+'만':''} × ${j.gongsu}공수${j.ilbi?' + 일비×26':''}</div></div></div>`;
+}
+document.getElementById('trade').onchange=e=>{ST.trade=e.target.value;render()};
+document.getElementById('sort').onchange=e=>{ST.sort=e.target.value;render()};
+fetch('jobs.json?'+Date.now()).then(r=>r.json()).then(d=>{D=d;
+  document.getElementById('upd').textContent='갱신 '+d.updated+' · 출처 키워크';
+  const n=d.news||[];document.getElementById('news').innerHTML=n.length?n.map(x=>`<div><span class="d">${x.date}</span><a href="${x.url}" target="_blank">${esc(x.title)}</a>${x.note?'<div class="meta">'+esc(x.note)+'</div>':''}</div>`).join(''):'<div class="meta">아직 없음</div>';
+  document.getElementById('foot').innerHTML='점수(100): 월 실수령 500 확실성 30 · 무자격 준기공 진입 25 · 성장(전기·배관·칸막이·방화마감) 20 · 숙식 15 · 신뢰(사업자인증·팀장 직접·4대보험) 10. 경력 요구·기공만 모집은 ×0.6 회색.<br>월 예상 = 단가 × 공수 + 일비 × 26일. 공수는 공고 문구로 추정: 연장 없음 26 · 주 2회 이상 30 · 풀연장 39 · 철야/야간 43 (실제 연장 횟수는 통화로 확인). 실수령 = 세전 × 0.9(4대보험·일용세), 3.3% 공고는 × 0.967.<br>NEW = 이 피드에서 처음 본 지 3일 이내. 원문은 키워크 공고(밴드·카페 글을 AI가 요약한 것이 섞여 있어 단가는 원문 확인).';
+  render();});
+</script>
+</body>
+</html>
