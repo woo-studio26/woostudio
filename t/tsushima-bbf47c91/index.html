@@ -21,6 +21,7 @@ h1{font-size:22px;margin:4px 0 2px;letter-spacing:-.02em}.sub{color:var(--mu);fo
 .bt{display:flex;gap:8px;margin-top:10px}
 .bt a,.bt button{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:11px 6px;font-size:14px;font-weight:600;border:1px solid var(--bd);color:var(--fg);background:var(--bg);font-family:inherit}
 .bt a.go{background:var(--ac);border-color:var(--ac);color:#fff}
+.ph1{width:100%;border-radius:10px;margin-top:10px;display:block;aspect-ratio:900/345;object-fit:cover;background:var(--soft)}.cap{font-size:12px;color:var(--mu);margin-top:4px}.bt.sm a{padding:9px 4px;font-size:13px;font-weight:500}
 .ck{position:absolute;top:12px;right:12px;width:24px;height:24px;accent-color:var(--ok)}
 h2{font-size:17px;margin:22px 0 8px}
 .box{background:var(--soft);border-radius:12px;padding:12px 13px;font-size:14px;margin-bottom:10px}
@@ -65,13 +66,15 @@ table{width:100%;border-collapse:collapse;font-size:13.5px}td{padding:6px 4px;bo
 <div class="box">① 자전거 반납 (10초) → ② <b>짐 맡기기 전에</b> 면세 키오스크(1층·2층)에서 여권 찍기 → ③ 출국 수속, 3,500엔 현금 → ④ 16:10 승선</div>
 
 <h2>배 못 구했을 때 (Plan B)</h2>
-<div class="box">16:00 하카타행 페리 → 20:55 하카타 도착, 2등석 8,340엔. 출발은 <b>국내터미널</b>(국제터미널 아님).
+<div class="box">16:00 하카타행 페리 → 20:55 하카타 도착, 2등석 8,340엔. 출발은 <b>국내터미널</b>(국제터미널 아님, 남쪽으로 걸어서 약 7분).<a href="https://www.google.com/maps/@34.6527907,129.4737917,3a,80y,3h,90t" target="_blank"><img class="ph1" src="img/dom.jpg" alt=""></a><div class="cap">국내터미널 (2024년 7월 로드뷰) · <a href="http://www.kyu-you.co.jp/" target="_blank">규슈유센(페리) 사이트 ↗</a></div>
 <div class="bt"><a href="https://www.google.com/maps/search/?api=1&query=34.6531389,129.4738102" target="_blank">국내터미널 지도</a><a class="go" href="https://www.google.com/maps/dir/?api=1&destination=34.6531389,129.4738102&travelmode=walking" target="_blank">길찾기</a></div></div>
 
 <h2>연락처</h2>
 <div class="box ph">
 @렌터사이클 (항구 앞) <a href="tel:+818029066076">+81 80-2906-6076</a><br>
 유유카페&렌터카 <a href="tel:+81920889060">0920-88-9060</a><br>
+시마이 플라워샵 <a href="tel:+81920863223">0920-86-3223</a><br>
+마츠모토키요시 오우라 <a href="tel:+81920889600">0920-88-9600</a><br>
 대아고속 (한국) <a href="tel:16619604">1661-9604</a>
 </div>
 <div class="sub" style="margin-top:14px">좌표는 구글맵에서 확인함 (11/28). 자전거 길찾기가 일본에서 안 뜨면 도보 경로 그대로 따라가면 됨. 체크 표시는 이 폰에만 저장됨.</div>
@@ -87,23 +90,26 @@ const P={
  vm:[34.671692,129.434273,'밸류마트 오오우라점']
 };
 const ll=k=>P[k][0]+','+P[k][1];
+const SV={port:'https://www.google.com/maps/@34.6563136,129.4695537,3a,80y,192h,90t',yamato:'https://www.google.com/maps/@34.6596278,129.4517328,3a,80y,253h,90t',vm:'https://www.google.com/maps/@34.6717121,129.4348439,3a,80y,268h,90t',dom:'https://www.google.com/maps/@34.6527907,129.4737917,3a,80y,3h,90t'};
 const S=[
- {t:'10:45',k:'bike',n:'하선 → 전기자전거 빌리기',d:'국제터미널 나와서 바로 앞. 2,000엔 현금, 1분이면 됨. 동났으면 시마이 플라워샵(1,500엔)이나 걸어서/뛰어서.',mv:'도보 1~2분'},
- {t:'~10:53',k:'yamato',n:'야마토 영업소: 택배 받기',d:'08:00~19:00. 송장번호·여권·착불 1,735엔. 펜 개수 확인하고 가방에.',mv:'자전거 5~7분 · 약 2km',key:1,from:'bike'},
- {t:'11:40',k:'matsu',n:'오우라: 마츠모토키요시',d:'09:00~22:00. 야마토에서 항구 반대쪽(서쪽)으로 계속 가면 됨. 멀미약은 따로 계산, 면세분은 한 번에 5,000엔 넘게.',mv:'자전거 약 10분 · 약 2.5km',from:'yamato'},
- {t:'12:10',k:'vm',n:'오우라: 밸류마트 + 점심',d:'09:00~21:00. 마츠키요 바로 옆. 위스키·간식, 도시락·초밥(약 1,000엔)으로 점심 해결.',mv:'바로 옆',from:'matsu'},
- {t:'13:30',k:'miuda',n:'(선택) 미우다 해변',d:'시간 남으면만. 오우라에서 항구까지 4.6km라 짐 무거우면 바로 항구로.',mv:'자전거 20~25분',from:'vm'},
- {t:'14:30',k:'port',n:'항구 복귀: 자전거 반납 → 면세 키오스크 → 수속',d:'돌아가는 배가 붐비니까 14:30 목표, 늦어도 15:00. 3,500엔 현금.',mv:'자전거 7~10분',key:1,from:'miuda'}
+ {t:'10:45',k:'bike',n:'하선 → 전기자전거 빌리기',d:'국제터미널(사진) 나와서 바로 앞. 2,000엔 현금, 1분이면 됨. 동났으면 시마이 플라워샵(1,500엔, 항구에서 서쪽 약 650m).',mv:'도보 1~2분',img:'port',cap:'히타카쓰항 국제터미널, 배 내려서 나오는 건물 (2024년 7월 로드뷰)',sv:'port',web:[['렌터사이클 사이트','https://sites.google.com/view/hitakatsurentalcycle'],['시마이 사이트','http://www.sky.tcctv.ne.jp/katsu-shima/']]},
+ {t:'~10:53',k:'yamato',n:'야마토 영업소: 택배 받기',d:'08:00~19:00. 송장번호·여권·착불 1,735엔. 펜 개수 확인하고 가방에.',mv:'자전거 5~7분 · 약 2km',key:1,from:'bike',img:'yamato',cap:'오른쪽 검은 고양이 간판 건물이 영업소. 길 건너편 (2024년 7월 로드뷰)',sv:'yamato',web:[['야마토 배송조회','https://toi.kuronekoyamato.co.jp/cgi-bin/tneko']]},
+ {t:'11:40',k:'matsu',n:'오우라: 마츠모토키요시 + 밸류마트',d:'마츠키요 09:00~22:00, 밸류마트 09:00~21:00. 같은 건물로 보임(VALUE TAKESUE 간판). 야마토에서 항구 반대쪽(서쪽)으로 계속 가면 됨. 멀미약은 따로 계산, 면세분은 한 번에 5,000엔 넘게.',mv:'자전거 약 10분 · 약 2.5km (추정)',from:'yamato',img:'vm',cap:'강 건너편에서 본 밸류마트 건물 (VALUE TAKESUE 간판) (2024년 7월 로드뷰)',sv:'vm',web:[['마츠키요 매장','https://www.matsukiyococokara-online.com/map?kid=20805445'],['밸류마트','http://www.takesue.co.jp/']]},
+ {t:'12:10',k:'vm',n:'점심 (밸류마트 도시락·초밥)',d:'초밥 팩 약 1,000엔. 줄 서기 싫으면 여기서 해결.',mv:'같은 건물',from:'matsu'},
+ {t:'13:30',k:'miuda',n:'(선택) 미우다 해변',d:'시간 남으면만. 오우라에서 항구까지 4.6km라 짐 무거우면 바로 항구로.',mv:'자전거 20~25분',from:'vm',web:[['쓰시마 관광 안내','https://www.tsushima-net.org/']]},
+ {t:'14:30',k:'port',n:'항구 복귀: 자전거 반납 → 면세 키오스크 → 수속',d:'돌아가는 배가 붐비니까 14:30 목표, 늦어도 15:00. 3,500엔 현금.',mv:'자전거 7~10분',key:1,from:'miuda',img:'port',cap:'국제터미널 (2024년 7월 로드뷰)',sv:'port'}
 ];
 const box=document.getElementById('steps');
 S.forEach((s,i)=>{const id='ck'+i;const on=localStorage.getItem(id)==='1';
  const dir=`https://www.google.com/maps/dir/?api=1${s.from?'&origin='+ll(s.from):''}&destination=${ll(s.k)}&travelmode=walking`;
  const el=document.createElement('div');el.className='step'+(s.key?' key':'')+(on?' done':'');
  el.innerHTML=`<input type="checkbox" class="ck" ${on?'checked':''}><div class="hd"><div class="tm">${s.t}</div><div><div class="tt">${s.n}</div><div class="ds">${P[s.k][2]}<br>${s.d}</div><span class="mv">${s.mv}</span></div></div>
- <div class="bt"><a href="https://www.google.com/maps/search/?api=1&query=${ll(s.k)}" target="_blank">지도</a><a class="go" href="${dir}" target="_blank">길찾기</a></div>`;
+ ${s.img?`<a href="${SV[s.sv]}" target="_blank"><img class="ph1" src="img/${s.img}.jpg" loading="lazy" alt=""></a><div class="cap">${s.cap} · 사진 누르면 로드뷰</div>`:''}
+ <div class="bt"><a href="https://www.google.com/maps/search/?api=1&query=${ll(s.k)}" target="_blank">지도</a>${s.sv?`<a href="${SV[s.sv]}" target="_blank">로드뷰</a>`:''}<a class="go" href="${dir}" target="_blank">길찾기</a></div>
+ ${s.web?`<div class="bt sm">${s.web.map(w=>`<a href="${w[1]}" target="_blank">${w[0]} ↗</a>`).join('')}</div>`:''}`;
  el.querySelector('.ck').onchange=e=>{localStorage.setItem(id,e.target.checked?'1':'0');el.classList.toggle('done',e.target.checked)};
  box.appendChild(el)});
 document.getElementById('all').href=`https://www.google.com/maps/dir/?api=1&origin=${ll('port')}&destination=${ll('port')}&waypoints=${ll('yamato')}|${ll('matsu')}&travelmode=walking`;
-window.TSU_VER='v1-1128';
+window.TSU_VER='v2-1128';
 </script>
 </body></html>
