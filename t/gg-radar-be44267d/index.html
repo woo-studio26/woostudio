@@ -121,8 +121,8 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
  <div class="stat"><b id="s2">-</b><span>최근 7일 새 소식</span></div>
  <div class="stat"><b id="s3">-</b><span>다음 청약</span></div>
  <div class="stat"><b id="s6" style="color:#b45309">-</b><span>줍줍 진행 · 내 조건 가능</span></div>
- <div class="stat"><b id="s4">11/26 금통위</b><span>정책 변수 일정</span></div>
- <div class="stat"><b id="s5">-</b><span>내 매수 상한(증빙 전제)</span></div>
+ <div class="stat"><b id="s4">-</b><span id="s4l">기준금리</span></div>
+ <div class="stat"><b id="s5">-</b><span>매수 상한 지금 / 소득 신고 후</span></div>
 </header>
 <aside id="side">
  <div class="sbox">
@@ -149,9 +149,9 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 </div>
 <script>
 const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
-let hiLine=null,legOpen=window.innerWidth>860;
+let hiLine=null,legOpen=false;
 let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
-const LAY={rail:true,gtx:true,jobs:true,hosp:true,news:true,n3:false,subs:true,zup:true,auc:true,bun:true,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);const zNew=z=>!!z.first&&(new Date(TODAY)-new Date(z.first))/864e5<=3;
+const LAY={rail:true,gtx:true,jobs:false,hosp:false,news:false,n3:false,subs:false,zup:true,auc:false,bun:false,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);const zNew=z=>!!z.first&&(new Date(TODAY)-new Date(z.first))/864e5<=3;
 const gtxL=[];const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
 const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
@@ -178,18 +178,20 @@ function score(o,y){const W=M.weights,t=o.t;const T=gangT(o,y);const g=gScore(o,
  const parts=[g,j,hp,dv,sch,sup,cf,pn,pg].map(x=>x*K);return {s:parts.reduce((a,b)=>a+b,0),parts,T}}
 function popPart(o,wn,wg){const p=o.pop;if(!p||!p.n)return [0,wg*.4];const n=wn*cl(Math.log10(p.n/20000));const g=p.y3==null?wg*.4:wg*(.4*cl((p.y3+5)/15)+.6*cl(((p.c3040??0)+10)/25));return [n,g]}
 function gain(o,y){const r=score(o,y),r0=score(o,2026);return {d:(r.s-r.parts[5])-(r0.s-r0.parts[5]),sup:r.parts[5]-r0.parts[5]}}
-function priced(o){if(!o.p84)return null;for(let y=2026;y<=2036;y++)if(implied(score(o,y).s)>=o.p84)return y;return 9999}
+function priced(o){const p=p84r(o);if(!p)return null;for(let y=2026;y<=2036;y++)if(implied(score(o,y).s)>=p)return y;return 9999}
 let REG={a:0,b:0};
-function fitModel(){const pts=D.dongs.filter(o=>o.p84&&o.n84>=10).map(o=>[score(o,2026).s,Math.log(o.p84)]);
+function fitModel(){const pts=D.dongs.filter(o=>p84r(o)).map(o=>[score(o,2026).s,Math.log(p84r(o))]);
  const n=pts.length,mx=pts.reduce((a,p)=>a+p[0],0)/n,my=pts.reduce((a,p)=>a+p[1],0)/n;
- const b=pts.reduce((a,p)=>a+(p[0]-mx)*(p[1]-my),0)/pts.reduce((a,p)=>a+(p[0]-mx)**2,0);REG={a:my-b*mx,b}}
+ const sxy=pts.reduce((a,p)=>a+(p[0]-mx)*(p[1]-my),0),sxx=pts.reduce((a,p)=>a+(p[0]-mx)**2,0),syy=pts.reduce((a,p)=>a+(p[1]-my)**2,0);const b=sxy/sxx;REG={a:my-b*mx,b,r:sxy/Math.sqrt(sxx*syy),n}}
 const implied=s=>Math.exp(REG.a+REG.b*s);
-function cap(){const me=D.me,f=r=>{const m=r/1200,n=360;return m/(1-Math.pow(1+m,-n))*12};
- const loanD=me.income*0.4/f(me.rate+me.stress)/10000;const c=.016;return Math.min((me.cash+Math.min(loanD,6))/(1+c),me.cash/(1-.7+c))}
-function price(o){return o[sizeKey]??null}
+function cap(now){const me=D.me,f=r=>{const m=r/1200,n=360;return m/(1-Math.pow(1+m,-n))*12};
+ const loanD=(now?(me.incomeNow??0):me.income)*0.4/f(me.rate+me.stress)/10000;const c=.016;return Math.min((me.cash+Math.min(loanD,6))/(1+c),me.cash/(1-.7+c))}
+function rp(o,k){const nk='n'+k.slice(1);if(o[k+'n']!=null&&(o[nk+'n']||0)>=3)return {v:o[k+'n'],n:o[nk+'n'],nw:true};return {v:o[k]??null,n:o[nk]||0,nw:false}}
+const p84r=o=>{const x=rp(o,'p84');return x.v!=null&&(x.nw?x.n>=5:x.n>=10)?x.v:null};
+function price(o){return rp(o,sizeKey).v}
 function visible(o){if(preset!=='all'&&o.region!==preset&&!(preset==='반도체벨트'&&o.region==='기준'))return false;
  if(q&&!(o.name+o.sig).includes(q))return false;return true}
-function passF(o){if(F.has('budget')){const p=o.p59;if(o.flags.includes('P')&&p==null)return true;if(p==null||p>cap())return false}
+function passF(o){for(const [fk,nw] of [['budgetNow',true],['budget',false]])if(F.has(fk)){const p=rp(o,'p59').v;if(o.flags.includes('P')&&p==null)continue;if(p==null||p>cap(nw))return false}
  if(F.has('noreg')&&M.regulated.includes(o.id))return false;
  if(F.has('subs')&&!D.subs.some(s=>s.dong===o.id&&isUpcoming(s)))return false;return true}
 function isUpcoming(s){return !s.start||s.start>='2026-11-21'||s.start==='예정'||/^2026-12$/.test(s.start)}
@@ -225,7 +227,7 @@ function init(){
  // UI
  document.getElementById('pre').innerHTML=[['all','전체 경기'],['반도체벨트','반도체 벨트'],['3기·서울외곽','3기·서울 외곽'],['서울남부권','서울 남부권']].map(([k,n])=>`<span class="chip" data-p="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-p]').forEach(c=>c.onclick=()=>{preset=c.dataset.p;fitPreset();render()});
- document.getElementById('flt').innerHTML=[['budget','내 예산 안 (59㎡)'],['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
+ document.getElementById('flt').innerHTML=[['budgetNow','지금 살 수 있는 곳'],['budget','소득 신고 후 가능'],['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
  document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['bun','분양'],['jb','정비'],['auc','경매'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{tab=c.dataset.t;sel=null;render()});
@@ -298,10 +300,10 @@ function render(){
  // 헤더
  const vis=D.dongs.filter(o=>visible(o)&&passF(o)).map(o=>[o,score(o,Y).s]).sort((a,b)=>b[1]-a[1]);
  document.getElementById('s1').textContent=vis.slice(0,3).map(x=>x[0].name.split(' ')[0].replace('(3기)','')).join(' · ')||'-';
- document.getElementById('s2').textContent=D.news.filter(n=>n.date>='2026-11-14').length+'건';
- const up=D.subs.filter(s=>s.start&&s.start>='2026-11-21'&&s.start.length===10).sort((a,b)=>a.start.localeCompare(b.start))[0];
+ document.getElementById('s2').textContent=D.news.filter(n=>n.date>=new Date(Date.parse(TODAY)-7*864e5).toISOString().slice(0,10)).length+'건';
+ const up=D.subs.filter(s=>s.start&&s.start>=TODAY&&s.start.length===10).sort((a,b)=>a.start.localeCompare(b.start))[0];
  document.getElementById('s3').textContent=up?up.start.slice(5).replace('-','/')+' '+up.name.split(/[ (]/)[0]:'12월 원삼';
- document.getElementById('s5').textContent=c.toFixed(1)+'억';
+ document.getElementById('s5').textContent=cap(true).toFixed(1)+' / '+c.toFixed(1)+'억';{const it=D.policy.items.find(x=>x[0]==='기준금리');if(it){document.getElementById('s4').textContent=it[1];const m=(it[2]||'').match(/^(\d+\/\d+)\s*([^ (]*)/);document.getElementById('s4l').textContent='기준금리'+(m?' ('+m[1]+' '+(/인상/.test(it[2])?'인상':/인하/.test(it[2])?'인하':'동결')+')':'')}}
  // 패널
  const el=document.getElementById('list');
  if(sel){const fresh=el.dataset.sel!==sel;el.innerHTML=dongHtml(D.dongs.find(o=>o.id===sel));if(fresh)el.scrollTop=0;el.dataset.sel=sel;bindDet();return}
@@ -317,12 +319,12 @@ function render(){
  bindList();
 }
 function dongList(){
- const rows=D.dongs.filter(o=>visible(o)).map(o=>{const r=score(o,Y),r0=score(o,2026);return {o,s:r.s,d:gain(o,Y).d,gap:o.p84?implied(r0.s)/o.p84-1:null,p:price(o)}});
+ const rows=D.dongs.filter(o=>visible(o)).map(o=>{const r=score(o,Y),r0=score(o,2026);return {o,s:r.s,d:gain(o,Y).d,gap:p84r(o)?implied(r0.s)/p84r(o)-1:null,p:price(o),rp:rp(o,sizeKey)}});
  const key={score:x=>-x.s,up:x=>-x.d,price:x=>x.p??99,gap:x=>-(x.gap??-9),pop:x=>-(x.o.pop?.y3??-99)}[sortKey];rows.sort((a,b)=>key(a)-key(b));
  return `<div class="sortbar">정렬 <select id="sk">${[['score','점수'],['up','2026 대비 상승폭'],['price','가격 낮은 순'],['gap','모델 대비 저평가'],['pop','인구 3년 증가']].map(([k,n])=>`<option value="${k}" ${k===sortKey?'selected':''}>${n}</option>`).join('')}</select>
  핀 <select id="pk"><option value="lead" ${pinMode==='lead'?'selected':''}>대장 아파트</option><option value="med" ${pinMode==='med'?'selected':''}>동네 중앙값</option></select> 평형 <select id="zk"><option value="p59" ${sizeKey==='p59'?'selected':''}>59㎡</option><option value="p84" ${sizeKey==='p84'?'selected':''}>84㎡</option></select> <span>${Y}년 기준</span></div>`+
- rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.lead&&o.lead[0]?`<b style="color:#5b3fd6">대장</b> ${o.lead[0].name} ${fmt(o.lead[0].p84??o.lead[0].p59)} · `:''}${o.sig} · ${o.flags.includes('P')&&x.p==null?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${o.pop&&o.pop.y3!=null?`<span class="tag" style="background:${o.pop.y3>0?'#fee2e2':'#dbeafe'}">인구 3년 ${o.pop.y3>0?'+':''}${o.pop.y3}%</span>`:''}${(()=>{const st=histStats(o.id,sizeKey==='p59'?59:84);return st&&st.yoy!=null?`<span class="tag">1년 ${st.yoy>0?'+':''}${Math.round(st.yoy*100)}%</span>`:''})()}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div>${o.pop?`<div style="font-size:10.5px;font-weight:700;white-space:nowrap;text-align:right">${popTxt(o)}</div>`:''}</div></div>`}).join('')+
- `<div class="note" style="padding:12px 14px">점수 = 강남 25 · 일자리 20 · 병원 15 · 개발호재 15 · 학군 10 · 공급 10 · 쾌적 5 · 인구 규모 10 · 인구 증가 5 (합계 115 → 100점 환산). 2026 점수와 84㎡ 시세 상관 0.83(처음 38곳 기준). '모델 대비'는 점수로 계산한 예상가 대비 실제가 차이(+면 점수보다 싸다). 강남·병원·일자리 시간은 차 기준(막힘 미반영), 학군은 임시 추정치. 투자 권유 아님.</div>`}
+ rows.map(x=>{const o=x.o,ok=passF(o);return `<div class="row" data-d="${o.id}" style="opacity:${ok?1:.4}"><div><div class="rn">${o.name}</div><div class="rs">${o.lead&&o.lead[0]?`<b style="color:#5b3fd6">대장</b> ${o.lead[0].name} ${fmt(o.lead[0].p84??o.lead[0].p59)} · `:''}${o.sig} · ${o.flags.includes('P')&&x.p==null?'분양 예정':(sizeKey==='p59'?'59㎡ ':'84㎡ ')+fmt(x.p)+(x.p!=null&&!x.rp.nw?' <span style="color:#9ca3af">(구축 포함)</span>':'')+(x.p!=null&&x.rp.n<5?` <span style="color:#b45309">(${x.rp.n}건)</span>`:'')+(o.proxy?' (주변 시세)':'')} ${M.regulated.includes(o.id)?'<span class="tag r">규제·토허</span>':''}${o.pop&&o.pop.y3!=null?`<span class="tag" style="background:${o.pop.y3>0?'#fee2e2':'#dbeafe'}">인구 3년 ${o.pop.y3>0?'+':''}${o.pop.y3}%</span>`:''}${(()=>{const yy=sameYoy(o.id,sizeKey==='p59'?59:84);return yy!=null?`<span class="tag" title="같은 단지끼리 최근 4개월과 1년 전 거래 중앙값 비교, 단지별 변동률의 중앙값">시세 1년 ${yy>0?'+':''}${Math.round(yy*100)}%</span>`:''})()}${x.gap!=null?`<span class="tag ${x.gap>0?'g':''}">모델 대비 ${x.gap>0?'+':''}${Math.round(x.gap*100)}%</span>`:''}</div></div><div><div class="sc" style="color:${col(x.s)}">${Math.round(x.s)}</div><div class="d ${x.d>0?'up':''}">${Y>2026?'▲'+Math.round(x.d):''}</div>${o.pop?`<div style="font-size:10.5px;font-weight:700;white-space:nowrap;text-align:right">${popTxt(o)}</div>`:''}</div></div>`}).join('')+
+ `<div class="note" style="padding:12px 14px">점수 = 강남 25 · 일자리 20 · 병원 15 · 개발호재 15 · 학군 10 · 공급 10 · 쾌적 5 · 인구 규모 10 · 인구 증가 5 (합계 115 → 100점 환산). 2026 점수와 84㎡ 대표 시세(준공 15년 이내 중앙값) 상관 ${REG.r?REG.r.toFixed(2):'-'}(${REG.n||0}곳 기준). 시세는 준공 15년 이내 거래 중앙값을 먼저 쓰고, 3건 미만이면 전체 중앙값(구축 포함 표시). '모델 대비'는 점수로 계산한 예상가 대비 실제가 차이(+면 점수보다 싸다). 강남·병원·일자리 시간은 차 기준(막힘 미반영), 학군은 임시 추정치. 투자 권유 아님.</div>`}
 function newsHtml(n,pop){return `<div><span class="tag" style="background:${catCol(n.cat)}22;color:${catCol(n.cat)}">${catName(n.cat)}</span><span class="rs">${n.date} · ${n.siteName||''}</span></div><div class="nt">${n.title}</div><div class="ns">${n.summary}</div><a href="${n.url}" target="_blank" rel="noopener">${n.src} ↗</a>`}
 let ncat='all';
 function newsList(){const cats=['all','ind','trn','hou','hosp','risk'];
@@ -390,7 +392,7 @@ function subsList(){const me=D.me;
 function moneyHtml(){const me=D.me,c=cap();
  return `<div class="det"><h4 style="margin:0 0 6px">내 조건 계산기</h4><div class="warn">${me.note}. 아래 연소득은 <b>증빙되는 소득</b>을 넣어야 맞아요.</div>
  <div class="kv"><div>현금</div><div><input id="mc" type="number" step="0.05" value="${me.cash}" style="width:70px">억</div><div>증빙 연소득</div><div><input id="mi" type="number" step="100" value="${me.income}" style="width:80px">만</div><div>대출 금리</div><div><input id="mr" type="number" step="0.05" value="${me.rate}" style="width:60px">% (가정)</div><div>스트레스</div><div><input id="ms" type="number" step="0.25" value="${me.stress}" style="width:60px">%p</div></div>
- <div class="gauge"><div><div class="rs">매수 상한</div><div style="font-size:26px;font-weight:800;color:var(--ac);white-space:nowrap">${c.toFixed(2)}억</div></div><div class="note">DSR 40%, 30년 원리금, 생애최초 LTV 70%, 취득세·비용 1.6% 가정. '내 예산 안' 필터가 이 값을 씀.</div></div>
+ <div class="gauge"><div><div class="rs">매수 상한 (위 소득 기준)</div><div style="font-size:26px;font-weight:800;color:var(--ac);white-space:nowrap">${c.toFixed(2)}억</div><div class="rs">지금(증빙 소득 0원) ${cap(true).toFixed(2)}억</div></div><div class="note">DSR 40%, 30년 원리금, 생애최초 LTV 70%, 취득세·비용 1.6% 가정. 필터 '지금 살 수 있는 곳'은 증빙 소득 0원, '소득 신고 후 가능'은 위 연소득으로 계산.</div></div>
  <h4 style="margin:14px 0 6px">정책 변수판 (${D.policy.asof})</h4>${D.policy.items.map(([k,v,n,u])=>`<div class="news"><div class="rs">${k}</div><div class="nt">${v}</div><div class="ns">${n} <a href="${u}" target="_blank" rel="noopener">출처 ↗</a></div></div>`).join('')}
  <div class="note" style="margin-top:8px">매일 08:30 루틴이 금통위·금융위·국토부 발표를 보고 값이 바뀌면 여기와 점수를 고쳐요.</div></div>`}
 function cmpHtml(){if(!cmp.length)return `<div class="det note">동네를 열고 '비교에 추가'를 누르면 최대 3곳을 나란히 봐요.</div>`;
@@ -403,6 +405,9 @@ function cmpHtml(){if(!cmp.length)return `<div class="det note">동네를 열고
 
 // ---------- 가격 추이 (호갱노노식) ----------
 const mIdx=m=>Math.floor(m/100)*12+(m%100)-1, mLab=m=>String(m).slice(2,4)+'.'+String(m).slice(4);
+function sameYoy(id,cls,only){if(!HIST||!HIST[id])return null;const d=HIST[id].d.filter(x=>x[1]===cls&&(!only||only.includes(x[3])));if(d.length<4)return null;const last=Math.max(...d.map(x=>mIdx(x[0])));const med=a=>{a=a.slice().sort((x,y)=>x-y);const n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):null};
+ const by={};d.forEach(x=>{const m=mIdx(x[0]),k=x[3];const b=by[k]=by[k]||{r:[],y:[]};if(m>last-4)b.r.push(x[2]);else if(m>=last-15&&m<=last-9)b.y.push(x[2])});
+ const rs=Object.values(by).filter(b=>b.r.length&&b.y.length).map(b=>med(b.r)/med(b.y)-1);return rs.length>=(only&&only.length<3?1:3)?med(rs):null}
 function histStats(id,cls,ai){if(!HIST||!HIST[id])return null;const d=HIST[id].d.filter(x=>x[1]===cls&&(ai==null||x[3]===ai));if(d.length<3)return null;
  const last=Math.max(...d.map(x=>mIdx(x[0])));const med=a=>{a=a.slice().sort((x,y)=>x-y);const n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):null};
  const rec=med(d.filter(x=>mIdx(x[0])>last-4).map(x=>x[2])),ya=med(d.filter(x=>mIdx(x[0])>=last-15&&mIdx(x[0])<=last-9).map(x=>x[2]));
@@ -441,7 +446,7 @@ function histBlock(o){const H=HIST&&HIST[o.id];const cls=hSize==='p59'?59:84;con
  <div class="chips" style="margin:0 0 6px">${[['p59','59㎡'],['p84','84㎡']].map(([k,n])=>`<span class="chip ${hSize===k?'on':''}" data-hs="${k}">${n}</span>`).join('')}${[[3,'3년'],[5,'5년'],[0,'전체']].map(([k,n])=>`<span class="chip ${hPer===k?'on':''}" data-hp="${k}">${n}</span>`).join('')}
  ${apts.length?`<select id="hapt" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:3px;max-width:150px"><option value="-2" ${hApt===-2?'selected':''}>대장 TOP3 비교</option><option value="-1" ${hApt===-1?'selected':''}>동네 전체</option>${apts.map(([a,i,n])=>`<option value="${i}" ${hApt===i?'selected':''}>${a} (${n})</option>`).join('')}</select>`:''}</div>
  ${hApt===-2&&o.lead?`<div class="rs" style="margin-bottom:2px">${o.lead.map((a,k)=>`<span style="color:${RC[k]};font-weight:700">● ${a.name}</span>`).join(' ')}</div>`:''}${histSvg(o)}
- ${st?`<div class="kv" style="margin-top:6px"><div>최근 시세</div><div><b>${fmt(st.rec)}</b> (${hApt>=0?H.apts[hApt]:hApt===-2?'TOP3 합산':'동네 전체'}, 최근 4개월 중앙)</div><div>1년 전 대비</div><div>${pct(st.yoy)}</div><div>최고점 대비</div><div>${st.pk?`${pct(st.fromPk)} <span class="rs">(고점 ${st.pk.k.replace('상',' 상반기').replace('하',' 하반기')} ${fmt(st.pk.v)})</span>`:'-'}</div></div>`:''}
+ ${st?`<div class="kv" style="margin-top:6px"><div>최근 시세</div><div><b>${fmt(st.rec)}</b> (${hApt>=0?H.apts[hApt]:hApt===-2?'TOP3 합산':'동네 전체'}, 최근 4개월 중앙)</div><div>1년 전 대비</div><div>${(()=>{if(hApt>=0)return pct(st.yoy);const v=sameYoy(o.id,cls,hApt===-2?leadIdx(o).filter(x=>x>=0):null);return v!=null?pct(v)+' <span class="rs">(같은 단지끼리 비교)</span>':'-'})()}</div><div>최고점 대비</div><div>${st.pk?`${pct(st.fromPk)} <span class="rs">(고점 ${st.pk.k.replace('상',' 상반기').replace('하',' 하반기')} ${fmt(st.pk.v)})</span>`:'-'}</div></div>`:''}
  <div class="note">점 = 실거래 1건, 선 = 표본 달의 중앙값. 2016~2025는 1·4·7·10월 표본(매일 조금씩 채우는 중), 최근 2년은 매월. 동네 전체 값은 신축·구축 비율에 따라 흔들리니 단지를 골라 보면 더 정확해요.</div></div>`}
 
 function cmpHist(cs){if(!HIST)return '';const cls=sizeKey==='p59'?59:84;const S=cmp.map(id=>histStats(id,cls));if(!S.some(x=>x&&x.hy.length))return '';
@@ -478,9 +483,9 @@ function dongHtml(o){const r=score(o,Y),r0=score(o,2026),W=M.weights,lab=[['강�
  <div class="gauge"><svg viewBox="0 0 120 70" style="width:120px"><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="#eee" stroke-width="12"/><path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="${col(r.s)}" stroke-width="12" stroke-dasharray="${157*r.s/100} 157"/><text x="60" y="56" font-size="22" font-weight="800" text-anchor="middle" fill="#111">${Math.round(r.s)}</text></svg>
  <div><div class="rs">${Y}년 입지 점수 ${Y>2026?`${(()=>{const G=gain(o,Y),d=Math.round(G.d),sp=Math.round(G.sup);return `<span class="d" style="color:${gcol(d)}">입지 ${d>0?"▲"+d:d<0?"▼"+(-d):"±0"} vs 2026</span>${sp?`<span class="rs"> · 공급 부담 ${sp>0?'+':''}${sp} 별도</span>`:''}`})()}`:''}</div>${spark}${o.pop?`<div style="font-size:12px;font-weight:700;margin:2px 0">${popTxt(o)} <span class="rs" style="font-weight:400">(3년)</span></div>`:''}<div class="note">${stageTxt(o)}</div></div></div>
 ${leadBlock(o)}${histBlock(o)}
- <div class="bars">${lab.map(([n,w],k)=>`<div class="b"><span>${n}</span><div class="trk"><div class="fil" style="width:${r.parts[k]/w*100}%"></div></div><span class="rs">${r.parts[k].toFixed(1)}/${Math.round(w*10)/10}${Y>2026&&Math.abs(r.parts[k]-r0.parts[k])>=.5?` <b style="color:${r.parts[k]>r0.parts[k]?'#dc2626':'#2563eb'}">${r.parts[k]>r0.parts[k]?'+':''}${(r.parts[k]-r0.parts[k]).toFixed(1)}</b>`:''}</span></div>`).join('')}</div>${(()=>{const py=priced(o);if(py==null)return '';const t=py===2026?'지금 점수로도 시세가 싼 편 (미래 호재가 아직 값에 안 붙음)':py===9999?'시세가 10년 뒤 점수로 계산한 값보다도 비쌈 (호재가 이미 다 붙음)':`84㎡ 시세 ${fmt(o.p84)}는 이미 <b>${py}년 점수</b> 수준을 반영 (${py-2026}년치 호재 선반영)`;return `<div class="note" style="margin-top:4px">시세 반영: ${t}</div>`})()}<div class="note">미확정 계획은 단계별 확정도만큼만 반영 (운행 100 · 공사 85 · 설계 60 · 승인 50 · 차질 30 · 건의 20%). 공급 부담 변화는 상승폭에서 뺌.</div>
- <div class="sec"><h4>시세 (국토부 실거래 2026.7~10 중앙값)</h4><div class="kv"><div>59㎡</div><div>${fmt(o.p59)} <span class="rs">(${o.n59}건)</span></div><div>84㎡</div><div>${fmt(o.p84)} <span class="rs">(${o.n84}건)</span></div><div>거래 많은 단지</div><div>${o.top.join(', ')||'-'}</div>${o.proxy?'<div>주의</div><div>3기 지구 안은 아직 시세 없음 → 바로 옆 기존 단지 시세</div>':''}
- ${o.p84?`<div>점수 모델가</div><div>${fmt(imp)} (2026) → ${fmt(imp2)} (${Y}) <span class="rs">· 실제 대비 ${Math.round((imp/o.p84-1)*100)}%</span></div>`:''}</div></div>
+ <div class="bars">${lab.map(([n,w],k)=>`<div class="b"><span>${n}</span><div class="trk"><div class="fil" style="width:${r.parts[k]/w*100}%"></div></div><span class="rs">${r.parts[k].toFixed(1)}/${Math.round(w*10)/10}${Y>2026&&Math.abs(r.parts[k]-r0.parts[k])>=.5?` <b style="color:${r.parts[k]>r0.parts[k]?'#dc2626':'#2563eb'}">${r.parts[k]>r0.parts[k]?'+':''}${(r.parts[k]-r0.parts[k]).toFixed(1)}</b>`:''}</span></div>`).join('')}</div>${(()=>{const py=priced(o);if(py==null)return '';const t=py===2026?'지금 점수로도 시세가 싼 편 (미래 호재가 아직 값에 안 붙음)':py===9999?'시세가 10년 뒤 점수로 계산한 값보다도 비쌈 (호재가 이미 다 붙음)':`84㎡ 시세 ${fmt(p84r(o))}는 이미 <b>${py}년 점수</b> 수준을 반영 (${py-2026}년치 호재 선반영)`;return `<div class="note" style="margin-top:4px">시세 반영: ${t}</div>`})()}<div class="note">미확정 계획은 단계별 확정도만큼만 반영 (운행 100 · 공사 85 · 설계 60 · 승인 50 · 차질 30 · 건의 20%). 공급 부담 변화는 상승폭에서 뺌.</div>
+ <div class="sec"><h4>시세 (국토부 실거래 2026.7~10 중앙값)</h4><div class="kv"><div>59㎡</div><div><b>${fmt(o.p59n)}</b> <span class="rs">준공 15년 이내 ${o.n59n||0}건</span> · 전체 ${fmt(o.p59)} <span class="rs">(${o.n59}건)</span></div><div>84㎡</div><div><b>${fmt(o.p84n)}</b> <span class="rs">준공 15년 이내 ${o.n84n||0}건</span> · 전체 ${fmt(o.p84)} <span class="rs">(${o.n84}건)</span></div><div>거래 많은 단지</div><div>${o.top.join(', ')||'-'}</div>${o.proxy?'<div>주의</div><div>3기 지구 안은 아직 시세 없음 → 바로 옆 기존 단지 시세</div>':''}
+ ${o.p84?`<div>점수 모델가</div><div>${fmt(imp)} (2026) → ${fmt(imp2)} (${Y}) <span class="rs">· 실제 대비 ${p84r(o)?Math.round((imp/p84r(o)-1)*100)+'%':'-'}</span></div>`:''}</div></div>
 ${popBlock(o)}
  <div class="sec"><h4>강남·병원·일자리 (차 기준)</h4><div class="kv"><div>강남역</div><div>${r.T}분 ${r.T<o.t.gangnam?'<span class="tag p">철도 개통 반영</span>':''}</div>
  ${hs.map(x=>`<div>병원</div><div>${x.h.name} ${x.t}분${x.h.open?` <span class="tag ${Y>=x.h.open?'p':''}">${x.h.open} 개원 목표</span>`:''}</div>`).join('')}
