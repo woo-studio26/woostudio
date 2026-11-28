@@ -111,6 +111,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 .gb.plan{background:#fff;color:var(--c);border:2px dashed var(--c);opacity:.9}
 .gn{margin-left:3px;font:700 11px/1.2 system-ui;color:#111;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
 .lkey .gb{margin-right:2px}
+.mybar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11.5px}.chip.myon{border-color:#5b3fd6;color:#5b3fd6;font-weight:700}.mybox{margin-top:8px;border:1.5px solid #5b3fd6;border-radius:10px;padding:8px 10px;background:#faf8ff;font-size:12px}.myh{display:flex;justify-content:space-between;align-items:center}.myf{line-height:2}.myf input{width:62px;font-size:12px;border:1px solid #ddd;border-radius:5px;padding:1px 4px}.myf select{font-size:12px;border:1px solid #ddd;border-radius:5px}.myr{margin-top:4px;padding-top:5px;border-top:1px dashed #d6ccff;color:#374151}
 </style>
 </head>
 <body>
@@ -120,15 +121,16 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
  <div class="stat"><b id="s1">-</b><span>점수 상위 (연도 기준)</span></div>
  <div class="stat"><b id="s2">-</b><span>최근 7일 새 소식</span></div>
  <div class="stat"><b id="s3">-</b><span>다음 청약</span></div>
- <div class="stat"><b id="s6" style="color:#b45309">-</b><span>줍줍 진행 · 내 조건 가능</span></div>
+ <div class="stat"><b id="s6" style="color:#b45309">-</b><span id="s6l">줍줍 진행</span></div>
  <div class="stat"><b id="s4">-</b><span id="s4l">기준금리</span></div>
- <div class="stat"><b id="s5">-</b><span>매수 상한 지금 / 소득 신고 후</span></div>
+ <div class="stat" id="s5w"><b id="s5">-</b><span>내 매수 상한</span></div>
 </header>
 <aside id="side">
  <div class="sbox">
   <div class="search"><input id="q" placeholder="동네 검색 (예: 진안, 동탄, 지제)"></div>
   <div class="chips" id="pre"></div>
   <div class="chips" id="flt"></div>
+  <div id="my"></div>
  </div>
  <div class="tabs" id="tabs"></div>
  <div id="list"></div>
@@ -149,7 +151,7 @@ header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:8px 14px
 </div>
 <script>
 const VKEY='5C8BA639-2724-45CB-8D7A-E275450C339C';
-let hiLine=null,legOpen=false;
+let hiLine=null,legOpen=false;let MY=false;try{MY=localStorage.getItem('myOn')==='1'}catch(e){}
 let D,M,map,Y=2026,SC=new Set(),tab='dong',sel=null,preset='all',F=new Set(),sizeKey='p59',sortKey='score',cmp=[],q='',base='base';
 const LAY={rail:true,gtx:true,jobs:false,hosp:false,news:false,n3:false,subs:false,zup:true,auc:false,bun:false,jb:false};const zupL=[],aucL=[],bunL=[],jbL=[];/*BUNJB_PATCH*/let aucF={budget:false,clean:false,near:true,ok1:false,sgg:'all',sort:'date'};const TODAY=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);const zNew=z=>!!z.first&&(new Date(TODAY)-new Date(z.first))/864e5<=3;
 const gtxL=[];const pinL={},lineL=[],lineLab=[],hospL=[],anchL=[],newsL=[],n3L=[],subL=[];
@@ -157,7 +159,7 @@ const cl=x=>Math.max(0,Math.min(1,x));
 const fmt=v=>v==null?'-':(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,'')+'억';
 let HIST=null,hSize='p84',hPer=5,hApt=-2,pinMode='lead';
 const short=o=>o.name.replace(/^(동탄2|평택|처인|수원|기흥|화성|오산|용인|안성|성남|하남|남양주|고양|부천|인천|시흥|분당)\s/,'').split(/[·( ]/)[0];const RC=['#5b3fd6','#ea580c','#0f766e'],RN=['대장','2위','3위'];const aptL=[];
-fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;window.RADAR=d;init();fetch('history.json?v='+Date.now()).then(r=>r.json()).then(h=>{HIST=h;render()}).catch(()=>{})});
+fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;M=d.model;D.me.incomeAfter=D.me.income;D.me.income=D.me.incomeNow??0;try{Object.assign(D.me,JSON.parse(localStorage.getItem('myp')||'{}'))}catch(e){}window.RADAR=d;init();fetch('history.json?v='+Date.now()).then(r=>r.json()).then(h=>{HIST=h;render()}).catch(()=>{})});
 
 // ---------- 점수 엔진 ----------
 function gangT(o,y){let T=o.t.gangnam;for(const r of M.rail){const yy=r.year+(SC.has('gtxDelay')&&r.line==='gtxa_ext'?2:0);if(r.ids[o.id]!=null&&y>=yy)T=Math.min(T,r.ids[o.id])}
@@ -184,14 +186,28 @@ function fitModel(){const pts=D.dongs.filter(o=>p84r(o)).map(o=>[score(o,2026).s
  const n=pts.length,mx=pts.reduce((a,p)=>a+p[0],0)/n,my=pts.reduce((a,p)=>a+p[1],0)/n;
  const sxy=pts.reduce((a,p)=>a+(p[0]-mx)*(p[1]-my),0),sxx=pts.reduce((a,p)=>a+(p[0]-mx)**2,0),syy=pts.reduce((a,p)=>a+(p[1]-my)**2,0);const b=sxy/sxx;REG={a:my-b*mx,b,r:sxy/Math.sqrt(sxx*syy),n}}
 const implied=s=>Math.exp(REG.a+REG.b*s);
-function cap(now){const me=D.me,f=r=>{const m=r/1200,n=360;return m/(1-Math.pow(1+m,-n))*12};
- const loanD=(now?(me.incomeNow??0):me.income)*0.4/f(me.rate+me.stress)/10000;const c=.016;return Math.min((me.cash+Math.min(loanD,6))/(1+c),me.cash/(1-.7+c))}
+function saveMe(){const m=D.me;try{localStorage.setItem('myp',JSON.stringify({cash:m.cash,income:m.income,rate:m.rate,stress:m.stress}))}catch(e){}}
+function cap(){const me=D.me,f=r=>{const m=r/1200,n=360;return m/(1-Math.pow(1+m,-n))*12};
+ const loanD=me.income*0.4/f(me.rate+me.stress)/10000;const c=.016;return Math.min((me.cash+Math.min(loanD,6))/(1+c),me.cash/(1-.7+c))}
 function rp(o,k){const nk='n'+k.slice(1);if(o[k+'n']!=null&&(o[nk+'n']||0)>=3)return {v:o[k+'n'],n:o[nk+'n'],nw:true};return {v:o[k]??null,n:o[nk]||0,nw:false}}
 const p84r=o=>{const x=rp(o,'p84');return x.v!=null&&(x.nw?x.n>=5:x.n>=10)?x.v:null};
 function price(o){return rp(o,sizeKey).v}
 function visible(o){if(preset!=='all'&&o.region!==preset&&!(preset==='반도체벨트'&&o.region==='기준'))return false;
  if(q&&!(o.name+o.sig).includes(q))return false;return true}
-function passF(o){for(const [fk,nw] of [['budgetNow',true],['budget',false]])if(F.has(fk)){const p=rp(o,'p59').v;if(o.flags.includes('P')&&p==null)continue;if(p==null||p>cap(nw))return false}
+function myRender(){const el=document.getElementById('my');if(!el)return;const m=D.me;
+ if(!MY){el.innerHTML=`<div class="mybar"><span class="chip myon" data-my="1">내 조건 적용</span><span class="rs">꺼짐: 시장 기준으로 봄 (예산·청약 자격 안 걸림)</span></div>`}
+ else{const vis=D.dongs.filter(visible),ok=vis.filter(passF).length;const zo=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY),zk=zo.filter(z=>zJudge(z)[0]==='o').length;const ak=((D.auc&&D.auc.rows)||[]).filter(aucPass).length;
+  const sel=(id,opts,val)=>`<select id="${id}">${opts.map(([v,n])=>`<option value="${v}" ${String(val)===v?'selected':''}>${n}</option>`).join('')}</select>`;
+  const pnow=m.income===(m.incomeNow??0),paft=m.income===m.incomeAfter;
+  el.innerHTML=`<div class="mybox"><div class="myh"><b>내 조건 적용 중</b><span class="chip on" data-my="0">끄기</span></div>
+  <div class="chips" style="margin:4px 0 6px"><span class="chip ${pnow?'on':''}" data-mp="now">지금 그대로 (증빙 소득 0)</span><span class="chip ${paft?'on':''}" data-mp="after">소득 신고 후 (연 ${(m.incomeAfter||0).toLocaleString()}만)</span></div>
+  <div class="myf">현금 <input id="my_c" type="number" step="0.05" value="${m.cash}">억 · 증빙 소득 <input id="my_i" type="number" step="100" value="${m.income}">만/년<br>거주 ${sel('my_s',[['대구','대구'],['서울','서울'],['경기','경기'],['인천','인천'],['기타','기타']],ZME.sido)} 무주택 ${sel('my_n',[['true','예'],['false','아니오']],ZME.nohouse)} 세대주 ${sel('my_h',[['null','모름'],['true','예'],['false','아니오']],ZME.head)}</div>
+  <div class="myr">매수 상한 <b>${cap().toFixed(2)}억</b> → 동네 <b>${ok}/${vis.length}</b>곳 (${sizeKey==='p59'?'59':'84'}㎡ 기준) · 줍줍 넣을 수 있음 <b>${zk}</b>건 · 경매 예산 안 <b>${ak}</b>건 (관심 동네 3.5km)</div></div>`}
+ el.querySelectorAll('[data-my]').forEach(e=>e.onclick=()=>{MY=e.dataset.my==='1';try{localStorage.setItem('myOn',MY?'1':'0')}catch(_){};render()});
+ el.querySelectorAll('[data-mp]').forEach(e=>e.onclick=()=>{m.income=e.dataset.mp==='now'?(m.incomeNow??0):m.incomeAfter;saveMe();render()});
+ [['my_c','cash'],['my_i','income']].forEach(([i,k])=>{const x=document.getElementById(i);if(x)x.onchange=()=>{m[k]=+x.value;saveMe();render()}});
+ [['my_s','sido',v=>v],['my_n','nohouse',v=>v==='true'],['my_h','head',v=>v==='null'?null:v==='true']].forEach(([i,k,f])=>{const x=document.getElementById(i);if(x)x.onchange=()=>{ZME[k]=f(x.value);try{localStorage.setItem('zme',JSON.stringify(ZME))}catch(_){};render()}})}
+function passF(o){if(MY){const p=price(o);if(!(o.flags.includes('P')&&p==null)&&(p==null||p>cap()))return false}
  if(F.has('noreg')&&M.regulated.includes(o.id))return false;
  if(F.has('subs')&&!D.subs.some(s=>s.dong===o.id&&isUpcoming(s)))return false;return true}
 function isUpcoming(s){return !s.start||s.start>='2026-11-21'||s.start==='예정'||/^2026-12$/.test(s.start)}
@@ -227,7 +243,7 @@ function init(){
  // UI
  document.getElementById('pre').innerHTML=[['all','전체 경기'],['반도체벨트','반도체 벨트'],['3기·서울외곽','3기·서울 외곽'],['서울남부권','서울 남부권']].map(([k,n])=>`<span class="chip" data-p="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-p]').forEach(c=>c.onclick=()=>{preset=c.dataset.p;fitPreset();render()});
- document.getElementById('flt').innerHTML=[['budgetNow','지금 살 수 있는 곳'],['budget','소득 신고 후 가능'],['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
+ document.getElementById('flt').innerHTML=[['noreg','비규제만'],['subs','청약 진행·예정']].map(([k,n])=>`<span class="chip" data-f="${k}">${n}</span>`).join('');
  document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{const k=c.dataset.f;F.has(k)?F.delete(k):F.add(k);render()});
  document.getElementById('tabs').innerHTML=[['dong','동네'],['news','뉴스'],['subs','청약'],['bun','분양'],['jb','정비'],['auc','경매'],['money','돈·정책'],['cmp','비교']].map(([k,n])=>`<div class="tab" data-t="${k}">${n}</div>`).join('');
  document.querySelectorAll('[data-t]').forEach(c=>c.onclick=()=>{tab=c.dataset.t;sel=null;render()});
@@ -285,7 +301,7 @@ function render(){
  zupL.forEach(m=>LAY.zup?m.addTo(map):map.removeLayer(m));
  {const zb=map.getZoom()>=13.5;aucL.forEach(m=>{if(LAY.auc&&aucPass(m._d)){if(m._big!==zb){m.setIcon(aucIcon(m._d,zb));m._big=zb}m.addTo(map)}else map.removeLayer(m)})}
  bunRender();jbRender();
- const zopen=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);document.getElementById('s6').textContent=zopen.length+'건 · 가능 '+zopen.filter(z=>zJudge(z)[0]==='o').length;
+ const zopen=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);document.getElementById('s6').textContent=zopen.length+'건'+(MY?' · 가능 '+zopen.filter(z=>zJudge(z)[0]==='o').length:'');document.getElementById('s6l').textContent=MY?'줍줍 진행 · 내 조건 가능':'줍줍 진행';myRender();
  // 핀
  const c=cap();const zz=map.getZoom(),big=zz>=13;
  aptL.forEach(am=>{(big&&visible(am._o))?am.addTo(map):map.removeLayer(am)});
@@ -303,7 +319,7 @@ function render(){
  document.getElementById('s2').textContent=D.news.filter(n=>n.date>=new Date(Date.parse(TODAY)-7*864e5).toISOString().slice(0,10)).length+'건';
  const up=D.subs.filter(s=>s.start&&s.start>=TODAY&&s.start.length===10).sort((a,b)=>a.start.localeCompare(b.start))[0];
  document.getElementById('s3').textContent=up?up.start.slice(5).replace('-','/')+' '+up.name.split(/[ (]/)[0]:'12월 원삼';
- document.getElementById('s5').textContent=cap(true).toFixed(1)+' / '+c.toFixed(1)+'억';{const it=D.policy.items.find(x=>x[0]==='기준금리');if(it){document.getElementById('s4').textContent=it[1];const m=(it[2]||'').match(/^(\d+\/\d+)\s*([^ (]*)/);document.getElementById('s4l').textContent='기준금리'+(m?' ('+m[1]+' '+(/인상/.test(it[2])?'인상':/인하/.test(it[2])?'인하':'동결')+')':'')}}
+ document.getElementById('s5w').style.display=MY?'':'none';document.getElementById('s5').textContent=c.toFixed(1)+'억';{const it=D.policy.items.find(x=>x[0]==='기준금리');if(it){document.getElementById('s4').textContent=it[1];const m=(it[2]||'').match(/^(\d+\/\d+)\s*([^ (]*)/);document.getElementById('s4l').textContent='기준금리'+(m?' ('+m[1]+' '+(/인상/.test(it[2])?'인상':/인하/.test(it[2])?'인하':'동결')+')':'')}}
  // 패널
  const el=document.getElementById('list');
  if(sel){const fresh=el.dataset.sel!==sel;el.innerHTML=dongHtml(D.dongs.find(o=>o.id===sel));if(fresh)el.scrollTop=0;el.dataset.sel=sel;bindDet();return}
@@ -346,7 +362,7 @@ function dday(e){if(!e)return '';const d=Math.round((new Date(e)-new Date(TODAY)
 const EV={o:['넣을 수 있음','#059669','#dcfce7'],x:['불가','#b91c1c','#fee2e2'],'?':['조건 확인','#92400e','#fef3c7']};
 const CK={o:'✓',x:'✗','?':'?','!':'!'};const CC={o:'#166534',x:'#b91c1c','?':'#92400e','!':'#6b7280'};
 function zupHtml(z){const [v,ck]=zJudge(z),d=z.det||{},e=EV[v];const pr=(d.prices||[]);const pmax=pr.length?Math.max(...pr.map(p=>p[1])):null;
- return `<div>${zNew(z)?'<span class="tag" style="background:#e11d48;color:#fff;font-weight:800">NEW</span>':''}<span class="tag" style="background:${e[2]};color:${e[1]};font-weight:700">${e[0]}</span><span class="tag" style="background:#fef3c7;color:#92400e">${z.kind}</span><span class="tag">${z.sido||''}</span><span class="rs">${z.start||''}~${z.end||''} <b style="color:#b45309">${dday(z.end)}</b></span></div>
+ return `<div>${zNew(z)?'<span class="tag" style="background:#e11d48;color:#fff;font-weight:800">NEW</span>':''}${MY?`<span class="tag" style="background:${e[2]};color:${e[1]};font-weight:700">${e[0]}</span>`:''}<span class="tag" style="background:#fef3c7;color:#92400e">${z.kind}</span><span class="tag">${z.sido||''}</span><span class="rs">${z.start||''}~${z.end||''} <b style="color:#b45309">${dday(z.end)}</b></span></div>
  <div class="nt">${z.name}</div><div class="rs">${z.addr||''}${z.n?' · '+z.n+'세대':''}</div>
  <div style="margin:5px 0 3px;display:flex;flex-wrap:wrap;gap:4px">${ck.map(c=>`<span style="font-size:11px;border:1px solid ${CC[c[0]]}33;color:${CC[c[0]]};border-radius:5px;padding:1px 6px">${CK[c[0]]} ${c[1]}</span>`).join('')}</div>
  <div class="rs">${zIsReg(z)?'규제지역':'비규제'}${d.resale?' · 전매 '+d.resale.slice(0,30):''}${d.livein&&d.livein!=='없음'?' · 거주의무 '+d.livein:''}${d.deposit?' · 계약금 '+d.deposit:''}${pmax?' · 최고 '+(pmax/10000).toFixed(2)+'억':''}</div>
@@ -357,7 +373,7 @@ const UC=u=>u===0?'#64748b':u===1?'#2563eb':u===2?'#7c3aed':'#dc2626';
 const RISK=['선순위임차인','임차권등기','선순위전세권','유치권','법정지상권','재매각','대지권미등기','건물만매각','토지별도등기','위반건축물','특별매각조건'];
 function aucRisk(a){return (a.sr||[]).filter(x=>RISK.includes(x))}
 function aucNear(a){if(!a.ll)return false;return D.dongs.some(o=>Math.hypot((o.lat-a.ll[0])*111,(o.lng-a.ll[1])*88)<3.5)}
-function aucPass(a){if(a.date<TODAY)return false;if(aucF.budget&&(a.est||a.low)>cap()*1e8)return false;if(aucF.clean&&aucRisk(a).length)return false;if(aucF.ok1&&a.uchal<1)return false;if(aucF.near&&!aucNear(a))return false;if(aucF.sgg!=='all'&&!(a.sgg||'').startsWith(aucF.sgg))return false;return true}
+function aucPass(a){if(a.date<TODAY)return false;if(MY&&(a.est||a.low)>cap()*1e8)return false;if(aucF.clean&&aucRisk(a).length)return false;if(aucF.ok1&&a.uchal<1)return false;if(aucF.near&&!aucNear(a))return false;if(aucF.sgg!=='all'&&!(a.sgg||'').startsWith(aucF.sgg))return false;return true}
 function aucIcon(a,big){return L.divIcon({className:'',iconSize:[0,0],html:big?`<div style="transform:translate(-50%,-100%);display:inline-block;background:#0f172a;color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:2px 6px;border:2px solid ${UC(a.uchal)};white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.35)">경 ${eok(a.low)}<span style="font-weight:600;color:#cbd5e1"> ${a.date.slice(5).replace('-','/')}</span>${aucRisk(a).length?' <span style="color:#fca5a5">!</span>':''}</div>`:`<div style="transform:translate(-50%,-50%);width:9px;height:9px;border-radius:2px;background:${UC(a.uchal)};border:1.5px solid #fff;box-shadow:0 0 2px rgba(0,0,0,.5)"></div>`})}
 function aucHtml(a){const rk=aucRisk(a),other=(a.sr||[]).filter(x=>!rk.includes(x));const hs=a.hist||[];
  return `<div><span class="tag" style="background:#0f172a;color:#fff;font-weight:700">경매</span><span class="tag" style="background:${UC(a.uchal)}22;color:${UC(a.uchal)};font-weight:700">${a.uchal?a.uchal+'회 유찰':'신건'}</span><span class="tag">${a.court||''}</span><span class="rs">매각 ${a.date} <b style="color:#b45309">${dday(a.date).replace('오늘 마감','오늘').replace('마감','지남')}</b></span></div>
@@ -372,16 +388,16 @@ function aucList(){const all=((D.auc&&D.auc.rows)||[]).filter(a=>a.date>=TODAY);
  const sg=[...new Set(all.map(a=>(a.sgg||'').split(' ')[0]).filter(Boolean))].sort();
  return `<div style="padding:12px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0"><div style="font-weight:800;font-size:15px">경매 (경기 아파트) <span class="rs">진행 ${all.length}건 · 조건 맞음 ${L.length}건</span></div>
  <div class="rs" style="margin:3px 0 6px">경매마당 목록 ${D.auc.src} 기준 · 지분 물건 제외 · 예상 낙찰가는 추정 · 입찰 전 경매마당 상세에서 상태 확인</div>
- <div class="chips">${[['near','관심 동네 3.5km 안'],['budget','내 예산 안'],['clean','특수권리 없음'],['ok1','유찰 1회 이상']].map(([k,n])=>`<span class="chip ${aucF[k]?'on':''}" data-af="${k}">${n}</span>`).join('')}</div>
+ <div class="chips">${[['near','관심 동네 3.5km 안'],['clean','특수권리 없음'],['ok1','유찰 1회 이상']].map(([k,n])=>`<span class="chip ${aucF[k]?'on':''}" data-af="${k}">${n}</span>`).join('')}</div>
  <div style="display:flex;gap:6px;margin-top:6px"><select id="ag"><option value="all">전체 시군</option>${sg.map(x=>`<option ${aucF.sgg===x?'selected':''}>${x}</option>`).join('')}</select><select id="as">${[['date','매각일 빠른 순'],['cheap','최저가 낮은 순'],['disc','예상가÷감정가 낮은 순'],['hits','조회수 많은 순']].map(([k,n])=>`<option value="${k}" ${aucF.sort===k?'selected':''}>${n}</option>`).join('')}</select></div></div>`+
  (L.length?L.slice(0,150).map(a=>`<div class="news" data-au="${a.id}" style="cursor:pointer">${aucHtml(a)}</div>`).join('')+(L.length>150?`<div class="note" style="padding:10px 14px">목록은 150건까지 (지도에는 전부)</div>`:''):'<div class="note" style="padding:10px 14px">조건에 맞는 물건 없음</div>')}
-function zupBlock(){let L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY);if(zupF.sido!=='all')L=L.filter(z=>z.sido===zupF.sido);const J=z=>zJudge(z)[0];if(zupF.only)L=L.filter(z=>J(z)==='o');
- L.sort((a,b)=>({o:0,'?':1,x:2}[J(a)]-{o:0,'?':1,x:2}[J(b)])||String(a.end).localeCompare(String(b.end)));
+function zupBlock(){let L=(D.zup||[]).filter(z=>zupAll||!z.end||z.end>=TODAY);if(zupF.sido!=='all')L=L.filter(z=>z.sido===zupF.sido);const J=z=>zJudge(z)[0];if(MY&&zupF.only)L=L.filter(z=>J(z)==='o');
+ L.sort((a,b)=>(MY?{o:0,'?':1,x:2}[J(a)]-{o:0,'?':1,x:2}[J(b)]:0)||String(a.end).localeCompare(String(b.end)));
  const sel=(id,opts,val)=>`<select id="${id}" style="font-size:12px;border:1px solid #e5e7eb;border-radius:6px;padding:2px">${opts.map(([v,n])=>`<option value="${v}" ${String(val)===String(v)?'selected':''}>${n}</option>`).join('')}</select>`;
  const cnt=(D.zup||[]).filter(z=>!z.end||z.end>=TODAY);
  return `<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fde68a"><b style="color:#92400e">줍줍·잔여세대</b> <span class="rs"><b style="color:#e11d48">새로 뜬 것 ${cnt.filter(zNew).length}건</b>(빨강, 3일 안) · 진행 ${cnt.length}건 · 넣을 수 있음 ${cnt.filter(z=>J(z)==='o').length}건</span>
  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12px">내 조건 · 거주 ${sel('zs',[['대구','대구'],['서울','서울'],['경기','경기'],['인천','인천']],ZME.sido)} 무주택 ${sel('zn',[['true','예'],['false','아니오']],ZME.nohouse)} 세대주 ${sel('zh',[['null','모름'],['true','예'],['false','아니오']],ZME.head)}</div>
- <div class="chips" style="margin-top:6px"><span class="chip ${zupF.only?'on':''}" data-zo="1">넣을 수 있는 것만</span>${[['all','전체'],['서울','서울'],['경기','경기'],['인천','인천']].map(([k,n])=>`<span class="chip ${zupF.sido===k?'on':''}" data-zr="${k}">${n}</span>`).join('')}<span class="chip ${zupAll?'on':''}" data-za="${zupAll?0:1}">${zupAll?'지난 공고 숨기기':'지난 공고 보기'}</span></div></div>`+
+ <div class="chips" style="margin-top:6px">${MY?`<span class="chip ${zupF.only?'on':''}" data-zo="1">넣을 수 있는 것만</span>`:''}${[['all','전체'],['서울','서울'],['경기','경기'],['인천','인천']].map(([k,n])=>`<span class="chip ${zupF.sido===k?'on':''}" data-zr="${k}">${n}</span>`).join('')}<span class="chip ${zupAll?'on':''}" data-za="${zupAll?0:1}">${zupAll?'지난 공고 숨기기':'지난 공고 보기'}</span></div></div>`+
  (L.length?L.slice().sort((a,b)=>zNew(b)-zNew(a)).map(z=>`<div class="news">${zupHtml(z)}</div>`).join(''):'<div class="note" style="padding:10px 14px">조건에 맞는 공고 없음</div>')+
  `<div class="note" style="padding:6px 14px 12px">자격은 청약홈 공고문 PDF 첫 장 요약표(규제·거주요건·재당첨·전매)와 본문 문구를 자동으로 읽어 판정해요. 계약 전에는 반드시 공고문으로 다시 확인하세요. LH 공고는 제목 기준이라 거주 요건은 '공고 확인'으로 나와요. 무주택은 주민등록표 세대원 전원 기준(만 60세 이상 부모 소유 집은 예외).</div>`}
 function subsList(){const me=D.me;
@@ -392,7 +408,7 @@ function subsList(){const me=D.me;
 function moneyHtml(){const me=D.me,c=cap();
  return `<div class="det"><h4 style="margin:0 0 6px">내 조건 계산기</h4><div class="warn">${me.note}. 아래 연소득은 <b>증빙되는 소득</b>을 넣어야 맞아요.</div>
  <div class="kv"><div>현금</div><div><input id="mc" type="number" step="0.05" value="${me.cash}" style="width:70px">억</div><div>증빙 연소득</div><div><input id="mi" type="number" step="100" value="${me.income}" style="width:80px">만</div><div>대출 금리</div><div><input id="mr" type="number" step="0.05" value="${me.rate}" style="width:60px">% (가정)</div><div>스트레스</div><div><input id="ms" type="number" step="0.25" value="${me.stress}" style="width:60px">%p</div></div>
- <div class="gauge"><div><div class="rs">매수 상한 (위 소득 기준)</div><div style="font-size:26px;font-weight:800;color:var(--ac);white-space:nowrap">${c.toFixed(2)}억</div><div class="rs">지금(증빙 소득 0원) ${cap(true).toFixed(2)}억</div></div><div class="note">DSR 40%, 30년 원리금, 생애최초 LTV 70%, 취득세·비용 1.6% 가정. 필터 '지금 살 수 있는 곳'은 증빙 소득 0원, '소득 신고 후 가능'은 위 연소득으로 계산.</div></div>
+ <div class="gauge"><div><div class="rs">매수 상한 (위 소득 기준)</div><div style="font-size:26px;font-weight:800;color:var(--ac);white-space:nowrap">${c.toFixed(2)}억</div></div><div class="note">DSR 40%, 30년 원리금, 생애최초 LTV 70%, 취득세·비용 1.6% 가정. 왼쪽 '내 조건 적용'을 켜면 이 값으로 동네·경매·줍줍이 한꺼번에 걸러져요.</div></div>
  <h4 style="margin:14px 0 6px">정책 변수판 (${D.policy.asof})</h4>${D.policy.items.map(([k,v,n,u])=>`<div class="news"><div class="rs">${k}</div><div class="nt">${v}</div><div class="ns">${n} <a href="${u}" target="_blank" rel="noopener">출처 ↗</a></div></div>`).join('')}
  <div class="note" style="margin-top:8px">매일 08:30 루틴이 금통위·금융위·국토부 발표를 보고 값이 바뀌면 여기와 점수를 고쳐요.</div></div>`}
 function cmpHtml(){if(!cmp.length)return `<div class="det note">동네를 열고 '비교에 추가'를 누르면 최대 3곳을 나란히 봐요.</div>`;
@@ -502,7 +518,7 @@ function bindList(){document.querySelectorAll('[data-d]').forEach(e=>e.onclick=e
  document.querySelectorAll('[data-nc]').forEach(e=>e.onclick=()=>{ncat=e.dataset.nc;render()});
  const sk=document.getElementById('sk');if(sk)sk.onchange=()=>{sortKey=sk.value;render()};
  const pk=document.getElementById('pk');if(pk)pk.onchange=()=>{pinMode=pk.value;render()};const zk=document.getElementById('zk');if(zk)zk.onchange=()=>{sizeKey=zk.value;render()};
- [['mc','cash'],['mi','income'],['mr','rate'],['ms','stress']].forEach(([i,k])=>{const e=document.getElementById(i);if(e)e.onchange=()=>{D.me[k]=+e.value;render()}});
+ [['mc','cash'],['mi','income'],['mr','rate'],['ms','stress']].forEach(([i,k])=>{const e=document.getElementById(i);if(e)e.onchange=()=>{D.me[k]=+e.value;saveMe();render()}});
  document.querySelectorAll('[data-af]').forEach(e=>e.onclick=()=>{const k=e.dataset.af;aucF[k]=!aucF[k];render()});
  const ag=document.getElementById('ag');if(ag)ag.onchange=()=>{aucF.sgg=ag.value;render()};const as_=document.getElementById('as');if(as_)as_.onchange=()=>{aucF.sort=as_.value;render()};
  document.querySelectorAll('[data-au]').forEach(e=>e.onclick=ev=>{if(ev.target.tagName==='A')return;const m=aucL.find(m=>m._d.id===e.dataset.au);if(m){if(!LAY.auc){LAY.auc=true;render()}map.flyTo(m.getLatLng(),15,{duration:.6});setTimeout(()=>{m.addTo(map);m.openPopup()},700)}});
